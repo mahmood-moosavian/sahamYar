@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="author" content="Z.ai Security Review">
+<meta name="description" content="گزارش بررسی فنی و امنیتی سایت bifilter.ir - تحلیل JWT، API، CORS، TLS و پلن ۵">
+<title>گزارش بررسی فنی و امنیتی bifilter.ir</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap">
+<style>
+  @page {
+    size: A4;
+    margin: 18mm 16mm 20mm 16mm;
+    @bottom-center {
+      content: "صفحه " counter(page) " از " counter(pages);
+      font-family: 'Vazirmatn', sans-serif;
+      font-size: 9pt;
+      color: #9b9993;
+    }
+    @top-left {
+      content: "گزارش بررسی bifilter.ir";
+      font-family: 'Vazirmatn', sans-serif;
+      font-size: 8pt;
+      color: #9b9993;
+    }
+    @top-right {
+      content: "آماده‌شده توسط Z.ai";
+      font-family: 'Vazirmatn', sans-serif;
+      font-size: 8pt;
+      color: #9b9993;
+    }
+  }
+  @page :first {
+    margin: 0;
+    @bottom-center { content: ""; }
+    @top-left { content: ""; }
+    @top-right { content: ""; }
+  }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+    color: #24231f;
+    font-family: 'Vazirmatn', 'Tahoma', sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.75;
+    direction: rtl;
+  }
+  * { box-sizing: border-box; }
+
+  /* ============ COVER PAGE ============ */
+  .cover {
+    page: cover;
+    page-break-after: always;
+    width: 210mm;
+    height: 297mm;
+    background: linear-gradient(155deg, #0f0e0d 0%, #24231f 50%, #3c3626 100%);
+    color: #ececea;
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+  }
+  .cover::before {
+    content: "";
+    position: absolute;
+    top: -100px; left: -100px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(213,181,87,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .cover::after {
+    content: "";
+    position: absolute;
+    bottom: -150px; right: -150px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(77,169,200,0.12) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .cover-grid {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    padding: 30mm 22mm;
+  }
+  .cover-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10pt;
+    color: #c7b889;
+    letter-spacing: 1px;
+  }
+  .cover-top .brand {
+    font-weight: 600;
+    color: #d5b557;
+  }
+  .cover-mid {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 18px;
+  }
+  .cover-eyebrow {
+    color: #d5b557;
+    font-size: 11pt;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .cover-title {
+    font-size: 36pt;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #ffffff;
+    margin: 0;
+  }
+  .cover-subtitle {
+    font-size: 14pt;
+    color: #c7b889;
+    font-weight: 400;
+    line-height: 1.5;
+    max-width: 150mm;
+  }
+  .cover-divider {
+    width: 80mm;
+    height: 3px;
+    background: linear-gradient(to left, #d5b557, transparent);
+    margin: 8px 0;
+  }
+  .cover-tags {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+  .cover-tag {
+    background: rgba(213,181,87,0.12);
+    border: 1px solid rgba(213,181,87,0.4);
+    color: #d5b557;
+    padding: 4px 14px;
+    border-radius: 16px;
+    font-size: 9.5pt;
+    font-weight: 500;
+  }
+  .cover-bot {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 18px;
+    border-top: 1px solid rgba(199,184,137,0.25);
+    padding-top: 18px;
+    font-size: 9pt;
+  }
+  .cover-bot .label {
+    color: #9b9993;
+    font-size: 8pt;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+  .cover-bot .value {
+    color: #ececea;
+    font-weight: 600;
+    font-size: 10pt;
+  }
+  .cover-summary {
+    background: rgba(255,255,255,0.04);
+    border-right: 3px solid #d5b557;
+    padding: 12px 16px;
+    margin-top: 16px;
+    border-radius: 4px;
+    font-size: 10pt;
+    line-height: 1.7;
+  }
+  .cover-summary .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .cover-summary .stat {
+    text-align: center;
+  }
+  .cover-summary .stat-num {
+    font-size: 22pt;
+    font-weight: 700;
+    color: #d5b557;
+    line-height: 1;
+  }
+  .cover-summary .stat-label {
+    font-size: 8.5pt;
+    color: #c7b889;
+    margin-top: 4px;
+  }
+
+  /* ============ TOC ============ */
+  .toc-page {
+    page-break-after: always;
+  }
+  .toc-page h2 {
+    color: #d5b557;
+    border-bottom: 2px solid #d5b557;
+    padding-bottom: 8px;
+    font-size: 18pt;
+    margin-bottom: 20px;
+  }
+  .toc-list { list-style: none; padding: 0; margin: 0; }
+  .toc-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 7px 0;
+    border-bottom: 1px dotted #ddd;
+    font-size: 11pt;
+  }
+  .toc-list li .num {
+    color: #d5b557;
+    font-weight: 600;
+    margin-left: 8px;
+  }
+  .toc-list li .page-num {
+    color: #9b9993;
+    font-weight: 600;
+  }
+  .toc-list li.sub {
+    padding-right: 28px;
+    font-size: 10pt;
+    color: #555;
+  }
+
+  /* ============ HEADINGS ============ */
+  h1, h2, h3, h4 {
+    font-family: 'Vazirmatn', sans-serif;
+    color: #24231f;
+    page-break-after: avoid;
+  }
+  h1.section {
+    font-size: 22pt;
+    color: #24231f;
+    border-bottom: 3px solid #d5b557;
+    padding-bottom: 8px;
+    margin: 0 0 18px 0;
+    page-break-before: always;
+    counter-reset: subsection;
+  }
+  h1.section:first-of-type { page-break-before: auto; }
+  h1.section .sec-num {
+    color: #d5b557;
+    margin-left: 10px;
+  }
+  h2.sub {
+    font-size: 15pt;
+    color: #3c3626;
+    margin: 22px 0 10px 0;
+    padding-right: 12px;
+    border-right: 4px solid #c7b889;
+    page-break-after: avoid;
+    counter-increment: subsection;
+  }
+  h3.subsub {
+    font-size: 12pt;
+    color: #5a5137;
+    margin: 16px 0 8px 0;
+    page-break-after: avoid;
+  }
+  p {
+    margin: 0 0 10px 0;
+    text-align: justify;
+    text-justify: inter-word;
+  }
+  ul, ol {
+    margin: 8px 24px 12px 0;
+    padding-right: 18px;
+  }
+  li { margin-bottom: 5px; line-height: 1.7; }
+  strong { color: #24231f; font-weight: 600; }
+  code {
+    font-family: 'Courier New', 'DejaVu Sans Mono', monospace;
+    background: #f5f3ee;
+    color: #5a5137;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 9.5pt;
+    direction: ltr;
+    display: inline-block;
+  }
+  pre {
+    background: #24231f;
+    color: #ececea;
+    padding: 12px 14px;
+    border-radius: 6px;
+    font-family: 'Courier New', 'DejaVu Sans Mono', monospace;
+    font-size: 8.5pt;
+    line-height: 1.55;
+    direction: ltr;
+    text-align: left;
+    overflow-x: auto;
+    page-break-inside: avoid;
+    border-right: 3px solid #d5b557;
+  }
+  pre code { background: transparent; color: inherit; padding: 0; }
+
+  /* ============ TABLES ============ */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0 14px 0;
+    font-size: 9pt;
+    page-break-inside: auto;
+  }
+  thead { background: #3c3626; color: #ececea; }
+  thead th {
+    padding: 8px 6px;
+    text-align: right;
+    font-weight: 600;
+    border: 1px solid #5a5137;
+    font-size: 9pt;
+  }
+  tbody td {
+    padding: 6px 6px;
+    border: 1px solid #d9d3c2;
+    vertical-align: top;
+  }
+  tbody tr:nth-child(even) { background: #faf8f2; }
+  tbody tr:nth-child(odd) { background: #ffffff; }
+  table.ltr td, table.ltr th { direction: ltr; text-align: left; }
+  table.compact td, table.compact th { padding: 4px 5px; font-size: 8.5pt; }
+  .mono { font-family: 'Courier New', monospace; direction: ltr; display: inline-block; }
+
+  /* ============ CALLOUTS ============ */
+  .finding {
+    border: 1px solid;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin: 14px 0;
+    page-break-inside: avoid;
+  }
+  .finding-critical { border-color: #c77c75; background: #fdf2f1; border-right-width: 5px; }
+  .finding-high { border-color: #c3aa7a; background: #fdf8ed; border-right-width: 5px; }
+  .finding-medium { border-color: #c7b889; background: #faf6e8; border-right-width: 5px; }
+  .finding-low { border-color: #7b98b5; background: #f0f5fa; border-right-width: 5px; }
+  .finding-info { border-color: #9b9993; background: #f5f3ee; border-right-width: 5px; }
+  .finding-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    border-bottom: 1px dashed;
+    padding-bottom: 6px;
+  }
+  .finding-critical .finding-head { border-color: #c77c75; }
+  .finding-high .finding-head { border-color: #c3aa7a; }
+  .finding-medium .finding-head { border-color: #c7b889; }
+  .finding-low .finding-head { border-color: #7b98b5; }
+  .finding-info .finding-head { border-color: #9b9993; }
+  .finding-title { font-size: 11pt; font-weight: 700; color: #24231f; }
+  .badge {
+    font-size: 8pt;
+    padding: 2px 10px;
+    border-radius: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .badge-critical { background: #c77c75; color: white; }
+  .badge-high { background: #c3aa7a; color: white; }
+  .badge-medium { background: #c7b889; color: #24231f; }
+  .badge-low { background: #7b98b5; color: white; }
+  .badge-info { background: #9b9993; color: white; }
+  .finding-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    font-size: 9pt;
+    margin: 8px 0;
+  }
+  .finding-meta div { background: rgba(255,255,255,0.6); padding: 4px 8px; border-radius: 3px; }
+  .finding-meta strong { display: block; color: #5a5137; font-size: 8pt; margin-bottom: 2px; }
+
+  /* ============ FIGURES ============ */
+  figure {
+    margin: 12px 0;
+    page-break-inside: avoid;
+    text-align: center;
+  }
+  figure img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #d9d3c2;
+    border-radius: 4px;
+  }
+  figcaption {
+    font-size: 8.5pt;
+    color: #9b9993;
+    margin-top: 6px;
+    font-style: italic;
+  }
+
+  /* ============ EXEC SUMMARY ============ */
+  .exec-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 14px 0;
+  }
+  .exec-card {
+    border: 1px solid #d9d3c2;
+    border-radius: 6px;
+    padding: 14px;
+    background: #faf8f2;
+    page-break-inside: avoid;
+  }
+  .exec-card h3 {
+    margin: 0 0 8px 0;
+    color: #d5b557;
+    font-size: 11pt;
+    border-bottom: 1px solid #d9d3c2;
+    padding-bottom: 5px;
+  }
+  .risk-meter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 8px 0;
+    font-size: 9pt;
+  }
+  .risk-bar {
+    flex: 1;
+    height: 14px;
+    background: #f0f0f0;
+    border-radius: 7px;
+    overflow: hidden;
+    border: 1px solid #d9d3c2;
+  }
+  .risk-fill {
+    height: 100%;
+    background: linear-gradient(to left, #c77c75 0%, #c3aa7a 50%, #79b78e 100%);
+  }
+
+  .pill-row { display: flex; gap: 6px; flex-wrap: wrap; margin: 6px 0; }
+  .pill {
+    font-size: 8.5pt;
+    padding: 2px 8px;
+    border-radius: 8px;
+    background: #ececea;
+    color: #24231f;
+    border: 1px solid #d9d3c2;
+  }
+  .pill.ok { background: #e0f0e3; color: #2c5e35; border-color: #79b78e; }
+  .pill.bad { background: #fbe6e4; color: #6b2823; border-color: #c77c75; }
+  .pill.warn { background: #fbf2dd; color: #6b4f1f; border-color: #c3aa7a; }
+
+  .meta-table { font-size: 9pt; }
+  .meta-table td:first-child { color: #5a5137; font-weight: 600; width: 35%; }
+
+  /* Avoid orphan headings */
+  h1.section, h2.sub, h3.subsub { page-break-after: avoid; }
+  pre, figure { page-break-inside: avoid; }
+  .finding { page-break-inside: auto; }
+</style>
+</head>
+<body>
+
+<!-- ============ COVER ============ -->
+<section class="cover">
+  <div class="cover-grid">
+    <div class="cover-top">
+      <span class="brand">bifilter.ir</span>
+      <span>گزارش فنی و امنیتی · نسخه 1.0</span>
+    </div>
+    <div class="cover-mid">
+      <div class="cover-eyebrow">SECURITY &amp; API REVIEW</div>
+      <h1 class="cover-title">گزارش بررسی فنی و امنیتی<br>سایت bifilter.ir</h1>
+      <div class="cover-divider"></div>
+      <div class="cover-subtitle">
+        تحلیل جامع توکن احراز هویت (JWT)، Endpoint های API،
+        پیکربندی CORS، گواهی TLS، هدرهای امنیتی و امکانات پلن ۵ کاربری
+      </div>
+      <div class="cover-tags">
+        <span class="cover-tag">JWT Analysis</span>
+        <span class="cover-tag">API Enumeration</span>
+        <span class="cover-tag">CORS Audit</span>
+        <span class="cover-tag">TLS / Headers</span>
+        <span class="cover-tag">Plan 5 Features</span>
+      </div>
+      <div class="cover-summary">
+        این گزارش بر اساس آزمایش ۶۷ Endpoint از API عمومی سایت
+        <strong>bifilter.ir</strong> با توکن Bearer ارائه‌شده توسط کاربر،
+        در تاریخ ۱۴۰۵/۰۸/۱۶ (۷ نوامبر ۲۰۲۶) تهیه شده است.
+        در طول آزمایش، ۱۲ یافته امنیتی در سطوح بحرانی تا اطلاعاتی شناسایی شد.
+        <div class="stat-grid">
+          <div class="stat"><div class="stat-num">۶۷</div><div class="stat-label">Endpoint آزمایش‌شده</div></div>
+          <div class="stat"><div class="stat-num">۱۲</div><div class="stat-label">یافته امنیتی</div></div>
+          <div class="stat"><div class="stat-num">۲۲</div><div class="stat-label">Endpoint فعال</div></div>
+          <div class="stat"><div class="stat-num">۱</div><div class="stat-label">یافته بحرانی</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="cover-bot">
+      <div>
+        <div class="label">TARGET</div>
+        <div class="value">https://www.bifilter.ir</div>
+      </div>
+      <div>
+        <div class="label">DATE</div>
+        <div class="value">۱۴۰۵/۰۸/۱۶ · 2026-11-07</div>
+      </div>
+      <div>
+        <div class="label">PREPARED BY</div>
+        <div class="value">Z.ai Security Review</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TOC ============ -->
+<section class="toc-page">
+  <h2>فهرست مطالب</h2>
+  <ul class="toc-list">
+    <li><span><span class="num">۰.</span> خلاصه اجرایی</span><span class="page-num">۳</span></li>
+    <li><span><span class="num">۱.</span> معرفی و دامنه بررسی</span><span class="page-num">۴</span></li>
+    <li><span><span class="num">۲.</span> تحلیل توکن احراز هویت (JWT)</span><span class="page-num">۵</span></li>
+    <li class="sub"><span>۲.۱ هدر و امضا</span><span class="page-num">۵</span></li>
+    <li class="sub"><span>۲.۲ Claims و تحلیل زمانی</span><span class="page-num">۵</span></li>
+    <li class="sub"><span>۲.۳ یافته‌های امنیتی توکن</span><span class="page-num">۵</span></li>
+    <li><span><span class="num">۳.</span> ساختار سایت، زیردامنه‌ها و پشته فنی</span><span class="page-num">۶</span></li>
+    <li><span><span class="num">۴.</span> کشف و آزمایش Endpoint های API</span><span class="page-num">۷</span></li>
+    <li class="sub"><span>۴.۱ روش‌شناسی کشف</span><span class="page-num">۷</span></li>
+    <li class="sub"><span>۴.۲ نتایج آزمایش ۶۷ Endpoint</span><span class="page-num">۷</span></li>
+    <li class="sub"><span>۴.۳ تحلیل پاسخ‌ها و داده‌های حساس</span><span class="page-num">۸</span></li>
+    <li><span><span class="num">۵.</span> یافته‌های امنیتی تفصیلی</span><span class="page-num">۸</span></li>
+    <li class="sub"><span>۵.۱ پیکربندی نادرست CORS (بحرانی)</span><span class="page-num">۸</span></li>
+    <li class="sub"><span>۵.۲ گواهی TLS پیش‌فرض (بالا)</span><span class="page-num">۹</span></li>
+    <li class="sub"><span>۵.۳ افشای اطلاعات از طریق پیام خطا</span><span class="page-num">۹</span></li>
+    <li class="sub"><span>۵.۴ افشای PII در توکن</span><span class="page-num">۹</span></li>
+    <li class="sub"><span>۵.۵ هدرهای امنیتی مفقود</span><span class="page-num">۹</span></li>
+    <li class="sub"><span>۵.۶ نبود Rate Limiting صریح</span><span class="page-num">۹</span></li>
+    <li class="sub"><span>۵.۷ دسترسی عمومی به stage.bifilter.ir</span><span class="page-num">۹</span></li>
+    <li class="sub"><span>۵.۸ سایر یافته‌ها</span><span class="page-num">۹</span></li>
+    <li><span><span class="num">۶.</span> بررسی امکانات پلن ۵ کاربر</span><span class="page-num">۹</span></li>
+    <li><span><span class="num">۷.</span> توصیه‌ها و راهکارهای اصلاحی</span><span class="page-num">۱۰</span></li>
+    <li><span><span class="num">۸.</span> پیوست: فهرست کامل Endpoint ها</span><span class="page-num">۱۱</span></li>
+  </ul>
+</section>
+
+<!-- ============ 0. EXECUTIVE SUMMARY ============ -->
+<h1 class="section"><span class="sec-num">۰.</span> خلاصه اجرایی</h1>
+
+<p>
+سایت <strong>bifilter.ir</strong> (فیلتر هوشمند بورس) یک پلتفرم تحلیلی بازار سرمایه ایران است که
+ابزارهایی برای کاوش، فیلترکردن و دریافت سیگنال برای سهام بورس و فرابورس، ارز دیجیتال و فارکس
+ارائه می‌دهد. این گزارش بر اساس آزمایش فنی و امنیتی انجام‌شده با توکن JWT معتبر کاربر
+(شناسه ۲۷۶۴۵۸، پلن ۵، موبایل ۰۹۱۵۴۱۶۵۲۱۰) در تاریخ ۱۴۰۵/۰۸/۱۶ تهیه شده است.
+</p>
+
+<p>
+در طول این بررسی، ۶۷ Endpoint از API عمومی سایت آزمایش شد و ۱۲ یافته امنیتی
+در سطوح مختلف شناسایی گردید. جدول زیر خلاصه‌ای از یافته‌های کلیدی را نشان می‌دهد.
+</p>
+
+<div class="exec-grid">
+  <div class="exec-card">
+    <h3>نقاط قوت</h3>
+    <ul>
+      <li>استفاده از الگوریتم امضای <strong>RS256</strong> (نامتقارن) برای JWT — رویکرد صحیح</li>
+      <li>هدر <code>HSTS</code> با <code>max-age=31536000; includeSubDomains</code> فعال</li>
+      <li>هدر <code>X-Frame-Options: SAMEORIGIN</code> برای جلوگیری از Clickjacking</li>
+      <li>کوکی <code>AntiForgeryToken</code> با <code>SameSite=Strict; HttpOnly</code></li>
+      <li>اعمال صحیح مرز احراز هویت روی Endpoint های کاربری (bookmarks، invite، wallet، comments)</li>
+      <li>عدم افشای فایل‌های حساس (<code>.env</code>، <code>.git/</code>، <code>web.config</code>، <code>appsettings.json</code>)</li>
+      <li>عدم افشای عمومی Swagger و Endpoint های IdentityServer (<code>/connect/*</code>)</li>
+    </ul>
+  </div>
+  <div class="exec-card">
+    <h3>نقاط ضعف اصلی</h3>
+    <ul>
+      <li><strong>پیکربندی نادرست CORS (بحرانی)</strong>: <code>Access-Control-Allow-Origin: *</code> همراه با <code>Allow-Credentials: true</code> روی تمام زیردامنه‌ها</li>
+      <li><strong>گواهی TLS پیش‌فرض Kubernetes</strong> (CN=Kubernetes Ingress Controller Fake Certificate) به جای گواهی معتبر دامنه</li>
+      <li>افشای پیام خطای داخلی دات‌نت (NRE، Divide-by-zero، LINQ) در ۴ Endpoint</li>
+      <li>افشای PII (شماره موبایل) داخل بدنه JWT</li>
+      <li>نبود هدرهای <code>Content-Security-Policy</code>، <code>X-Content-Type-Options</code>، <code>Referrer-Policy</code></li>
+      <li>زیردامنه <code>stage.bifilter.ir</code> (محیط Staging) به صورت عمومی در دسترس</li>
+      <li>عمر توکن ۹۰ روز بدون MFA</li>
+    </ul>
+  </div>
+</div>
+
+<h2 class="sub">سنجش سطح ریسک کلی</h2>
+<div class="risk-meter">
+  <span style="min-width:80px;">ریسک کلی:</span>
+  <div class="risk-bar"><div class="risk-fill" style="width:68%"></div></div>
+  <strong style="color:#c3aa7a;">متوسط رو به بالا</strong>
+</div>
+<p>
+با توجه به وجود یک یافته بحرانی (CORS) که امکان سرقت توکن کاربران از طریق یک سایت مخرب را
+فراهم می‌کند، ریسک کلی سیستم در سطح «متوسط رو به بالا» ارزیابی می‌شود. این یافته باید
+<strong>قبل از سایر موارد</strong> اصلاح شود.
+</p>
+
+<h2 class="sub">ترتیب اولویت اصلاحات پیشنهادی</h2>
+<ol>
+  <li><strong>فوری</strong> — اصلاح پیکربندی CORS (ریفلکت کردن Origin فقط برای دامنه‌های مجاز)</li>
+  <li><strong>فوری</strong> — پیکربندی گواهی TLS معتبر برای دامنه bifilter.ir</li>
+  <li><strong>کوتاه‌مدت</strong> — افزودن هدرهای امنیتی مفقود (CSP، nosniff، Referrer-Policy)</li>
+  <li><strong>کوتاه‌مدت</strong> — فعال‌سازی صفحه خطای سفارشی به جای پیام استثنای دات‌نت</li>
+  <li><strong>میان‌مدت</strong> — حذف PII از بدنه JWT، کوتاه‌کردن عمر توکن، فعال‌سازی MFA</li>
+  <li><strong>میان‌مدت</strong> — اعمال Rate Limiting صریح روی Endpoint های API</li>
+  <li><strong>بلندمدت</strong> — مسدودکردن دسترسی عمومی به stage.bifilter.ir یا انتقال به شبکه داخلی</li>
+</ol>
+
+<figure>
+  <img src="chart_severity.png" alt="Severity distribution">
+  <figcaption>نمودار ۱: توزیع یافته‌های امنیتی بر اساس شدت</figcaption>
+</figure>
+
+<!-- ============ 1. INTRODUCTION ============ -->
+<h1 class="section"><span class="sec-num">۱.</span> معرفی و دامنه بررسی</h1>
+
+<h2 class="sub">۱.۱ هدف بررسی</h2>
+<p>
+هدف این بررسی، ارزیابی فنی و امنیتی کامل سایت <strong>https://www.bifilter.ir</strong> است
+که با استفاده از توکن احراز هویت (JWT Bearer Token) معتبر کاربر انجام شده است. این توکن
+توسط کاربر در تاریخ ۱۴۰۵/۰۸/۱۶ (۷ نوامبر ۲۰۲۶ ساعت ۱۰:۳۶ به وقت تهران) صادر شده و تا تاریخ
+۱۴۰۵/۱۱/۱۶ (۵ فوریه ۲۰۲۷) معتبر خواهد بود.
+</p>
+
+<h2 class="sub">۱.۲ دامنه بررسی</h2>
+<p>دامنه این بررسی شامل موارد زیر است:</p>
+<ul>
+  <li>تحلیل ساختار و محتوای توکن JWT (هدر، Claims، امضا، زمان اعتبار)</li>
+  <li>کشف و آزمایش Endpoint های API در دسترس عموم با استفاده از توکن</li>
+  <li>ارزیابی پیکربندی CORS، هدرهای امنیتی، و گواهی TLS</li>
+  <li>بررسی زیردامنه‌های کشف‌شده (quantum و stage)</li>
+  <li>ارزیابی امکانات در دسترس کاربر پلن ۵ و محدودیت‌های پلن</li>
+  <li>ارائه توصیه‌های اصلاحی با اولویت‌بندی</li>
+</ul>
+
+<h2 class="sub">۱.۳ روش‌شناسی</h2>
+<p>
+روش‌شناسی این بررسی شامل چهار مرحله است: (۱) رمزگشایی و تحلیل ایستای توکن JWT؛
+(۲) استخراج Endpoint های API از فایل JavaScript اصلی سایت (<code>bundle.js?s=296</code>)؛
+(۳) آزمایش هر Endpoint با متد GET و هدر <code>Authorization: Bearer</code>، و ثبت
+status code، حجم پاسخ، content-type و زمان پاسخ؛ (۴) آزمایش‌های مقایسه‌ای شامل
+دسترسی بدون توکن (Anonymous)، تست Origin های متفاوت برای ارزیابی CORS، و
+تست Rate Limiting با ۵۰ درخواست متوالی.
+</p>
+
+<p>تمام آزمایش‌ها به صورت غیرمخرب (Non-Destructive) و تنها با متد GET انجام شده‌اند
+و هیچ داده‌ای ایجاد، تغییر یا حذف نشده است.</p>
+
+<h2 class="sub">۱.۴ مشخصات محیط آزمایش</h2>
+<table class="meta-table">
+  <tr><td>هدف</td><td><span class="mono">https://www.bifilter.ir</span></td></tr>
+  <tr><td>IP سرور</td><td><span class="mono">31.7.70.56</span> (همه زیردامنه‌ها)</td></tr>
+  <tr><td>نسخه HTTP</td><td>HTTP/2</td></tr>
+  <tr><td>پشته‌ی تشخیص‌داده‌شده</td><td>ASP.NET Core + Duende IdentityServer + Kubernetes Ingress + WebMarkupMin</td></tr>
+  <tr><td>کاربر آزمایش</td><td>شناسه ۲۷۶۴۵۸ · پلن ۵ · موبایل ۰۹۱۵۴۱۶۵۲۱۰</td></tr>
+  <tr><td>تاریخ آزمایش</td><td>۱۴۰۵/۰۸/۱۶ — ۲۰۲۶-۱۱-۰۷ ۱۰:۳۰ تا ۱۰:۴۵ به وقت تهران</td></tr>
+  <tr><td>تعداد Endpoint آزمایش‌شده</td><td>۶۷</td></tr>
+</table>
+
+<!-- ============ 2. JWT ANALYSIS ============ -->
+<h1 class="section"><span class="sec-num">۲.</span> تحلیل توکن احراز هویت (JWT)</h1>
+
+<h2 class="sub">۲.۱ هدر و امضای توکن</h2>
+<p>
+توکن ارائه‌شده یک OAuth 2.0 Access Token با نوع <code>at+jwt</code> است که توسط
+الگوریتم <strong>RS256</strong> (RSA-SHA256 با کلید ۲۰۴۸ بیتی) امضا شده است.
+استفاده از الگوریتم نامتقارن (به جای HS256 متقارن) رویکرد صحیحی است، زیرا کلید عمومی
+امضا می‌تواند بدون افشای کلید خصوصی توزیع شود.
+</p>
+
+<pre><code>{
+  "alg": "RS256",
+  "kid": "16EB14E0CF4EC6ED42727BEA7AD59C73B1A295B8RS256",
+  "typ": "at+jwt",
+  "x5t": "FusU4M9Oxu1CcnvqetWcc7Gilbg"
+}</code></pre>
+
+<p>مشخصات فنی امضا:</p>
+<ul>
+  <li><strong>الگوریتم:</strong> RS256 (RSA 2048-bit + SHA-256)</li>
+  <li><strong>Key ID:</strong> <code>16EB14E0CF4EC6ED42727BEA7AD59C73B1A295B8RS256</code></li>
+  <li><strong>X.509 Thumbprint:</strong> <code>FusU4M9Oxu1CcnvqetWcc7Gilbg</code></li>
+  <li><strong>طول امضا:</strong> ۲۵۶ بایت (۲۰۴۸ بیت)</li>
+  <li><strong>نوع توکن:</strong> <code>at+jwt</code> مطابق RFC 9068 (رویکرد استاندارد)</li>
+</ul>
+
+<h2 class="sub">۲.۲ Claims و تحلیل زمانی</h2>
+<p>بدنه توکن شامل Claims استاندارد و Claims سفارشی مخصوص برنامه bifilter است:</p>
+
+<pre><code>{
+  "nbf": 1794035185,  "exp": 1801811185,
+  "iss": "http://identityserver",
+  "client_id": "d62c956e-7d4d-423b-a1c8-a942083b69c2",
+  "sub": "276458",
+  "auth_time": 1794035185,
+  "idp": "local",
+  "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier": "276458",
+  "Mobile": "09154165210",
+  "TelegramId": "",
+  "Plan": "5",
+  "FPC": "1",
+  "TimeFrame": "False",
+  "AppId": "d62c956e-7d4d-423b-a1c8-a942083b69c2",
+  "app": "bifilter",
+  "jti": "1B7A004FC9793826FEED905FBBA1C7D1",
+  "iat": 1794035185,
+  "scope": ["bifilter"],
+  "amr": ["pwd"]
+}</code></pre>
+
+<table class="meta-table">
+  <tr><td>زمان صدور (iat)</td><td><span class="mono">2026-11-07 07:06:25 UTC</span> ≈ ۱۰:۳۶ به وقت تهران</td></tr>
+  <tr><td>زمان اعتبار (nbf)</td><td>برابر با iat (فوراً معتبر)</td></tr>
+  <tr><td>زمان انقضا (exp)</td><td><span class="mono">2027-02-05 07:06:25 UTC</span> ≈ ۱۴۰۵/۱۱/۱۶</td></tr>
+  <tr><td>عمر توکن</td><td><strong>۹۰ روز</strong> (۷٬۷۷۷٬۶۰۰ ثانیه)</td></tr>
+  <tr><td>شناسه کاربر (sub)</td><td>۲۷۶۴۵۸ (عددی متوالی)</td></tr>
+  <tr><td>Authentication Method Reference (amr)</td><td><code>["pwd"]</code> — فقط رمز عبور (بدون MFA)</td></tr>
+  <tr><td>Issuer (iss)</td><td><code>http://identityserver</code> (نام میزبان داخلی)</td></tr>
+  <tr><td>Audience (aud)</td><td><strong>وجود ندارد</strong> — اشکال جدی</td></tr>
+  <tr><td>Scope</td><td><code>["bifilter"]</code> — فقط یک scope کلی</td></tr>
+</table>
+
+<h2 class="sub">۲.۳ یافته‌های امنیتی توکن</h2>
+
+<div class="finding finding-medium">
+  <div class="finding-head">
+    <span class="finding-title">JW-01 · نبود Claim <code>aud</code> (Audience)</span>
+    <span class="badge badge-medium">MEDIUM</span>
+  </div>
+  <p>توکن فاقد Claim <code>aud</code> است که مشخص می‌کند این توکن برای کدام سرویسreceiver صادر شده است.
+  در نبود <code>aud</code>، هر سرویسی که کلید عمومی IdentityServer را داشته باشد می‌تواند توکن را
+  بپذیرد، که باعث می‌شود توکن در صورت افشای کلید عمومی، بین چند سرویس قابل استفاده مجدد باشد.</p>
+  <div class="finding-meta">
+    <div><strong>CWE</strong>CWE-1390: Weak Authentication</div>
+    <div><strong>OWASP</strong>A07:2021 Identification and Authentication Failures</div>
+    <div><strong>راهکار</strong>افزودن <code>"aud": "bifilter-api"</code> و اعتبارسنجی آن در API</div>
+  </div>
+</div>
+
+<div class="finding finding-medium">
+  <div class="finding-head">
+    <span class="finding-title">JW-02 · افشای PII (شماره موبایل) در بدنه توکن</span>
+    <span class="badge badge-medium">MEDIUM</span>
+  </div>
+  <p>Claim <code>Mobile</code> شامل شماره موبایل کامل کاربر (۰۹۱۵۴۱۶۵۲۱۰) است. توکن JWT فقط Base64URL-encoded است
+  و هر کسی که به توکن دسترسی پیدا کند (روی کلاینت، در لاگ‌ها، در سرتیفیکیت‌ها) می‌تواند آن را رمزگشایی کند.
+  شماره موبایل در ایران جزء PII محسوب می‌شود و نباید در توکن قابل استخراج قرار گیرد.</p>
+  <div class="finding-meta">
+    <div><strong>CWE</strong>CWE-200: Exposure of Sensitive Information</div>
+    <div><strong>OWASP</strong>A02:2021 Cryptographic Failures</div>
+    <div><strong>راهکار</strong>استفاده از Claim <code>sub</code> برای شناسایی و جست‌وجوی موبایل در سمت سرور</div>
+  </div>
+</div>
+
+<div class="finding finding-low">
+  <div class="finding-head">
+    <span class="finding-title">JW-03 · عمر طولانی توکن (۹۰ روز) بدون MFA</span>
+    <span class="badge badge-low">LOW</span>
+  </div>
+  <p>توکن ۹۰ روز معتبر است و در صورت سرقت (مثلاً از طریق CORS آسیب‌پذیر یا افشای لاگ)، تا ۹۰ روز قابل
+  سوءاستفاده خواهد بود. در کنار این، <code>amr</code> فقط <code>pwd</code> است، یعنی احراز هویت فقط با رمز عبور
+  انجام شده و MFA فعال نیست. ترکیب این دو ریسک سرقت حساب را افزایش می‌دهد.</p>
+  <div class="finding-meta">
+    <div><strong>CWE</strong>CWE-613: Insufficient Session Expiration</div>
+    <div><strong>OWASP</strong>A07:2021 — Identification and Authentication Failures</div>
+    <div><strong>راهکار</strong>کاهش عمر Access Token به ۱-۲ ساعت با Refresh Token جداگانه؛ فعال‌سازی OTP از طریق پیامک</div>
+  </div>
+</div>
+
+<div class="finding finding-low">
+  <div class="finding-head">
+    <span class="finding-title">JW-04 · شناسه کاربری متوالی (Sequential ID)</span>
+    <span class="badge badge-low">LOW</span>
+  </div>
+  <p>Claim <code>sub</code> برابر با <code>276458</code> است — یک عدد صحیح متوالی. این الگو امکان
+  Enumerate کردن شناسه کاربران را فراهم می‌کند و در صورت وجود هرگونه اشکال در کنترل دسترسی (مثلاً IDOR)،
+  حمله‌گر می‌تواند به داده‌ی کاربران دیگر دسترسی پیدا کند. استفاده از GUID به جای عدد متوالی توصیه می‌شود.</p>
+  <div class="finding-meta">
+    <div><strong>CWE</strong>CWE-799: Improper Control of Generation of Identifiers</div>
+    <div><strong>راهکار</strong>استفاده از UUID/GUID به جای شناسه عددی متوالی</div>
+    <div><strong>تأثیر</strong>تشدیدکننده IDOR در صورت وجود</div>
+  </div>
+</div>
+
+<div class="finding finding-info">
+  <div class="finding-head">
+    <span class="finding-title">JW-05 · Issuer داخلی به جای URL عمومی</span>
+    <span class="badge badge-info">INFO</span>
+  </div>
+  <p>مقدار <code>iss</code> برابر با <code>http://identityserver</code> است که یک نام میزبان داخلی Kubernetes است
+  و نه URL عمومی. این موضوع باعث می‌شود اعتبارسنجی Issuer در محیط‌های خارجی سخت شود و نشان می‌دهد که
+  IdentityServer به صورت یک سرویس داخلی در خوشه Kubernetes اجرا می‌شود (که خود یک الگوی صحیح است)،
+  اما URL Issuer باید به <code>https://www.bifilter.ir/identity</code> یا یک زیردامنه‌ی واقعی تنظیم شود.</p>
+</div>
+
+<!-- ============ 3. SITE STRUCTURE ============ -->
+<h1 class="section"><span class="sec-num">۳.</span> ساختار سایت، زیردامنه‌ها و پشته فنی</h1>
+
+<h2 class="sub">۳.۱ معماری کلی</h2>
+<p>
+سایت bifilter.ir روی یک پشته‌ی ASP.NET Core اجرا می‌شود که از مؤلفه‌های زیر تشکیل شده است:
+</p>
+<ul>
+  <li><strong>Backend:</strong> ASP.NET Core (با وجود هدر <code>.AspNetCore.Antiforgery</code> و IdentityServer).</li>
+  <li><strong>Identity Provider:</strong> Duende IdentityServer (یا IdentityServer4) با پشتیبانی از OAuth 2.0 و OpenID Connect — زیرا <code>iss=http://identityserver</code> و Claims با پیشوند XML SOAP قدیمی (الگوی IdentityServer4).</li>
+  <li><strong>Ingress:</strong> Kubernetes Ingress Controller (احتمالاً NGINX Ingress یا Traefik) که TLS را خاتمه می‌دهد.</li>
+  <li><strong>HTML Minification:</strong> WebMarkupMin (هدر <code>x-html-minification-powered-by: WebMarkupMin</code>).</li>
+  <li><strong>Frontend:</strong> صفحات Razor + jQuery + TradingView Charting Library + کتابخانه <code>marked</code> برای Markdown.</li>
+  <li><strong>CDN داده بازار:</strong> داده‌ی ارز دیجیتال از <code>min-api.cryptocompare.com</code> دریافت می‌شود.</li>
+</ul>
+
+<h2 class="sub">۳.۲ زیردامنه‌های کشف‌شده</h2>
+<p>از طریق تحلیل HTML و کد JavaScript، سه زیردامنه شناسایی شد:</p>
+<table>
+  <thead>
+    <tr><th>زیردامنه</th><th>وضعیت</th><th>توضیح</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><span class="mono">www.bifilter.ir</span></td><td>۲۰۰ OK</td><td>دامنه‌ی اصلی برنامه</td></tr>
+    <tr><td><span class="mono">bifilter.ir</span></td><td>۲۰۰ OK</td><td>دامنه‌ی bare (همان سرور)</td></tr>
+    <tr><td><span class="mono">quantum.bifilter.ir</span></td><td>۳۰۲ → landing.html</td><td>محصول Quantum (احتمالاً پلن برتر); در بخش ۵.۷ بررسی می‌شود</td></tr>
+    <tr><td><span class="mono">stage.bifilter.ir</span></td><td>۲۰۰ OK</td><td><strong>محیط Staging عمومی</strong> — یک یافته امنیتی</td></tr>
+    <tr><td><span class="mono">id.bifilter.ir</span></td><td>NXDOMAIN</td><td>زیردامنه‌ی پیشنهادی برای IdentityServer (موجود نیست)</td></tr>
+    <tr><td><span class="mono">api.bifilter.ir</span></td><td>NXDOMAIN</td><td>API از همان دامنه‌ی www سرو می‌شود</td></tr>
+  </tbody>
+</table>
+
+<p>تمام زیردامنه‌های فعال به IP واحد <span class="mono">31.7.70.56</span> اشاره دارند،
+که نشان می‌دهد همه‌ی سرویس‌ها روی همان سرور/همان خوشه Kubernetes سرو می‌شوند.</p>
+
+<h2 class="sub">۳.۳ گواهی TLS</h2>
+
+<div class="finding finding-high">
+  <div class="finding-head">
+    <span class="finding-title">TLS-01 · گواهی پیش‌فرض Kubernetes Ingress به جای گواهی معتبر دامنه</span>
+    <span class="badge badge-high">HIGH</span>
+  </div>
+  <p>هنگام اتصال TLS به <code>www.bifilter.ir:443</code> با SNI صحیح، گواهی ارائه‌شده توسط سرور به صورت زیر است:</p>
+<pre><code>Subject : O=Acme Co, CN=Kubernetes Ingress Controller Fake Certificate
+Issuer  : O=Acme Co, CN=Kubernetes Ingress Controller Fake Certificate
+notBefore: Sep  8 01:23:25 2026 GMT
+notAfter : Sep  8 01:23:25 2027 GMT
+SAN     : DNS:ingress.local</code></pre>
+  <p>این گواهی، گواهی پیش‌فرض (Fallback) خود Kubernetes Ingress Controller است که فقط زمانی ارائه می‌شود که
+  Ingress برای دامنه‌ی درخواست‌شده گواهی پیکربندی‌نشده داشته باشد. این یعنی <strong>هیچ گواهی معتبر برای
+  bifilter.ir پیکربندی نشده است</strong> و کاربران مرورگر هشدار «گواهی نامعتبر» دریافت خواهند کرد، مگر اینکه
+  سایت از Cloudflare یا CDN مشابه برای خاتمه‌ی TLS استفاده کند (که در DNS این موضوع تأیید نشد).</p>
+  <p>اگرچه از آنجا که دسترسی از طریق HTTPS با موفقیت انجام می‌شود، احتمالاً یک لایه‌ی TLS termination دیگر
+  در جلوی این Ingress وجود دارد (مثلاً CDN یا Load Balancer) که گواهی واقعی را ارائه می‌دهد، اما گواهی
+  سرو شده در سطح Ingress داخلی همچنان این گواهی Fake است که در صورت دسترسی مستقیم به IP، مشکلات جدی ایجاد می‌کند.</p>
+  <div class="finding-meta">
+    <div><strong>CWE</strong>CWE-295: Improper Certificate Validation</div>
+    <div><strong>OWASP</strong>A02:2021 Cryptographic Failures</div>
+    <div><strong>راهکار</strong>پیکربندی cert-manager در Kubernetes با Issue‌ی خودکار از Let's Encrypt برای bifilter.ir و تمام زیردامنه‌ها</div>
+  </div>
+</div>
+
+<h2 class="sub">۳.۴ منابع استاتیک و نسخه‌بندی</h2>
+<p>فایل‌های استاتیک اصلی سایت با پارامتر نسخه‌بندی سرو می‌شوند:</p>
+<table class="ltr">
+  <thead><tr><th>Asset</th><th>Size</th><th>Purpose</th></tr></thead>
+  <tbody>
+    <tr><td>/bundle.js?s=296</td><td>473 KB</td><td>منطق اصلی برنامه</td></tr>
+    <tr><td>/js/lib.js?s=2</td><td>362 KB</td><td>کتابخانه‌های شخص ثالث</td></tr>
+    <tr><td>/main.js?s=10</td><td>61 KB</td><td>اسکریپت‌های راه‌اندازی</td></tr>
+    <tr><td>/style.min.css?s=35</td><td>—</td><td>استایل اصلی</td></tr>
+    <tr><td>/lib/tradingView/chart.js</td><td>—</td><td>کتابخانه نمودار TradingView</td></tr>
+    <tr><td>/lib/marked</td><td>—</td><td>پارسر Markdown</td></tr>
+  </tbody>
+</table>
+
+<!-- ============ 4. API ENDPOINTS ============ -->
+<h1 class="section"><span class="sec-num">۴.</span> کشف و آزمایش Endpoint های API</h1>
+
+<h2 class="sub">۴.۱ روش‌شناسی کشف</h2>
+<p>
+برای کشف Endpoint های API، فایل <code>bundle.js?s=296</code> (حجم ۴۷۳ کیلوبایت) تحلیل شد
+و تمام الگوهای مسیر نسبی که با <code>/api/</code> شروع می‌شدند استخراج گردید.
+در مجموع ۶۷ مسیر یکتا شناسایی شد که شامل Endpoint های واقعی برنامه و چند مسیر آزمایشی است
+(مثل <code>/api/me</code>، <code>/api/version</code> که برای آزمایش احتمالی به فهرست اضافه شدند).
+</p>
+
+<p>سپس هر Endpoint با متد GET و هدر <code>Authorization: Bearer &lt;token&gt;</code> فراخوانی شد
+و status code، حجم پاسخ، content-type و زمان پاسخ ثبت گردید.</p>
+
+<h2 class="sub">۴.۲ نتایج آزمایش ۶۷ Endpoint</h2>
+
+<figure>
+  <img src="chart_status.png" alt="Status code distribution">
+  <figcaption>نمودار ۲: توزیع status code در ۶۷ Endpoint آزمایش‌شده</figcaption>
+</figure>
+
+<p>توزیع کلی پاسخ‌ها به صورت زیر است:</p>
+<table>
+  <thead><tr><th>Status Code</th><th>تعداد</th><th>تفسیر</th></tr></thead>
+  <tbody>
+    <tr><td><span class="mono">200 OK</span></td><td>۲۲</td><td>Endpoint فعال و در دسترس با توکن</td></tr>
+    <tr><td><span class="mono">204 No Content</span></td><td>۲</td><td>Endpoint فعال ولی پاسخ بدنه ندارد</td></tr>
+    <tr><td><span class="mono">404 Not Found</span></td><td>۳۷</td><td>Endpoint وجود ندارد یا نیاز به پارامتر دارد</td></tr>
+    <tr><td><span class="mono">403 Forbidden</span></td><td>۱</td><td>پلن ۵ به این قابلیت دسترسی ندارد (Quantum)</td></tr>
+    <tr><td><span class="mono">405 Method Not Allowed</span></td><td>۱</td><td>Endpoint فقط با متد غیر GET کار می‌کند</td></tr>
+    <tr><td><span class="mono">500 Server Error</span></td><td>۴</td><td>خطای داخلی سرور با افشای پیام استثنا</td></tr>
+  </tbody>
+</table>
+
+<h2 class="sub">۴.۳ فهرست کامل Endpoint های فعال (HTTP 200/204)</h2>
+<table class="compact ltr">
+  <thead><tr><th>Endpoint</th><th>Size</th><th>Time</th><th>Content-Type</th><th>Notes</th></tr></thead>
+  <tbody>
+    <tr><td>/api/notifications</td><td>1747 B</td><td>1430 ms</td><td>JSON</td><td>اطلاعیه‌های کاربر</td></tr>
+    <tr><td>/api/notifications/popup</td><td>0 B</td><td>1072 ms</td><td>—</td><td>بدون محتوا</td></tr>
+    <tr><td>/api/bookmarks</td><td>643 B</td><td>2530 ms</td><td>JSON</td><td>نمادهای نشان‌شده کاربر</td></tr>
+    <tr><td>/api/bazar</td><td>4239 B</td><td>1399 ms</td><td>JSON</td><td>وضعیت بازار (باز/بسته)</td></tr>
+    <tr><td>/api/indexes</td><td>13728 B</td><td>1080 ms</td><td>JSON</td><td>شاخص‌های بازار</td></tr>
+    <tr><td>/api/performance</td><td>185 B</td><td>1096 ms</td><td>JSON</td><td>عملکرد شاخص‌ها</td></tr>
+    <tr><td>/api/invite</td><td>91 B</td><td>1215 ms</td><td>JSON</td><td><strong>افشای موبایل</strong></td></tr>
+    <tr><td>/api/prx</td><td>65433 B</td><td>1111 ms</td><td>JSON</td><td>ترکیب سبد سهام شرکت‌ها</td></tr>
+    <tr><td>/api/signals</td><td>4551 B</td><td>1552 ms</td><td>JSON</td><td>سیگنال‌های معاملاتی</td></tr>
+    <tr><td>/api/osignals</td><td>7335 B</td><td>1062 ms</td><td>JSON</td><td>سیگنال‌های فرابورس</td></tr>
+    <tr><td>/api/bsignals</td><td>2 B</td><td>14319 ms</td><td>JSON</td><td>آرایه خالی (پلن)</td></tr>
+    <tr><td>/api/comments</td><td>2 B</td><td>1605 ms</td><td>JSON</td><td>نظرات کاربر</td></tr>
+    <tr><td>/api/commentStatics</td><td>2 B</td><td>1094 ms</td><td>JSON</td><td>آمار نظرات</td></tr>
+    <tr><td>/api/coinrptstrmpage</td><td>167887 B</td><td>1489 ms</td><td>HTML</td><td>صفحه گزارش ارز</td></tr>
+    <tr><td>/api/filter/FILTER/7</td><td>18108 B</td><td>7947 ms</td><td>JSON</td><td>فیلتر ID 7</td></tr>
+    <tr><td>/api/filter/FILTER/16</td><td>17279 B</td><td>1084 ms</td><td>JSON</td><td>فیلتر ID 16</td></tr>
+    <tr><td>/api/filter/FILTER/59</td><td>6433 B</td><td>1142 ms</td><td>JSON</td><td>فیلتر ID 59</td></tr>
+    <tr><td>/api/filter/FILTER/124</td><td>17360 B</td><td>1176 ms</td><td>JSON</td><td>فیلتر ID 124</td></tr>
+    <tr><td>/api/rptstrmpage</td><td>274075 B</td><td>4361 ms</td><td>HTML</td><td>گزارش بزرگ</td></tr>
+    <tr><td>/api/6940/0</td><td>5056 B</td><td>2691 ms</td><td>JSON</td><td>نماد با کد ۶۹۴۰</td></tr>
+    <tr><td>/wallet-report</td><td>45 B</td><td>1125 ms</td><td>JSON</td><td>گزارش کیف پول</td></tr>
+    <tr><td>/manifest.json?s=4</td><td>490 B</td><td>1048 ms</td><td>JSON</td><td>PWA manifest</td></tr>
+    <tr><td>/map/new.html?s=2</td><td>10753 B</td><td>1083 ms</td><td>HTML</td><td>صفحه نقشه</td></tr>
+  </tbody>
+</table>
+
+<figure>
+  <img src="chart_responsetime.png" alt="Response time scatter">
+  <figcaption>نمودار ۳: زمان پاسخ vs حجم پاسخ — Endpoint هایی با پاسخ بزرگ (274KB و 167KB) مشخص‌اند</figcaption>
+</figure>
+
+<h2 class="sub">۴.۴ تحلیل پاسخ‌ها و داده‌های حساس</h2>
+
+<h3 class="subsub">۴.۴.۱ افشای PII از طریق <span class="mono">/api/invite</span></h3>
+<p>پاسخ این Endpoint حاوی شماره موبایل کامل کاربر و کلید دعوت است:</p>
+<pre><code>{
+  "InvitedBy": "",
+  "Mobile": "09154165210",
+  "InviteKey": "K3GIE",
+  "Friends": [],
+  "PerDayCost": 50000
+}</code></pre>
+<p>این اطلاعات برای قابلیت «دعوت دوستان» استفاده می‌شود و شماره موبایل کاربر را به صورت
+متنی آشکار بازمی‌گرداند. در صورت وجود CORS آسیب‌پذیر (بخش ۵.۱)، هر سایت مخرب می‌تواند
+این شماره را استخراج کند.</p>
+
+<h3 class="subsub">۴.۴.۲ <span class="mono">/api/notifications</span></h3>
+<p>این Endpoint لیست کامل اعلان‌های کاربر را برمی‌گرداند، شامل:</p>
+<ul>
+  <li>پیام فعال‌سازی «اشتراک ویژه رایگان» با تاریخ انقضای شمسی ۱۴۰۵/۰۸/۲۳</li>
+  <li>UUID داخلی اعلان‌ها (مثلاً <code>e8634907-c312-4e18-92f2-3ce76ed280ac</code>)</li>
+  <li>تاریخ درج میلادی با offset <code>+03:30</code> (تهران)</li>
+  <li>لینک باز شدن (با <code>javascript:void();</code>)</li>
+</ul>
+<p>بدون توکن (Anonymous)، این Endpoint آرایه خالی <code>[]</code> بازمی‌گرداند، که نشان‌دهنده‌ی
+اعمال صحیح مرز احراز هویت است.</p>
+
+<h3 class="subsub">۴.۴.۳ Endpoint های بدون مرز احراز هویت</h3>
+<p>آزمایش مقایسه‌ای (با توکن vs بدون توکن) نشان داد که Endpoint های زیر بدون احراز هویت قابل دسترسی هستند:</p>
+<table>
+  <thead><tr><th>Endpoint</th><th>وضعیت</th><th>تفسیر</th></tr></thead>
+  <tbody>
+    <tr><td><span class="mono">/api/performance</span></td><td><span class="pill warn">بدون Auth</span></td><td>داده‌ی عمومی بازار — قابل قبول</td></tr>
+    <tr><td><span class="mono">/api/bazar</span></td><td><span class="pill warn">بدون Auth</span></td><td>وضعیت بازار — قابل قبول</td></tr>
+    <tr><td><span class="mono">/api/indexes</span></td><td><span class="pill warn">بدون Auth</span></td><td>شاخص‌ها — قابل قبول</td></tr>
+    <tr><td><span class="mono">/api/prx</span></td><td><span class="pill warn">بدون Auth</span></td><td><strong>۶۵ کیلوبایت داده‌ی ترکیب سبد</strong> — قابل بحث</td></tr>
+    <tr><td><span class="mono">/api/StrategyNotes/0</span></td><td><span class="pill warn">بدون Auth</span></td><td>پیام Quantum 403 — بدون احراز هویت</td></tr>
+  </tbody>
+</table>
+<p>Endpoint های <code>/api/performance</code>، <code>/api/bazar</code>، <code>/api/indexes</code> داده‌ی عمومی
+بازار را برمی‌گردانند و در دسترس عموم بودن آن‌ها منطقی است. اما <code>/api/prx</code> یک پاسخ
+۶۵ کیلوبایتی از ترکیب سبد سهام‌ی شرکت‌ها را بازمی‌گرداند که اگرچه داده‌ی بازار است، اما
+<strong>حجم بالای آن برای هر درخواست بدون احراز هویت، هزینه‌ی سرور را افزایش می‌دهد</strong> و
+بهتر است با Rate Limiting یا احراز هویت محدود شود.</p>
+
+<h3 class="subsub">۴.۴.۴ Endpoint های دارای خطای ۵۰۰ با افشای Stack Trace</h3>
+<pre><code>GET /api/crypto/filters/    → 500: "Object reference not set to an instance of an object."
+GET /api/filter/            → 500: "Value cannot be null. (Parameter 'input')"
+GET /api/6940/wma           → 500: "Sequence contains no elements."
+GET /wallet-to-plan         → 500: "Attempted to divide by zero."</code></pre>
+<p>این پیام‌ها به وضوح نشان می‌دهند که برنامه از ASP.NET Core، Entity Framework و LINQ استفاده می‌کند و
+به جای نمایش یک صفحه‌ی خطای عمومی، استثناهای داخلی را افشا می‌کند. این اطلاعات به حمله‌گر کمک می‌کند
+تا ساختار داخلی برنامه را بهتر بشناسد.</p>
+
+<!-- ============ 5. SECURITY FINDINGS ============ -->
+<h1 class="section"><span class="sec-num">۵.</span> یافته‌های امنیتی تفصیلی</h1>
+
+<h2 class="sub">۵.۱ CORS-01 · پیکربندی نادرست CORS (بحرانی)</h2>
+
+<div class="finding finding-critical">
+  <div class="finding-head">
+    <span class="finding-title">CORS-01 · <code>Access-Control-Allow-Origin: *</code> با <code>Allow-Credentials: true</code></span>
+    <span class="badge badge-critical">CRITICAL</span>
+  </div>
+  <p>این بحرانی‌ترین یافته‌ی این گزارش است. آزمایش‌ها نشان داد که هر Origin (حتی <code>https://attacker.example</code>،
+  <code>https://evil.com</code>، یا <code>null</code>) به صورت خودکار با هدرهای زیر پاسخ می‌گیرد:</p>
+<pre><code>Access-Control-Allow-Origin: *
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Methods: GET,PUT,POST,DELETE,PATCH,OPTIONS
+Access-Control-Allow-Headers: x-skip-interceptor,sec-fetch-site,ac,
+  X-ACCESS_TOKEN,Access-Control-Allow-Origin,Authorization,Origin,
+  x-requested-with,Content-Type,Content-Range,Content-Disposition,
+  Content-Description
+Access-Control-Max-Age: 1728000</code></pre>
+  <p>طبق مشخصات CORS (Fetch Standard)، ترکیب <code>Allow-Origin: *</code> و <code>Allow-Credentials: true</code>
+  مجاز نیست؛ مرورگرها در این حالت درخواست‌های اعتباری را رد می‌کنند. <strong>اما</strong> مقدار <code>*</code>
+  در پاسخ نشان می‌دهد که احتمالاً سرور Origin را reflect نمی‌کند و ثابت <code>*</code> را برمی‌گرداند.
+  این یعنی اگر سرور در آینده Origin را reflect کند (یا اگر در یک مسیر دیگر این کار را بکند)،
+  امکان سرقت داده‌های کاربر احراز شده از طریق یک سایت مخرب فراهم می‌شود.</p>
+  <p>نکته‌ی مهم دیگر: <code>Allow-Headers</code> شامل <code>X-ACCESS_TOKEN</code>، <code>Authorization</code>
+  و <code>ac</code> است، که نشان می‌دهد برنامه برای ارسال توکن از طریق این هدرها طراحی شده است.
+  اگر مرورگری در نسخه‌ی قدیمی این ترکیب را به صورت خطرناک تفسیر کند، حمله‌ی CSRF-based به API
+  از یک سایت third-party ممکن خواهد شد.</p>
+  <p>این پیکربندی روی تمام زیردامنه‌ها (www، stage، quantum) تکرار شده است.</p>
+  <div class="finding-meta">
+    <div><strong>CWE</strong>CWE-942: Permissive Cross-domain Policy</div>
+    <div><strong>OWASP</strong>A05:2021 Security Misconfiguration</div>
+    <div><strong>CVSS 3.1</strong>AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:L/A:N — 8.1 (High)</div>
+  </div>
+  <p><strong>راهکار:</strong> پیکربندی CORS باید فقط دامنه‌های مجاز را با Reflection اجازه دهد.
+  مثال در ASP.NET Core:</p>
+<pre><code>builder.Services.AddCors(o =&gt; o.AddPolicy("bifilter", p =&gt; p
+    .WithOrigins("https://www.bifilter.ir", "https://bifilter.ir")
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    .AllowCredentials()
+    .SetPreflightMaxAge(TimeSpan.FromHours(1))
+));
+// در Controller:
+[EnableCors("bifilter")]</code></pre>
+  <p>هیچ‌گاه نباید <code>AllowAnyOrigin()</code> با <code>AllowCredentials()</code> ترکیب شود.</p>
+</div>
+
+<h2 class="sub">۵.۲ TLS-01 · گواهی پیش‌فرض Kubernetes (تکرار از بخش ۳.۳)</h2>
+<p>در بخش ۳.۳ به طور کامل توضیح داده شد. توصیه می‌شود با نصب <code>cert-manager</code> در
+خوشه‌ی Kubernetes و ایجاد یک <code>ClusterIssuer</code> از نوع Let's Encrypt، گواهی معتبر
+برای <code>bifilter.ir</code> و تمام زیردامنه‌ها به صورت خودکار Issue و Renew شود.</p>
+
+<h2 class="sub">۵.۳ ERR-01 · افشای پیام استثنای داخلی</h2>
+<div class="finding finding-medium">
+  <div class="finding-head">
+    <span class="finding-title">ERR-01 · افشای پیام خطای دات‌نت در ۴ Endpoint</span>
+    <span class="badge badge-medium">MEDIUM</span>
+  </div>
+  <p>چهار Endpoint با خطای ۵۰۰ پاسخ می‌دهند و پیام استثنای داخلی را افشا می‌کنند:</p>
+  <ul>
+    <li><code>/api/crypto/filters/</code> — <em>Object reference not set to an instance of an object</em> (NullReferenceException)</li>
+    <li><code>/api/filter/</code> — <em>Value cannot be null. (Parameter 'input')</em> (ArgumentNullException)</li>
+    <li><code>/api/6940/wma</code> — <em>Sequence contains no elements</em> (InvalidOperationException از LINQ First/Single)</li>
+    <li><code>/wallet-to-plan</code> — <em>Attempted to divide by zero</em> (DivideByZeroException)</li>
+  </ul>
+  <p>این پیام‌ها مشخص می‌کنند که برنامه از ASP.NET Core + Entity Framework + LINQ استفاده می‌کند
+  و کمک می‌کنند حمله‌گر ساختار داخلی را بهتر بشناسد. همچنین وجود خطای «تقسیم بر صفر» در
+  <code>/wallet-to-plan</code> نشان می‌دهد که این مسیر احتمالاً در حال محاسبه‌ی هزینه بر اساس
+  پارامتری است که صفر شده، که می‌تواند یک باگ منطقی واقعی باشد.</p>
+  <div class="finding-meta">
+    <div><strong>CWE</strong>CWE-209: Generation of Error Message Containing Sensitive Information</div>
+    <div><strong>OWASP</strong>A05:2021 Security Misconfiguration</div>
+    <div><strong>راهکار</strong>فعال‌سازی <code>UseExceptionHandler("/error")</code> و بازگرداندن یک مدل خطای عمومی</div>
+  </div>
+</div>
+
+<h2 class="sub">۵.۴ JW-02 · افشای PII در توکن (تکرار از بخش ۲.۳)</h2>
+<p>قبلاً به عنوان JW-02 توضیح داده شد. در اینجا خلاصه می‌کنیم:
+توکن شامل Claim <code>Mobile: "09154165210"</code> است. این شماره موبایل در صورت افشای توکن
+(در لاگ‌ها، در سرویس‌های third-party، در خطای CORS) قابل استخراج است. توصیه: حذف PII از توکن.</p>
+
+<h2 class="sub">۵.۵ HDR-01 · هدرهای امنیتی مفقود</h2>
+<div class="finding finding-medium">
+  <div class="finding-head">
+    <span class="finding-title">HDR-01 · نبود CSP، nosniff، Referrer-Policy و Permissions-Policy</span>
+    <span class="badge badge-medium">MEDIUM</span>
+  </div>
+  <p>هدرهای پاسخ تنها شامل موارد زیر هستند:</p>
+<pre><code>X-Frame-Options: SAMEORIGIN
+Strict-Transport-Security: max-age=31536000; includeSubDomains</code></pre>
+  <p>هدرهای زیر که برای امنیت防护 در برابر XSS، MIME Sniffing و Referrer Leak ضروری هستند، <strong>وجود ندارند</strong>:</p>
+  <ul>
+    <li><code>Content-Security-Policy</code> — مهم‌ترین هدر برای جلوگیری از XSS و injection</li>
+    <li><code>X-Content-Type-Options: nosniff</code> — جلوگیری از MIME Sniffing</li>
+    <li><code>Referrer-Policy: no-referrer-when-downgrade</code> یا <code>strict-origin-when-cross-origin</code></li>
+    <li><code>Permissions-Policy</code> — محدود کردن API های مرورگر</li>
+    <li><code>Cross-Origin-Opener-Policy</code> و <code>Cross-Origin-Embedder-Policy</code></li>
+  </ul>
+  <div class="finding-meta">
+    <div><strong>CWE</strong>CWE-693: Protection Mechanism Failure</div>
+    <div><strong>OWASP</strong>A05:2021 Security Misconfiguration</div>
+    <div><strong>راهکار</strong>افزودن هدرها در <code>Program.cs</code> با <code>UseHsts</code>، <code>UseSecurityHeaders</code></div>
+  </div>
+</div>
+
+<h2 class="sub">۵.۶ RL-01 · نبود Rate Limiting صریح</h2>
+<div class="finding finding-low">
+  <div class="finding-head">
+    <span class="finding-title">RL-01 · نبود Rate Limiting روی Endpoint های API</span>
+    <span class="badge badge-low">LOW</span>
+  </div>
+  <p>آزمایش ۵۰ درخواست متوالی به <code>/api/performance</code> در مدت ۶۱.۷۹ ثانیه نشان داد که
+  همه‌ی درخواست‌ها با status 200 پاسخ داده‌اند و هیچ درخواستی با 429 یا 503 مسدود نشده است.
+  میانگین زمان پاسخ هر درخواست حدود ۱.۲۴ ثانیه است که به صورت طبیعی سرعت درخواست‌ها را به
+  ۰.۸ درخواست بر ثانیه محدود می‌کند، اما این محدودیت تصادفی است و با افزایش منابع سرور
+  از بین می‌رود. توصیه می‌شود Rate Limiting صریح با <code>AspNetCoreRateLimit</code> یا
+  <code>ClientRateLimiting</code> اعمال شود.</p>
+  <div class="finding-meta">
+    <div><strong>CWE</strong>CWE-770: Allocation of Resources Without Limits</div>
+    <div><strong>راهکار</strong>اعمال محدودیت ۱۰۰ درخواست در دقیقه برای هر IP و ۱۰۰۰ درخواست در ساعت برای هر کاربر</div>
+    <div><strong>اولویت</strong>میان‌مدت</div>
+  </div>
+</div>
+
+<h2 class="sub">۵.۷ SUB-01 · دسترسی عمومی به stage.bifilter.ir</h2>
+<div class="finding finding-low">
+  <div class="finding-head">
+    <span class="finding-title">SUB-01 · محیط Staging به صورت عمومی در دسترس</span>
+    <span class="badge badge-low">LOW</span>
+  </div>
+  <p>زیردامنه‌ی <code>stage.bifilter.ir</code> یک محیط Staging کامل از برنامه را به صورت عمومی سرو می‌کند
+  (همان HTML و همان bundle.js که در www سرو می‌شود، با تفاوت هدرهای CORS که شامل
+  <code>X-Forwarded-*</code> اضافی است). محیط Staging ممکن است داده‌های تستی یا تنظیمات متفاوتی
+  داشته باشد و در صورت وجود باگ در نسخه‌ی Staging، حمله‌گر می‌تواند از آن برای کشف آسیب‌پذیری
+  قبل از نسخه‌ی Production استفاده کند.</p>
+  <div class="finding-meta">
+    <div><strong>CWE</strong>CWE-200: Exposure of Sensitive Information</div>
+    <div><strong>راهکار</strong>اعمال Basic Auth روی stage یا محدود کردن دسترسی با IP allowlist در Ingress</div>
+    <div><strong>اولویت</strong>بلندمدت</div>
+  </div>
+</div>
+
+<h2 class="sub">۵.۸ سایر یافته‌ها</h2>
+
+<div class="finding finding-low">
+  <div class="finding-head">
+    <span class="finding-title">SUB-02 · نبود OIDC Discovery Endpoint</span>
+    <span class="badge badge-low">LOW</span>
+  </div>
+  <p>مسیر <code>/.well-known/openid-configuration</code> با 404 پاسخ می‌دهد. این یعنی IdentityServer
+  به صورت داخلی اجرا می‌شود و Endpoint های OIDC (<code>/connect/token</code>، <code>/connect/authorize</code>،
+  <code>/connect/userinfo</code>) نیز از بیرون قابل دسترسی نیستند (همگی 404 بازمی‌گردند).
+  این رویکرد امن است و از دسترسی مستقیم حمله‌گر به IdentityServer جلوگیری می‌کند.</p>
+</div>
+
+<div class="finding finding-info">
+  <div class="finding-head">
+    <span class="finding-title">SUB-03 · کوکی AntiForgeryToken با SameSite=Strict</span>
+    <span class="badge badge-info">INFO</span>
+  </div>
+  <p>کوکی <code>.AspNetCore.Antiforgery</code> با ویژگی‌های صحیح <code>SameSite=Strict</code> و
+  <code>HttpOnly</code> پیکربندی شده است، که در برابر CSRF محافظت کامل ایجاد می‌کند. این یک نقطه‌ی قوت است.</p>
+</div>
+
+<div class="finding finding-info">
+  <div class="finding-head">
+    <span class="finding-title">SUB-04 · عدم افشای فایل‌های حساس</span>
+    <span class="badge badge-info">INFO</span>
+  </div>
+  <p>آزمایش مسیرهای حساس رایج (<code>/.env</code>، <code>/.git/config</code>، <code>/web.config</code>،
+  <code>/appsettings.json</code>، <code>/swagger</code>، <code>/swagger/index.html</code>،
+  <code>/swagger/v1/swagger.json</code>، <code>/api/swagger</code>) همگی با 404 پاسخ دادند،
+  که نشان می‌دهد فایل‌های حساس به درستی محافظت می‌شوند یا روی این مسیرها سرو نمی‌شوند.</p>
+</div>
+
+<div class="finding finding-low">
+  <div class="finding-head">
+    <span class="finding-title">SUB-05 · <code>cache-control: no-cache, no-store</code> به همراه <code>cache-control: max-age</code> غایب</span>
+    <span class="badge badge-low">LOW</span>
+  </div>
+  <p>هدر <code>Cache-Control: no-cache, no-store</code> روی صفحه اصلی به درستی اعمال شده، که برای جلوگیری از
+  کش شدن صفحات احراز هویت‌شده رویهمین اساس است. اما برای Endpoint های عمومی داده بازار (مثل <code>/api/bazar</code>)
+  بهتر است <code>max-age</code> مناسب (مثلاً ۶۰ ثانیه) برای کاهش بار سرور اعمال شود.</p>
+</div>
+
+<!-- ============ 6. PLAN 5 REVIEW ============ -->
+<h1 class="section"><span class="sec-num">۶.</span> بررسی امکانات پلن ۵ کاربر</h1>
+
+<h2 class="sub">۶.۱ مشخصات کاربر آزمایش</h2>
+<table class="meta-table">
+  <tr><td>شناسه کاربر (sub)</td><td>۲۷۶۴۵۸</td></tr>
+  <tr><td>شماره موبایل</td><td>۰۹۱۵۴۱۶۵۲۱۰</td></tr>
+  <tr><td>پلن (Plan)</td><td>۵</td></tr>
+  <tr><td>FPC</td><td>۱ (احتمالاً Free Plan Code یا First Purchase Complete)</td></tr>
+  <tr><td>TimeFrame</td><td>False</td></tr>
+  <tr><td>Telegram ID</td><td>خالی (ربات تلگرام متصل نیست)</td></tr>
+  <tr><td>موجودی کیف پول</td><td>۰ (تومان) — <code>{"AddPlans":[],"Transactions":[],"Balance":0}</code></td></tr>
+  <tr><td>کلید دعوت</td><td><span class="mono">K3GIE</span></td></tr>
+  <tr><td>هزینه روزانه دعوت (PerDayCost)</td><td>۵۰٬۰۰۰ تومان</td></tr>
+</table>
+
+<h2 class="sub">۶.۲ وضعیت اشتراک فعال</h2>
+<p>بر اساس اعلان دریافت‌شده از <code>/api/notifications</code>:</p>
+<pre><code>"Message": "کاربرگرامی بیفیلتر؛ اشتراک ویژه رایگان شما فعال شد.
+ زمان پایان 1405/08/23-10:26"</code></pre>
+<p>این یعنی کاربر در تاریخ ۱۴۰۵/۰۸/۱۶ (روز آزمایش) یک «اشتراک ویژه رایگان» دریافت کرده
+که تا ۱۴۰۵/۰۸/۲۳ معتبر است (۷ روز). این می‌تواند یک اشتراک آزمایشی برای کاربران جدید باشد.
+علاوه بر این، یک اعلان خوش‌آمدگویی نیز وجود دارد که کاربر را به بخش «اشتراک کاربری» ارجاع می‌دهد.</p>
+
+<h2 class="sub">۶.۳ امکانات قابل دسترس برای پلن ۵</h2>
+<p>بر اساس آزمایش ۶۷ Endpoint، دسترسی‌های پلن ۵ به شرح زیر است:</p>
+<table>
+  <thead><tr><th>دسته‌بندی</th><th>Endpoint</th><th>وضعیت</th></tr></thead>
+  <tbody>
+    <tr><td>اعلان‌ها</td><td><span class="mono">/api/notifications</span></td><td><span class="pill ok">دسترسی</span></td></tr>
+    <tr><td>اعلامیه‌های popup</td><td><span class="mono">/api/notifications/popup</span></td><td><span class="pill ok">دسترسی</span></td></tr>
+    <tr><td>نمادهای نشان‌شده</td><td><span class="mono">/api/bookmarks</span></td><td><span class="pill ok">دسترسی</span></td></tr>
+    <tr><td>وضعیت بازار</td><td><span class="mono">/api/bazar</span></td><td><span class="pill ok">دسترسی</span></td></tr>
+    <tr><td>شاخص‌ها</td><td><span class="mono">/api/indexes</span></td><td><span class="pill ok">دسترسی</span></td></tr>
+    <tr><td>عملکرد</td><td><span class="mono">/api/performance</span></td><td><span class="pill ok">دسترسی</span></td></tr>
+    <tr><td>دعوت دوستان</td><td><span class="mono">/api/invite</span></td><td><span class="pill ok">دسترسی</span></td></tr>
+    <tr><td>ترکیب سبد</td><td><span class="mono">/api/prx</span></td><td><span class="pill ok">دسترسی</span></td></tr>
+    <tr><td>سیگنال‌ها</td><td><span class="mono">/api/signals</span></td><td><span class="pill ok">دسترسی</span></td></tr>
+    <tr><td>سیگنال‌های فرابورس</td><td><span class="mono">/api/osignals</span></td><td><span class="pill ok">دسترسی</span></td></tr>
+    <tr><td>بازار ارز دیجیتال</td><td><span class="mono">/api/coinrptstrmpage</span></td><td><span class="pill ok">دسترسی</span></td></tr>
+    <tr><td>گزارش نماد</td><td><span class="mono">/api/rptstrmpage</span></td><td><span class="pill ok">دسترسی</span></td></tr>
+    <tr><td>فیلترها (۴ نمونه)</td><td><span class="mono">/api/filter/FILTER/{7,16,59,124}</span></td><td><span class="pill ok">دسترسی</span></td></tr>
+    <tr><td>کیف پول</td><td><span class="mono">/wallet-report</span></td><td><span class="pill ok">دسترسی</span></td></tr>
+    <tr><td>نظرات</td><td><span class="mono">/api/comments</span></td><td><span class="pill ok">دسترسی</span></td></tr>
+    <tr><td>یادداشت‌های استراتژی</td><td><span class="mono">/api/StrategyNotes/0</span></td><td><span class="pill bad">۴۰۳ Quantum</span></td></tr>
+    <tr><td>سیگنال‌های ویژه</td><td><span class="mono">/api/bsignals</span></td><td><span class="pill warn">آرایه خالی</span></td></tr>
+  </tbody>
+</table>
+
+<h2 class="sub">۶.۴ پلن Quantum به عنوان پلن برتر</h2>
+<p>زیردامنه‌ی <code>quantum.bifilter.ir</code> به یک صفحه فرود (<code>landing.html</code>) redirect می‌شود
+و Endpoint <code>/api/StrategyNotes/0</code> با پیام <code>{"Title":"Quantum","Message":"Quantum","Status":403}</code>
+پاسخ می‌دهد. این نشان می‌دهد که Quantum یک پلن برتر (احتمالاً پلن ۶ یا پلن VIP) است که
+دسترسی به یادداشت‌های استراتژی، سیگنال‌های ویژه (bsignals) و امکانات پیشرفته‌تر را فراهم می‌کند.
+کاربر پلن ۵ به این امکانات دسترسی ندارد.</p>
+
+<h2 class="sub">۶.۵ سفارشی‌سازی UI و تجربه کاربری</h2>
+<p>صفحه اصلی سایت از فونت <code>IRANSansWeb</code> (دانلود شده از <code>bifilter.ir/fonts/IRANSansWeb.ttf</code>)
+استفاده می‌کند و در عرض بالای ۱۰۲۴ پیکسل به صورت centered با حداکثر عرض ۱۰۰۰ پیکسل نمایش داده می‌شود.
+در صفحات گسترده‌تر (<code>html.wide</code>) محدودیت عرض برداشته می‌شود. این پیکربندی برای کاربری
+دسکتاپ مناسب است اما تجربه‌ی موبایل را کمی شلوغ می‌کند.</p>
+
+<!-- ============ 7. RECOMMENDATIONS ============ -->
+<h1 class="section"><span class="sec-num">۷.</span> توصیه‌ها و راهکارهای اصلاحی</h1>
+
+<h2 class="sub">۷.۱ اصلاحات فوری (۱-۳ روز)</h2>
+
+<h3 class="subsub">۷.۱.۱ اصلاح CORS</h3>
+<p>این مهم‌ترین اصلاح است. در <code>Program.cs</code>:</p>
+<pre><code>var allowedOrigins = new[]
+{
+    "https://www.bifilter.ir",
+    "https://bifilter.ir",
+    "https://quantum.bifilter.ir"
+};
+builder.Services.AddCors(o =&gt; o.AddDefaultPolicy(p =&gt; p
+    .WithOrigins(allowedOrigins)
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    .AllowCredentials()
+    .SetPreflightMaxAge(TimeSpan.FromHours(1))));
+// ...
+app.UseCors();</code></pre>
+<p>هیچ‌گاه از <code>AllowAnyOrigin()</code> با <code>AllowCredentials()</code> به صورت همزمان استفاده نکنید.</p>
+
+<h3 class="subsub">۷.۱.۲ پیکربندی گواهی TLS معتبر</h3>
+<p>نصب <code>cert-manager</code> در خوشه‌ی Kubernetes و ایجاد <code>ClusterIssuer</code>:</p>
+<pre><code>apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: admin@bifilter.ir
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    solvers:
+    - http01:
+        ingress:
+          class: nginx</code></pre>
+<p>و افزودن annotation به Ingress:</p>
+<pre><code>cert-manager.io/cluster-issuer: letsencrypt-prod</code></pre>
+
+<h2 class="sub">۷.۲ اصلاحات کوتاه‌مدت (۱-۲ هفته)</h2>
+
+<h3 class="subsub">۷.۲.۱ افزودن هدرهای امنیتی</h3>
+<pre><code>app.Use(async (ctx, next) =&gt; {
+    var h = ctx.Response.Headers;
+    h["Content-Security-Policy"] = "default-src 'self'; script-src 'self' https://bifilter.ir; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self' https://bifilter.ir; connect-src 'self' https://min-api.cryptocompare.com;";
+    h["X-Content-Type-Options"] = "nosniff";
+    h["Referrer-Policy"] = "strict-origin-when-cross-origin";
+    h["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()";
+    h["Cross-Origin-Opener-Policy"] = "same-origin";
+    await next();
+});</code></pre>
+
+<h3 class="subsub">۷.۲.۲ صفحه خطای سفارشی</h3>
+<pre><code>if (app.Environment.IsProduction())
+{
+    app.UseExceptionHandler("/Error");
+    app.UseHsts();
+}
+// در Controller /Error:
+[ApiController]
+public class ErrorController : ControllerBase
+{
+    [Route("/error")]
+    public IActionResult HandleError() =&gt;
+        Problem(title: "خطای سرور", statusCode: 500,
+                detail: "لطفاً بعداً تلاش کنید.");
+}</code></pre>
+
+<h2 class="sub">۷.۳ اصلاحات میان‌مدت (۱-۲ ماه)</h2>
+
+<h3 class="subsub">۷.۳.۱ بهبود توکن JWT</h3>
+<ul>
+  <li>کاهش عمر Access Token به <strong>۱ ساعت</strong> (۳۶۰۰ ثانیه)</li>
+  <li>فعال‌سازی Refresh Token با عمر ۳۰ روز (با قابلیت Revocation)</li>
+  <li>افزودن Claim <code>"aud": "bifilter-api"</code> به توکن</li>
+  <li>حذف Claim <code>Mobile</code> از توکن (جست‌وجوی شماره موبایل در DB بر اساس <code>sub</code>)</li>
+  <li>تغییر <code>iss</code> از <code>http://identityserver</code> به <code>https://www.bifilter.ir/identity</code></li>
+  <li>تغییر شناسه‌ی کاربر از عدد متوالی به GUID (با نگه‌داشتن شناسه‌ی قدیمی برای backward compatibility)</li>
+  <li>فعال‌سازی MFA از طریق پیامک OTP (کد ۶ رقمی با عمر ۲ دقیقه)</li>
+</ul>
+
+<h3 class="subsub">۷.۳.۲ Rate Limiting صریح</h3>
+<pre><code>// بسته‌ی AspNetCoreRateLimit
+builder.Services.AddInMemoryRateLimiting();
+builder.Services.Configure&lt;IpRateLimitOptions&gt;(o =&gt; {
+    o.GeneralRules = new[]
+    {
+        new RateLimitRule {
+            Endpoint = "*",
+            Limit = 100,
+            Period = "1m"
+        }
+    };
+});
+app.UseIpRateLimiting();</code></pre>
+
+<h2 class="sub">۷.۴ اصلاحات بلندمدت (۳-۶ ماه)</h2>
+<ul>
+  <li>انتقال <code>stage.bifilter.ir</code> به یک شبکه‌ی داخلی (VPC) و فعال‌سازی IP allowlist در Ingress</li>
+  <li>افزودن <code>X-Forwarded-For</code> validation و جلوگیری از IP Spoofing</li>
+  <li>پیاده‌سازی WAF (Web Application Firewall) برای محافظت از SQL Injection و XSS</li>
+  <li>پایش امنیتی (Security Monitoring) با ELK یا Datadog برای ردیابی درخواست‌های مشکوک</li>
+  <li>ارزیابی منظم امنیتی (Pentest سالانه) و اجرای Bug Bounty برنامه</li>
+  <li>پشتیبان‌گیری منظم از پایگاه‌داده با encryption و آزمایش بازیابی</li>
+</ul>
+
+<h2 class="sub">۷.۵ خلاصه‌ی جدول توصیه‌ها</h2>
+<table>
+  <thead><tr><th>کد</th><th>توصیه</th><th>اولویت</th><th>زمان تخمینی</th></tr></thead>
+  <tbody>
+    <tr><td>CORS-01</td><td>اصلاح پیکربندی CORS</td><td><span class="pill bad">فوری</span></td><td>۱-۳ روز</td></tr>
+    <tr><td>TLS-01</td><td>نصب گواهی معتبر Let's Encrypt</td><td><span class="pill bad">فوری</span></td><td>۱-۳ روز</td></tr>
+    <tr><td>HDR-01</td><td>افزودن CSP، nosniff، Referrer-Policy</td><td><span class="pill warn">کوتاه‌مدت</span></td><td>۱ هفته</td></tr>
+    <tr><td>ERR-01</td><td>صفحه خطای سفارشی</td><td><span class="pill warn">کوتاه‌مدت</span></td><td>۱ هفته</td></tr>
+    <tr><td>JW-01</td><td>افزودن <code>aud</code> به توکن</td><td><span class="pill warn">میان‌مدت</span></td><td>۲ هفته</td></tr>
+    <tr><td>JW-02</td><td>حذف PII از توکن</td><td><span class="pill warn">میان‌مدت</span></td><td>۲ هفته</td></tr>
+    <tr><td>JW-03</td><td>کاهش عمر توکن + فعال‌سازی MFA</td><td><span class="pill warn">میان‌مدت</span></td><td>۱ ماه</td></tr>
+    <tr><td>RL-01</td><td>Rate Limiting صریح</td><td><span class="pill warn">میان‌مدت</span></td><td>۱ هفته</td></tr>
+    <tr><td>SUB-01</td><td>محدود کردن stage.bifilter.ir</td><td><span class="pill ok">بلندمدت</span></td><td>۳ ماه</td></tr>
+    <tr><td>JW-04</td><td>تغییر به GUID شناسه کاربر</td><td><span class="pill ok">بلندمدت</span></td><td>۳-۶ ماه</td></tr>
+  </tbody>
+</table>
+
+<!-- ============ 8. APPENDIX ============ -->
+<h1 class="section"><span class="sec-num">۸.</span> پیوست: فهرست کامل Endpoint ها</h1>
+
+<h2 class="sub">۸.۱ فهرست کامل ۶۷ Endpoint آزمایش‌شده</h2>
+<p>جدول زیر نتیجه‌ی آزمایش همه‌ی Endpoint ها را با توکن نشان می‌دهد.
+Endpoint هایی که با ۴۰۴ پاسخ داده‌اند احتمالاً نیاز به پارامتر path یا query دارند
+(مثلاً <code>/api/symbol/{code}</code> به جای <code>/api/symbol/</code>).</p>
+
+<table class="compact ltr">
+  <thead><tr><th>#</th><th>Endpoint</th><th>Status</th><th>Size</th><th>Time</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>/api/notifications</td><td>200</td><td>1747</td><td>1430 ms</td></tr>
+    <tr><td>2</td><td>/api/notifications/popup</td><td>204</td><td>0</td><td>1072 ms</td></tr>
+    <tr><td>3</td><td>/api/bookmarks</td><td>200</td><td>643</td><td>2530 ms</td></tr>
+    <tr><td>4</td><td>/api/bazar</td><td>200</td><td>4239</td><td>1399 ms</td></tr>
+    <tr><td>5</td><td>/api/bazarState/</td><td>404</td><td>0</td><td>1051 ms</td></tr>
+    <tr><td>6</td><td>/api/indexes</td><td>200</td><td>13728</td><td>1080 ms</td></tr>
+    <tr><td>7</td><td>/api/index/</td><td>404</td><td>0</td><td>1042 ms</td></tr>
+    <tr><td>8</td><td>/api/status/</td><td>404</td><td>0</td><td>1056 ms</td></tr>
+    <tr><td>9</td><td>/api/istatus/</td><td>404</td><td>0</td><td>1065 ms</td></tr>
+    <tr><td>10</td><td>/api/cstatus/</td><td>404</td><td>0</td><td>1024 ms</td></tr>
+    <tr><td>11</td><td>/api/fstatus/</td><td>404</td><td>0</td><td>1064 ms</td></tr>
+    <tr><td>12</td><td>/api/rstatus/</td><td>404</td><td>0</td><td>1059 ms</td></tr>
+    <tr><td>13</td><td>/api/MyRatios</td><td>404</td><td>0</td><td>1064 ms</td></tr>
+    <tr><td>14</td><td>/api/performance</td><td>200</td><td>185</td><td>1096 ms</td></tr>
+    <tr><td>15</td><td>/api/program/</td><td>404</td><td>0</td><td>1080 ms</td></tr>
+    <tr><td>16</td><td>/api/invite</td><td>200</td><td>91</td><td>1215 ms</td></tr>
+    <tr><td>17</td><td>/api/holder/</td><td>404</td><td>0</td><td>1044 ms</td></tr>
+    <tr><td>18</td><td>/api/group/</td><td>404</td><td>0</td><td>1055 ms</td></tr>
+    <tr><td>19</td><td>/api/prx</td><td>200</td><td>65433</td><td>1111 ms</td></tr>
+    <tr><td>20</td><td>/api/signals</td><td>200</td><td>4551</td><td>1552 ms</td></tr>
+    <tr><td>21</td><td>/api/osignals</td><td>200</td><td>7335</td><td>1062 ms</td></tr>
+    <tr><td>22</td><td>/api/bsignals</td><td>200</td><td>2</td><td>14319 ms</td></tr>
+    <tr><td>23</td><td>/api/comments</td><td>200</td><td>2</td><td>1605 ms</td></tr>
+    <tr><td>24</td><td>/api/commentStatics</td><td>200</td><td>2</td><td>1094 ms</td></tr>
+    <tr><td>25</td><td>/api/FindEvents/</td><td>404</td><td>0</td><td>1059 ms</td></tr>
+    <tr><td>26</td><td>/api/StrategyNotes/</td><td>404</td><td>0</td><td>1098 ms</td></tr>
+    <tr><td>27</td><td>/api/StrategyNotes/0</td><td>403</td><td>52</td><td>1282 ms</td></tr>
+    <tr><td>28</td><td>/api/history/filter/</td><td>404</td><td>0</td><td>1039 ms</td></tr>
+    <tr><td>29</td><td>/api/crypto/</td><td>404</td><td>0</td><td>1055 ms</td></tr>
+    <tr><td>30</td><td>/api/crypto/filters/</td><td>500</td><td>144</td><td>1121 ms</td></tr>
+    <tr><td>31</td><td>/api/coinsearch/</td><td>404</td><td>0</td><td>1050 ms</td></tr>
+    <tr><td>32</td><td>/api/coinrptstrmpage</td><td>200</td><td>167887</td><td>1489 ms</td></tr>
+    <tr><td>33</td><td>/api/forex/</td><td>404</td><td>0</td><td>1051 ms</td></tr>
+    <tr><td>34</td><td>/api/forexsearch/</td><td>404</td><td>0</td><td>1061 ms</td></tr>
+    <tr><td>35</td><td>/api/fsn/</td><td>404</td><td>0</td><td>1036 ms</td></tr>
+    <tr><td>36</td><td>/api/ratio/</td><td>404</td><td>0</td><td>1062 ms</td></tr>
+    <tr><td>37</td><td>/api/search/</td><td>404</td><td>0</td><td>1057 ms</td></tr>
+    <tr><td>38</td><td>/api/symbol/</td><td>404</td><td>0</td><td>1045 ms</td></tr>
+    <tr><td>39</td><td>/api/tvchart/</td><td>404</td><td>0</td><td>1062 ms</td></tr>
+    <tr><td>40</td><td>/api/tvchart/latest/</td><td>204</td><td>0</td><td>1119 ms</td></tr>
+    <tr><td>41</td><td>/api/filter/</td><td>500</td><td>120</td><td>1074 ms</td></tr>
+    <tr><td>42</td><td>/api/filter/I</td><td>404</td><td>0</td><td>1078 ms</td></tr>
+    <tr><td>43</td><td>/api/filter/FILTER/7</td><td>200</td><td>18108</td><td>7947 ms</td></tr>
+    <tr><td>44</td><td>/api/filter/FILTER/16</td><td>200</td><td>17279</td><td>1084 ms</td></tr>
+    <tr><td>45</td><td>/api/filter/FILTER/59</td><td>200</td><td>6433</td><td>1142 ms</td></tr>
+    <tr><td>46</td><td>/api/filter/FILTER/124</td><td>200</td><td>17360</td><td>1176 ms</td></tr>
+    <tr><td>47</td><td>/api/rptstrmpage</td><td>200</td><td>274075</td><td>4361 ms</td></tr>
+    <tr><td>48</td><td>/api/6940</td><td>404</td><td>0</td><td>1069 ms</td></tr>
+    <tr><td>49</td><td>/api/6940/0</td><td>200</td><td>5056</td><td>2691 ms</td></tr>
+    <tr><td>50</td><td>/api/6940/wma</td><td>500</td><td>96</td><td>2984 ms</td></tr>
+    <tr><td>51</td><td>/wallet-report</td><td>200</td><td>45</td><td>1125 ms</td></tr>
+    <tr><td>52</td><td>/wallet-to-plan</td><td>500</td><td>94</td><td>1157 ms</td></tr>
+    <tr><td>53</td><td>/api/AddComment</td><td>405</td><td>0</td><td>1056 ms</td></tr>
+    <tr><td>54</td><td>/manifest.json?s=4</td><td>200</td><td>490</td><td>1048 ms</td></tr>
+    <tr><td>55</td><td>/map/new.html?s=2</td><td>200</td><td>10753</td><td>1083 ms</td></tr>
+    <tr><td>56</td><td>/api/disclaimer</td><td>404</td><td>0</td><td>1068 ms</td></tr>
+    <tr><td>57</td><td>/api/version</td><td>404</td><td>0</td><td>1092 ms</td></tr>
+    <tr><td>58</td><td>/api/health</td><td>404</td><td>0</td><td>1051 ms</td></tr>
+    <tr><td>59</td><td>/api/about</td><td>404</td><td>0</td><td>1084 ms</td></tr>
+    <tr><td>60</td><td>/api/me</td><td>404</td><td>0</td><td>1035 ms</td></tr>
+    <tr><td>61</td><td>/api/user</td><td>404</td><td>0</td><td>1090 ms</td></tr>
+    <tr><td>62</td><td>/api/profile</td><td>404</td><td>0</td><td>1053 ms</td></tr>
+    <tr><td>63</td><td>/api/Account/Login</td><td>404</td><td>0</td><td>1047 ms</td></tr>
+    <tr><td>64</td><td>/api/subscriptions</td><td>404</td><td>0</td><td>1054 ms</td></tr>
+    <tr><td>65</td><td>/api/plan</td><td>404</td><td>0</td><td>1028 ms</td></tr>
+    <tr><td>66</td><td>/api/plan/5</td><td>404</td><td>0</td><td>1034 ms</td></tr>
+    <tr><td>67</td><td>/.well-known/openid-configuration</td><td>404</td><td>0</td><td>—</td></tr>
+  </tbody>
+</table>
+
+<h2 class="sub">۸.۲ دستورات نمونه (curl)</h2>
+<p>برای آزمایش مجدد Endpoint ها:</p>
+<pre><code># آزمایش یک endpoint با توکن
+curl -sk -H "Authorization: Bearer &lt;TOKEN&gt;" \
+  "https://www.bifilter.ir/api/notifications"
+
+# آزمایش CORS از یک Origin مخرب
+curl -sk -X OPTIONS \
+  -H "Origin: https://attacker.example" \
+  -H "Access-Control-Request-Method: GET" \
+  -H "Access-Control-Request-Headers: authorization,content-type" \
+  -D - -o /dev/null \
+  "https://www.bifilter.ir/api/notifications"
+
+# آزمایش بدون توکن (Anonymous)
+curl -sk "https://www.bifilter.ir/api/performance" | head -c 200</code></pre>
+
+<h2 class="sub">۸.۳ توضیع یافته‌های CVSS</h2>
+<table class="ltr">
+  <thead><tr><th>ID</th><th>Finding</th><th>CVSS 3.1</th><th>Severity</th></tr></thead>
+  <tbody>
+    <tr><td>CORS-01</td><td>CORS Wildcard + Credentials</td><td>8.1</td><td>High (borderline Critical)</td></tr>
+    <tr><td>TLS-01</td><td>Fake K8s cert served</td><td>7.4</td><td>High</td></tr>
+    <tr><td>ERR-01</td><td>Stack trace leak</td><td>5.3</td><td>Medium</td></tr>
+    <tr><td>JW-02</td><td>PII in JWT</td><td>5.3</td><td>Medium</td></tr>
+    <tr><td>JW-01</td><td>Missing aud claim</td><td>5.0</td><td>Medium</td></tr>
+    <tr><td>HDR-01</td><td>Missing security headers</td><td>5.0</td><td>Medium</td></tr>
+    <tr><td>RL-01</td><td>No explicit rate limit</td><td>3.7</td><td>Low</td></tr>
+    <tr><td>SUB-01</td><td>Public staging env</td><td>3.1</td><td>Low</td></tr>
+    <tr><td>JW-03</td><td>90-day token, no MFA</td><td>3.1</td><td>Low</td></tr>
+    <tr><td>JW-04</td><td>Sequential user IDs</td><td>3.1</td><td>Low</td></tr>
+    <tr><td>SUB-02</td><td>Missing OIDC discovery</td><td>0.0</td><td>Info (Good)</td></tr>
+    <tr><td>SUB-03</td><td>AntiForgeryToken SameSite=Strict</td><td>0.0</td><td>Info (Good)</td></tr>
+  </tbody>
+</table>
+
+<h2 class="sub">۸.۴ محدودیت‌های این بررسی</h2>
+<p>این بررسی با محدودیت‌های زیر انجام شده است:</p>
+<ul>
+  <li>تنها متد GET آزمایش شد؛ Endpoint های POST/PUT/DELETE ممکن است رفتار متفاوتی داشته باشند.</li>
+  <li>احراز هویت فقط با توکن یک کاربر (پلن ۵) آزمایش شد؛ رفتار پلن‌های دیگر (Quantum) و کاربر ادمین بررسی نشد.</li>
+  <li>هیچ تلاش برای نفوذ مهاجم‌گونه (SQL Injection، XSS، IDOR) انجام نشد.</li>
+  <li>بررسی از خارج از شبکه‌ی ایران انجام شده؛ رفتار در شبکه‌ی داخلی ایران ممکن است متفاوت باشد.</li>
+  <li>هیچ load/stress test جدی انجام نشد؛ فقط ۵۰ درخواست متوالی برای Rate Limiting آزمایش شد.</li>
+  <li>تنها یک سرور/IP بررسی شد؛ این زیرساخت ممکن است load balancer یا CDN داشته باشد که در این بررسی دیده نشده.</li>
+</ul>
+
+<p style="margin-top: 20px; padding-top: 12px; border-top: 1px solid #d9d3c2; font-size: 9pt; color: #9b9993; text-align: center;">
+این گزارش بر اساس داده‌های موجود در زمان آزمایش (۱۴۰۵/۰۸/۱۶) تهیه شده و وضعیت فعلی سیستم ممکن است
+تغییر کرده باشد. توصیه می‌شود پس از اعمال اصلاحات، آزمایش مجدد انجام شود.
+</p>
+
+</body>
+</html>
