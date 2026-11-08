@@ -1,0 +1,137 @@
+# ============================================================
+# Backtest Framework Configuration
+# ============================================================
+
+# --- Data Source ---
+# Choose: "csv" or "postgres"
+DATA_SOURCE: "csv"
+
+# CSV mode settings
+CSV:
+  # Path to data directory (relative to project root)
+  data_dir: "data/csv"
+  # Files expected:
+  #   - symbols.csv         (columns: ins_code, ticker, fullname, sector_code, sector_name, listed_at)
+  #   - daily_candles.csv   (columns: ins_code, date_jalali, open, high, low, close, last_price, yesterday, volume, trade_count, value, max_allowed, min_allowed)
+  #   - client_types.csv    (columns: ins_code, date_jalali, buy_real_count, sell_real_count, buy_legal_count, sell_legal_count, buy_real_volume, sell_real_volume, buy_legal_volume, sell_legal_volume, buy_real_value, sell_real_value, buy_legal_value, sell_legal_value)
+  #   - fundamentals.csv    (columns: ins_code, fiscal_period, eps, estimated_eps, sector_pe, nav)
+
+# PostgreSQL mode settings
+POSTGRES:
+  host: "localhost"
+  port: 5432
+  database: "sahamyar"
+  user: "postgres"
+  password: ""  # use env var in production
+
+# --- Backtest Settings ---
+BACKTEST:
+  # Date range (Jalali integer dates: YYYYMMDD)
+  # Adjusted to match sample data range
+  start_date: 14030101   # 1403/01/01 (need 200 days of history before this for EMA200)
+  end_date: 14040331     # 1404/03/31
+  
+  # Walk-forward configuration (reduced for sample data)
+  train_window_days: 252    # ~1 year
+  test_window_days: 126     # ~6 months
+  step_days: 63             # ~3 months retrain interval
+  
+  # Recommendation horizon
+  # How many days after recommendation to evaluate outcome
+  evaluation_horizons: [7, 14, 30, 60, 90]
+  
+  # Success threshold: a recommendation is "successful" if return >= threshold
+  success_threshold_pct: 5.0   # 5% gain in evaluation horizon
+  
+  # Benchmark: compare against what?
+  benchmark: "tedpix"   # or "equal_weight" or "random"
+  
+  # Number of recommendations per day per user
+  daily_buy_recommendations: 3
+  daily_sell_recommendations: 2
+
+  # Sample size for performance (evaluates this many symbols per day)
+  sample_symbols_per_day: 30
+
+# --- Composite Score Weights (must sum to 100) ---
+COMPOSITE_SCORE:
+  # Total possible points: 100
+  # Tunable — these are starting values, will be optimized via walk-forward
+  
+  smart_money:
+    weight: 35        # max points
+    sub_signals:
+      net_legal_value_5d: 15      # ورود پول حقوقی ۵ روز
+      accumulation_pattern: 12    # جمع‌آوری قوی (rights buy + real sell)
+      smart_money_consistency: 8  # تداوم ۳ روز
+      
+  technical:
+    weight: 30
+    sub_signals:
+      rsi_14: 8         # RSI < 30 = 8 pts
+      mfi_14: 7         # MFI < 20 = 7 pts
+      macd_crossover: 8 # MACD histogram > 0
+      trend_alignment: 7 # EMA20 > EMA50 > EMA200
+      
+  fundamental:
+    weight: 20
+    sub_signals:
+      pe_below_sector: 12  # P/E < sector_pe * 0.85
+      eps_growth: 8         # estimated EPS > last year EPS
+      
+  diversification:
+    weight: 15
+    sub_signals:
+      low_correlation: 10    # corr with portfolio < 0.3
+      new_sector: 5          # sector not in user's top 3
+
+# --- Risk Management ---
+RISK:
+  # Stop loss recommendations
+  default_stop_loss_pct: 8.0      # -8%
+  default_target_pct: 17.0        # +17%
+  
+  # Confidence intervals to display
+  confidence_levels: [0.05, 0.50, 0.95]   # 5%, median, 95%
+  
+  # Maximum position size suggestion (as % of portfolio value)
+  max_position_size_pct: 10.0
+  
+  # Diversification warning threshold
+  sector_concentration_warning_pct: 30.0  # warn if >30% in one sector
+
+# --- Bias Detection ---
+BIAS_CHECKS:
+  # Look-ahead bias checks
+  check_eps_availability: true     # ensure EPS report date <= decision date
+  check_client_type_delay: true    # client_types data is delayed by 1 day on TSETMC
+  client_type_delay_days: 1
+  
+  # Survivorship bias
+  include_delisted_symbols: true   # require delisted symbols in data
+  
+  # Overfitting checks
+  min_train_samples: 1000          # minimum recommendations in train set
+  min_test_samples: 200            # minimum recommendations in test set
+
+# --- Output Settings ---
+OUTPUT:
+  # Where to save results
+  output_dir: "output"
+  
+  # Generate HTML report
+  html_report: true
+  report_filename: "backtest_report.html"
+  
+  # Save raw results as JSON
+  save_raw_results: true
+  raw_results_filename: "backtest_results.json"
+  
+  # Save recommendations as CSV
+  save_recommendations_csv: true
+  recommendations_filename: "all_recommendations.csv"
+
+# --- Logging ---
+LOGGING:
+  level: "INFO"   # DEBUG, INFO, WARNING, ERROR
+  file: "output/backtest.log"

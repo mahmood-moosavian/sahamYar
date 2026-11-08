@@ -1,0 +1,33 @@
+2026-11-08 12:18:44,423 [INFO] core.backtest_engine: Starting full backtest...
+2026-11-08 12:18:44,428 [INFO] core.backtest_engine: Backtest period: 14010101 to 14040630
+2026-11-08 12:18:44,428 [INFO] core.backtest_engine: Total trading days: 1098
+2026-11-08 12:18:44,428 [INFO] core.backtest_engine: Walk-forward splits: 3
+2026-11-08 12:18:44,428 [INFO] core.backtest_engine: 
+--- Split 1/3 ---
+2026-11-08 12:18:44,428 [INFO] core.backtest_engine: Train: 14010101 - 14020807
+2026-11-08 12:18:44,428 [INFO] core.backtest_engine: Test:  14020808 - 14030527
+2026-11-08 12:18:44,429 [INFO] core.backtest_engine: Evaluating 50 symbols per day for 252 days
+2026-11-08 12:20:15,716 [INFO] core.backtest_engine: Generated 2016 total recommendations so far
+2026-11-08 12:20:15,716 [INFO] core.backtest_engine: 
+--- Split 2/3 ---
+2026-11-08 12:20:15,716 [INFO] core.backtest_engine: Train: 14010524 - 14030104
+2026-11-08 12:20:15,716 [INFO] core.backtest_engine: Test:  14030105 - 14031022
+2026-11-08 12:20:15,716 [INFO] core.backtest_engine: Evaluating 50 symbols per day for 252 days
+2026-11-08 12:20:43,351 [INFO] core.backtest_engine: Starting full backtest...
+2026-11-08 12:20:43,352 [INFO] core.backtest_engine: Backtest period: 14020101 to 14040331
+2026-11-08 12:20:43,352 [INFO] core.backtest_engine: Total trading days: 706
+2026-11-08 12:20:43,352 [INFO] core.backtest_engine: Walk-forward splits: 0
+2026-11-08 12:20:43,352 [INFO] core.backtest_engine: 
+Evaluating recommendations...
+2026-11-08 12:21:21,048 [INFO] core.backtest_engine: Starting full backtest...
+2026-11-08 12:21:21,050 [INFO] core.backtest_engine: Backtest period: 14030101 to 14040331
+2026-11-08 12:21:21,050 [INFO] core.backtest_engine: Total trading days: 392
+2026-11-08 12:21:21,050 [INFO] core.backtest_engine: Walk-forward splits: 1
+2026-11-08 12:21:21,050 [INFO] core.backtest_engine: 
+--- Split 1/1 ---
+2026-11-08 12:21:21,050 [INFO] core.backtest_engine: Train: 14030101 - 14031018
+2026-11-08 12:21:21,050 [INFO] core.backtest_engine: Test:  14031019 - 14040314
+2026-11-08 12:21:21,051 [INFO] core.backtest_engine: Evaluating 30 symbols per day for 126 days
+2026-11-08 12:21:39,016 [INFO] core.backtest_engine: Generated 630 total recommendations so far
+2026-11-08 12:21:39,016 [INFO] core.backtest_engine: 
+Evaluating recommendations...
