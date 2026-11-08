@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="author" content="Z.ai">
+<meta name="description" content="PRD کامل محصول سهام‌یار - مشاور هوشمند پورتفوی بورس ایران">
+<title>PRD — سهام‌یار | مشاور هوشمند پورتفوی</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap">
+<style>
+  @page {
+    size: A4;
+    margin: 18mm 16mm 20mm 16mm;
+    @bottom-center { content: "صفحه " counter(page) " از " counter(pages); font-family: 'Vazirmatn', sans-serif; font-size: 9pt; color: #9b9993; }
+    @top-left { content: "PRD — سهام‌یار"; font-family: 'Vazirmatn', sans-serif; font-size: 8pt; color: #9b9993; }
+    @top-right { content: "نسخه 1.0 · ۱۴۰۵/۰۸/۱۶"; font-family: 'Vazirmatn', sans-serif; font-size: 8pt; color: #9b9993; }
+  }
+  @page :first { margin: 0; @bottom-center { content: ""; } @top-left { content: ""; } @top-right { content: ""; } }
+  html, body { margin: 0; padding: 0; background: #ffffff; color: #24231f; font-family: 'Vazirmatn', 'Tahoma', sans-serif; font-size: 10.5pt; line-height: 1.75; direction: rtl; }
+  * { box-sizing: border-box; }
+
+  /* COVER */
+  .cover { page: cover; page-break-after: always; width: 210mm; height: 297mm; background: linear-gradient(155deg, #0f1a2e 0%, #142a4d 50%, #1e3a6d 100%); color: #ececea; position: relative; overflow: hidden; padding: 0; margin: 0; }
+  .cover::before { content: ""; position: absolute; top: -120px; left: -120px; width: 520px; height: 520px; background: radial-gradient(circle, rgba(76, 175, 80, 0.15) 0%, transparent 70%); border-radius: 50%; }
+  .cover::after { content: ""; position: absolute; bottom: -160px; right: -160px; width: 620px; height: 620px; background: radial-gradient(circle, rgba(99, 161, 245, 0.18) 0%, transparent 70%); border-radius: 50%; }
+  .cover-grid { position: relative; z-index: 2; height: 100%; display: grid; grid-template-rows: auto 1fr auto; padding: 28mm 22mm; }
+  .cover-top { display: flex; justify-content: space-between; align-items: center; font-size: 10pt; color: #7faed8; letter-spacing: 1px; }
+  .cover-top .brand { font-weight: 600; color: #5fd3e5; }
+  .cover-mid { display: flex; flex-direction: column; justify-content: center; gap: 16px; }
+  .cover-eyebrow { color: #4caf50; font-size: 11pt; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; }
+  .cover-title { font-size: 38pt; font-weight: 700; line-height: 1.15; color: #ffffff; margin: 0; }
+  .cover-subtitle { font-size: 14pt; color: #b5d4f0; font-weight: 400; line-height: 1.5; max-width: 155mm; }
+  .cover-divider { width: 80mm; height: 3px; background: linear-gradient(to left, #4caf50, transparent); margin: 8px 0; }
+  .cover-tags { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+  .cover-tag { background: rgba(76, 175, 80, 0.12); border: 1px solid rgba(76, 175, 80, 0.4); color: #81c784; padding: 4px 14px; border-radius: 16px; font-size: 9.5pt; font-weight: 500; }
+  .cover-bot { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; border-top: 1px solid rgba(127, 174, 216, 0.25); padding-top: 18px; font-size: 9pt; }
+  .cover-bot .label { color: #7faed8; font-size: 8pt; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .cover-bot .value { color: #ececea; font-weight: 600; font-size: 10pt; }
+  .cover-summary { background: rgba(255, 255, 255, 0.04); border-right: 3px solid #4caf50; padding: 12px 16px; margin-top: 16px; border-radius: 4px; font-size: 10pt; line-height: 1.7; }
+  .cover-summary .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; }
+  .cover-summary .stat { text-align: center; }
+  .cover-summary .stat-num { font-size: 22pt; font-weight: 700; color: #4caf50; line-height: 1; }
+  .cover-summary .stat-label { font-size: 8.5pt; color: #b5d4f0; margin-top: 4px; }
+  .logo-mark { width: 80px; height: 80px; border-radius: 18px; background: linear-gradient(135deg, #4caf50, #2e7d32); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; box-shadow: 0 8px 24px rgba(76, 175, 80, 0.35); }
+  .logo-mark span { color: white; font-size: 36pt; font-weight: 700; font-family: 'Vazirmatn', sans-serif; }
+
+  /* TOC */
+  .toc-page { page-break-after: always; }
+  .toc-page h2 { color: #2e7d32; border-bottom: 2px solid #4caf50; padding-bottom: 8px; font-size: 18pt; margin-bottom: 20px; }
+  .toc-list { list-style: none; padding: 0; margin: 0; }
+  .toc-list li { display: flex; justify-content: space-between; align-items: baseline; padding: 5px 0; border-bottom: 1px dotted #ddd; font-size: 10.5pt; }
+  .toc-list li .num { color: #2e7d32; font-weight: 600; margin-left: 8px; }
+  .toc-list li .page-num { color: #9b9993; font-weight: 600; }
+  .toc-list li.sub { padding-right: 28px; font-size: 9.5pt; color: #555; }
+
+  /* HEADINGS */
+  h1.section { font-size: 20pt; color: #142a4d; border-bottom: 3px solid #4caf50; padding-bottom: 8px; margin: 0 0 14px 0; page-break-before: always; }
+  h1.section:first-of-type { page-break-before: auto; }
+  h1.section .sec-num { color: #2e7d32; margin-left: 10px; }
+  h2.sub { font-size: 14pt; color: #1e3a6d; margin: 18px 0 8px 0; padding-right: 12px; border-right: 4px solid #4caf50; page-break-after: avoid; }
+  h3.subsub { font-size: 11.5pt; color: #2e7d32; margin: 14px 0 6px 0; page-break-after: avoid; }
+  p { margin: 0 0 8px 0; text-align: justify; }
+  ul, ol { margin: 6px 24px 10px 0; padding-right: 18px; }
+  li { margin-bottom: 4px; line-height: 1.7; }
+  strong { color: #142a4d; font-weight: 600; }
+  code { font-family: 'Courier New', 'DejaVu Sans Mono', monospace; background: #f0f7f0; color: #2e7d32; padding: 1px 5px; border-radius: 3px; font-size: 9.5pt; direction: ltr; display: inline-block; }
+  pre { background: #142a4d; color: #ececea; padding: 10px 14px; border-radius: 6px; font-family: 'Courier New', 'DejaVu Sans Mono', monospace; font-size: 8.5pt; line-height: 1.55; direction: ltr; text-align: left; overflow-x: auto; page-break-inside: avoid; border-right: 3px solid #4caf50; }
+  pre code { background: transparent; color: inherit; padding: 0; }
+
+  /* TABLES */
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 12px 0; font-size: 9pt; page-break-inside: auto; }
+  thead { background: #142a4d; color: #ececea; }
+  thead th { padding: 7px 6px; text-align: right; font-weight: 600; border: 1px solid #1e3a6d; font-size: 9pt; }
+  tbody td { padding: 5px 6px; border: 1px solid #d9e4f0; vertical-align: top; }
+  tbody tr:nth-child(even) { background: #f5fafc; }
+  tbody tr:nth-child(odd) { background: #ffffff; }
+  table.ltr td, table.ltr th { direction: ltr; text-align: left; }
+  table.compact td, table.compact th { padding: 4px 5px; font-size: 8.5pt; }
+  .mono { font-family: 'Courier New', monospace; direction: ltr; display: inline-block; }
+
+  /* CALLOUTS */
+  .callout { border: 1px solid; border-radius: 6px; padding: 10px 14px; margin: 10px 0; page-break-inside: avoid; }
+  .callout-info { border-color: #2196f3; background: #e3f2fd; border-right-width: 4px; }
+  .callout-warn { border-color: #ff9800; background: #fff3e0; border-right-width: 4px; }
+  .callout-success { border-color: #4caf50; background: #e8f5e9; border-right-width: 4px; }
+  .callout-title { font-weight: 700; margin-bottom: 6px; }
+  .callout-info .callout-title { color: #1565c0; }
+  .callout-warn .callout-title { color: #e65100; }
+  .callout-success .callout-title { color: #2e7d32; }
+
+  /* FINDING CARDS */
+  .persona-card { border: 1px solid #d9e4f0; border-radius: 8px; padding: 12px; margin: 8px 0; background: #f8fbfd; page-break-inside: avoid; }
+  .persona-card .persona-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid #d9e4f0; }
+  .persona-card .persona-name { font-size: 12pt; font-weight: 700; color: #142a4d; }
+  .persona-card .persona-tag { font-size: 8pt; background: #4caf50; color: white; padding: 2px 10px; border-radius: 10px; font-weight: 600; }
+  .persona-card .persona-meta { font-size: 8.5pt; color: #666; margin: 4px 0; }
+  .persona-card ul { margin: 6px 18px 0 0; padding-right: 14px; font-size: 9pt; }
+
+  /* WIREFRAMES */
+  .wireframe { border: 2px solid #142a4d; border-radius: 10px; padding: 14px; margin: 12px 0; background: #fafbfc; page-break-inside: avoid; }
+  .wireframe-title { font-size: 10pt; font-weight: 700; color: #142a4d; margin-bottom: 10px; text-align: center; }
+  .wf-phone { width: 100%; max-width: 240px; margin: 0 auto; border: 3px solid #142a4d; border-radius: 16px; padding: 8px; background: white; }
+  .wf-status-bar { display: flex; justify-content: space-between; padding: 2px 4px; font-size: 7pt; color: #142a4d; border-bottom: 1px solid #eee; }
+  .wf-header { background: #142a4d; color: white; padding: 6px 8px; border-radius: 4px; font-size: 8pt; font-weight: 600; margin: 4px 0; display: flex; justify-content: space-between; }
+  .wf-section { background: #f5f7fa; border-radius: 4px; padding: 6px; margin: 4px 0; font-size: 7.5pt; }
+  .wf-row { display: flex; justify-content: space-between; padding: 3px 4px; border-bottom: 1px solid #e0e4ea; font-size: 7.5pt; }
+  .wf-card { background: white; border: 1px solid #e0e4ea; border-radius: 4px; padding: 5px; margin: 4px 0; font-size: 7.5pt; }
+  .wf-card .wf-ticker { font-weight: 700; color: #142a4d; }
+  .wf-card .wf-action { font-size: 6.5pt; padding: 1px 5px; border-radius: 8px; color: white; font-weight: 700; float: left; }
+  .wf-buy { background: #4caf50; }
+  .wf-sell { background: #f44336; }
+  .wf-hold { background: #ff9800; }
+  .wf-tabbar { display: flex; justify-content: space-around; background: #142a4d; color: white; padding: 5px 4px; border-radius: 4px; margin-top: 4px; font-size: 7pt; }
+  .wf-tab { text-align: center; }
+  .wf-tab .wf-tab-icon { display: block; font-size: 10pt; }
+  .wf-progress { background: #e0e4ea; height: 4px; border-radius: 2px; overflow: hidden; margin: 2px 0; }
+  .wf-progress-fill { background: #4caf50; height: 100%; }
+
+  /* ARCHITECTURE DIAGRAM */
+  .arch-diagram { background: #f5f7fa; border: 1px solid #d9e4f0; border-radius: 8px; padding: 16px; margin: 10px 0; page-break-inside: avoid; }
+  .arch-layer { background: white; border: 2px solid #142a4d; border-radius: 6px; padding: 8px; margin: 6px 0; text-align: center; font-size: 9pt; font-weight: 600; color: #142a4d; }
+  .arch-layer .arch-sub { display: flex; gap: 6px; margin-top: 6px; }
+  .arch-box { flex: 1; background: #e3f2fd; border: 1px solid #1565c0; border-radius: 4px; padding: 4px; font-size: 8pt; color: #142a4d; font-weight: 500; }
+  .arch-arrow { text-align: center; color: #2e7d32; font-size: 14pt; margin: 2px 0; }
+  .arch-label { font-size: 8pt; color: #666; text-align: center; margin-top: 4px; }
+
+  /* STAT PILLS */
+  .pill-row { display: flex; gap: 5px; flex-wrap: wrap; margin: 4px 0; }
+  .pill { font-size: 8.5pt; padding: 2px 8px; border-radius: 8px; background: #ececea; color: #24231f; border: 1px solid #d9d3c2; }
+  .pill.green { background: #e8f5e9; color: #2e7d32; border-color: #4caf50; }
+  .pill.blue { background: #e3f2fd; color: #1565c0; border-color: #2196f3; }
+  .pill.orange { background: #fff3e0; color: #e65100; border-color: #ff9800; }
+  .pill.red { background: #ffebee; color: #c62828; border-color: #f44336; }
+
+  /* EXEC SUMMARY BOXES */
+  .exec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 10px 0; }
+  .exec-card { border: 1px solid #d9e4f0; border-radius: 6px; padding: 12px; background: #f8fbfd; page-break-inside: avoid; }
+  .exec-card h3 { margin: 0 0 8px 0; color: #2e7d32; font-size: 11pt; border-bottom: 1px solid #d9e4f0; padding-bottom: 5px; }
+
+  /* RISK MATRIX */
+  .risk-matrix { display: grid; grid-template-columns: 80px 1fr 60px 60px 1fr; gap: 4px; font-size: 8.5pt; margin: 8px 0; }
+  .risk-matrix .risk-cell { padding: 4px 6px; border: 1px solid #d9e4f0; }
+  .risk-matrix .risk-head { background: #142a4d; color: white; font-weight: 700; text-align: center; }
+  .risk-low { background: #e8f5e9; }
+  .risk-med { background: #fff3e0; }
+  .risk-high { background: #ffebee; }
+
+  h1.section, h2.sub, h3.subsub { page-break-after: avoid; }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<section class="cover">
+  <div class="cover-grid">
+    <div class="cover-top">
+      <span class="brand">PRD v1.0</span>
+      <span>مسیر ب · پیشنهاد هوشمند پورتفو</span>
+    </div>
+    <div class="cover-mid">
+      <div class="logo-mark"><span>س</span></div>
+      <div class="cover-eyebrow">PRODUCT REQUIREMENTS DOCUMENT</div>
+      <h1 class="cover-title">سهام‌یار<br>مشاور هوشمند پورتفوی</h1>
+      <div class="cover-divider"></div>
+      <div class="cover-subtitle">
+        اپلیکیشن پیشنهاد خرید و فروش سهام براساس ترکیب پورتفوی کاربر،
+        پول هوشمند حقوقی، تحلیل تکنیکال و فاندامنتال — با Backtest شفاف
+        و الگوریتم Composite Score قابل بررسی
+      </div>
+      <div class="cover-tags">
+        <span class="cover-tag">Portfolio-Based</span>
+        <span class="cover-tag">Smart Money</span>
+        <span class="cover-tag">Composite Score</span>
+        <span class="cover-tag">3-Month MVP</span>
+        <span class="cover-tag">Bourse Iran</span>
+      </div>
+      <div class="cover-summary">
+        این سند مشخصات محصول <strong>سهام‌یار</strong> را برای ساخت یک اپلیکیشن
+        اندروید + وب در بازه‌ی ۳ ماه (MVP) ارائه می‌دهد. تمایز اصلی محصول نسبت به
+        رقبا (bifilter، TsePlus، فست بورس، Arthika) ارائه‌ی <strong>پیشنهاد خرید/فروش
+        براساس ترکیب پورتفوی کاربر</strong> است که در حال حاضر هیچ رقیبی آن را ارائه نمی‌دهد.
+        <div class="stat-grid">
+          <div class="stat"><div class="stat-num">۳</div><div class="stat-label">ماه MVP</div></div>
+          <div class="stat"><div class="stat-num">۹۹K</div><div class="stat-label">تومان/ماه</div></div>
+          <div class="stat"><div class="stat-num">۸</div><div class="stat-label">Personas/Wireframe</div></div>
+          <div class="stat"><div class="stat-num">۲۴</div><div class="stat-label">API Endpoint</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="cover-bot">
+      <div><div class="label">PRODUCT</div><div class="value">سهام‌یار (SahamYar)</div></div>
+      <div><div class="label">DATE</div><div class="value">۱۴۰۵/۰۸/۱۶ · 2026-11-07</div></div>
+      <div><div class="label">PREPARED BY</div><div class="value">Z.ai Product Team</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TOC -->
+<section class="toc-page">
+  <h2>فهرست مطالب</h2>
+  <ul class="toc-list">
+    <li><span><span class="num">۰.</span> خلاصه اجرایی</span><span class="page-num">۳</span></li>
+    <li><span><span class="num">۱.</span> معرفی محصول و Vision</span><span class="page-num">۴</span></li>
+    <li><span><span class="num">۲.</span> تحلیل بازار و رقبا</span><span class="page-num">۵</span></li>
+    <li><span><span class="num">۳.</span> User Personas</span><span class="page-num">۶</span></li>
+    <li><span><span class="num">۴.</span> سناریوهای کاربری (User Stories)</span><span class="page-num">۷</span></li>
+    <li><span><span class="num">۵.</span> الزامات عملکردی (MVP)</span><span class="page-num">۸</span></li>
+    <li><span><span class="num">۶.</span> الزامات غیرعملکردی</span><span class="page-num">۹</span></li>
+    <li><span><span class="num">۷.</span> Wireframes صفحات کلیدی</span><span class="page-num">۱۰</span></li>
+    <li><span><span class="num">۸.</span> Data Model و SQL Schema</span><span class="page-num">۱۲</span></li>
+    <li><span><span class="num">۹.</span> API Specification</span><span class="page-num">۱۴</span></li>
+    <li><span><span class="num">۱۰.</span> معماری فنی</span><span class="page-num">۱۵</span></li>
+    <li><span><span class="num">۱۱.</span> نقشه‌ی راه توسعه (Roadmap)</span><span class="page-num">۱۶</span></li>
+    <li><span><span class="num">۱۲.</span> مدل درآمدی و قیمت‌گذاری</span><span class="page-num">۱۷</span></li>
+    <li><span><span class="num">۱۳.</span> KPIs و Success Metrics</span><span class="page-num">۱۸</span></li>
+    <li><span><span class="num">۱۴.</span> Go-to-Market Strategy</span><span class="page-num">۱۹</span></li>
+    <li><span><span class="num">۱۵.</span> Risk Register و Mitigation</span><span class="page-num">۲۰</span></li>
+    <li><span><span class="num">۱۶.</span> Financial Projections (۳ ساله)</span><span class="page-num">۲۱</span></li>
+    <li><span><span class="num">۱۷.</span> Release Criteria و Open Questions</span><span class="page-num">۲۲</span></li>
+  </ul>
+</section>
+
+<!-- 0. EXECUTIVE SUMMARY -->
+<h1 class="section"><span class="sec-num">۰.</span> خلاصه اجرایی</h1>
+
+<p>
+<strong>سهام‌یار</strong> یک اپلیکیشن اندروید + وب است که براساس پورتفوی شخصی کاربر،
+پیشنهاد خرید و فروش سهام ارائه می‌دهد. تمایز اصلی این محصول نسبت به همه‌ی رقبای موجود
+در بازار ایران (bifilter، TsePlus، فست بورس، Arthika) ارائه‌ی <strong>پیشنهادهای contextual
+براساس ترکیب فعلی دارایی‌های کاربر</strong> است — نه فقط فیلترهای استاندارد.
+</p>
+
+<p>
+محصول از چهار لایه‌ی تحلیلی تشکیل شده است: (۱) سیگنال پول هوشمند حقوقی،
+(۲) تحلیل تکنیکال خودکار، (۳) ارزش‌گذاری بنیادی، و (۴) تحلیل هم‌بستگی و تنوع پورتفو.
+این چهار لایه در یک الگوریتم <strong>Composite Score</strong> از ۰ تا ۱۰۰ ترکیب می‌شوند
+که به هر سهم یک توصیه‌ی قطعی (خرید قوی، خرید، نگه‌داری، کاهش وزن، فروش) اختصاص می‌دهد.
+</p>
+
+<div class="exec-grid">
+  <div class="exec-card">
+    <h3>مشکل</h3>
+    <ul>
+      <li>bifilter و رقبا فیلترهای آماده می‌دهند اما <strong>پورتفوی کاربر را نادیده می‌گیرند</strong></li>
+      <li>هیچ رقیبی هم‌بستگی و تنوع پورتفو را تحلیل نمی‌کند</li>
+      <li>«نرخ موفقیت ۷۱٪» bifilter بدون Backtest شفاف است</li>
+      <li>API رقبا کند (۱۴ ثانیه برای یک سیگنال!) و ناپایدار</li>
+      <li>هیچ ابزاری ریسک پورتفو (VaR) را نشان نمی‌دهد</li>
+    </ul>
+  </div>
+  <div class="exec-card">
+    <h3>راه‌حل</h3>
+    <ul>
+      <li>کاربر پورتفوی خود را وارد می‌کند (به‌صورت دستی یا OTP از کارگزاری)</li>
+      <li>سیستم روزانه Composite Score برای همه‌ی سهام بازار محاسبه می‌کند</li>
+      <li>۵ پیشنهاد خرید + ۳ پیشنهاد فروش به‌صورت روزانه</li>
+      <li>Backtest شفاف: هر سیگنال با نتیجه‌ی ۳۰ روزه نمایش داده می‌شود</li>
+      <li>هشدار واگرایی پورتفو (مثلاً تمرکز ۳۰٪+ در یک گروه)</li>
+    </ul>
+  </div>
+</div>
+
+<h2 class="sub">تمایز کلیدی (Unique Value Proposition)</h2>
+<p>
+<strong>تنها اپلیکیشن ایرانی که پیشنهاد خرید/فروش را براساس ترکیب پورتفوی کاربر می‌دهد، نه فقط فیلتر استاندارد.</strong>
+به‌علاوه، الگوریتم پیشنهاد به‌صورت شفاف با Backtest قابل بررسی ارائه می‌شود — چیزی که bifilter با ادعای مبهم «۷۱٪ موفقیت» فاقد آن است.
+</p>
+
+<h2 class="sub">مدل درآمدی پیشنهادی</h2>
+<p>
+پس از تحلیل بازار و مدل رقبا، <strong>Free Trial ۷ روزه + یک پلن Pro واحد</strong> پیشنهاد می‌شود:
+</p>
+<table>
+  <thead><tr><th>پلن</th><th>قیمت</th><th>امکانات</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Free Trial</strong></td><td>۷ روز رایگان</td><td>دسترسی کامل همه‌ی فیچرها</td></tr>
+    <tr><td><strong>Pro (ماهانه)</strong></td><td>۹۹٬۰۰۰ تومان/ماه</td><td>تمام امکانات + هشدار Push + گزارش هفتگی</td></tr>
+    <tr><td><strong>Pro (سالانه)</strong></td><td>۹۹۰٬۰۰۰ تومان/سال (۱۷٪ تخفیف)</td><td>همراه با ۲ ماه رایگان</td></tr>
+  </tbody>
+</table>
+
+<div class="callout callout-info">
+  <div class="callout-title">چرا این مدل؟</div>
+  <p style="margin:0;">
+  bifilter پلن پولی خود را معادل ~۱.۵ میلیون تومان/ماه قیمت‌گذاری کرده که برای اکثر کاربران گران است.
+  قیمت ۹۹ هزار تومان سهام‌یار <strong>۱۵ برابر ارزان‌تر</strong> از bifilter است ولی همچنان پردرآمد خواهد بود
+  (با ۱۰۰۰ کاربر پرداختی سال اول = ~۹۹۰ میلیون تومان درآمد). مدل تک‌پلن نیز برای MVP ۳ ماهه ساده‌تر از
+  پلن‌بندی چندطبقه‌ای است. در فاز ۲ می‌توان Quantum tier برای صندوق‌ها و API access اضافه کرد.
+  </p>
+</div>
+
+<h2 class="sub">تخمین بازار و فرصت</h2>
+<table>
+  <thead><tr><th>معیار</th><th>مقدار</th><th>توضیح</th></tr></thead>
+  <tbody>
+    <tr><td>TAM (Total Addressable Market)</td><td>~۱۲ میلیون</td><td>تعداد کد بورسی فعال در ایران</td></tr>
+    <tr><td>SAM (Serviceable Market)</td><td>~۲ میلیون</td><td>کاربران فعال روزانه در TSETMC</td></tr>
+    <tr><td>SOM (Serviceable Obtainable) — سال ۳</td><td>۱۲٬۰۰۰ کاربر پرداختی</td><td>۰.۶٪ از SAM</td></tr>
+    <tr><td>درآمد سال ۳</td><td>~۱۱.۹ میلیارد تومان</td><td>۱۲٬۰۰۰ × ۹۹۰K</td></tr>
+    <tr><td>Break-even</td><td>ماه ۹-۱۱</td><td>با فرض CAC ۱۵۰K و LTV ۹۹۰K</td></tr>
+  </tbody>
+</table>
+
+<!-- 1. PRODUCT OVERVIEW -->
+<h1 class="section"><span class="sec-num">۱.</span> معرفی محصول و Vision</h1>
+
+<h2 class="sub">۱.۱ نام و Vision</h2>
+<p>
+<strong>نام محصول:</strong> سهام‌یار (SahamYar)<br>
+<strong>تگ‌لاین:</strong> «مشاور هوشمند پورتفوی شما در بورس ایران»<br>
+<strong>Vision:</strong> تبدیل شدن به مرجع اصلی تصمیم‌گیری سرمایه‌گذاران خرد بورس ایران
+از طریق پیشنهادهای شفاف، مبتنی بر داده و قابل بررسی (Backtest) که در نهایت به افزایش
+شفافیت و کارایی بازار سرمایه کمک می‌کند.
+</p>
+
+<h2 class="sub">۱.۲ Problem Statement</h2>
+<p>
+سرمایه‌گذاران خرد بورس ایران در مواجهه با پنج چالش اصلی هستند:
+</p>
+<ol>
+  <li><strong>عدم شخصی‌سازی:</strong> همه‌ی اپ‌های موجود (bifilter، فست بورس، TsePlus) فیلترهای یکسانی به همه‌ی کاربران ارائه می‌دهند، بدون در نظر گرفتن پورتفوی فعلی کاربر، ریسک‌پذیری و افق سرمایه‌گذاری.</li>
+  <li><strong>فقدان Backtest شفاف:</strong> bifilter ادعای «نرخ موفقیت ۷۱٪» دارد اما روش محاسبه و داده‌های تاریخی را منتشر نمی‌کند. کاربر نمی‌تواند اعتماد کند.</li>
+  <li><strong>کندی و ناپایداری:</strong> API bifilter روی برخی endpoint ها ۱۴ ثانیه زمان می‌برد و ۴ خطای ۵۰۰ در ۶۷ endpoint آزمایش‌شده مشاهده شد. این برای یک اپ real-time غیرقابل قبول است.</li>
+  <li><strong>هزینه‌ی بالا:</strong> پلن付费ی bifilter معادل ~۱.۵ میلیون تومان/ماه است که برای سرمایه‌گذاران متوسط (پورتفوی زیر ۵۰ میلیون) غیرمنطقی است.</li>
+  <li><strong>عدم تحلیل ریسک پورتفو:</strong> هیچ اپی VaR، هم‌بستگی دارایی‌ها، یا تمرکز صنعتی را به‌صورت یکپارچه ارائه نمی‌دهد.</li>
+</ol>
+
+<h2 class="sub">۱.۳ Solution</h2>
+<p>
+سهام‌یار با ترکیب چهار لایه‌ی تحلیلی و یک الگوریتم ترکیبی (Composite Score) این مشکلات را حل می‌کند:
+</p>
+<table>
+  <thead><tr><th>لایه</th><th>داده‌ی ورودی</th><th>خروجی</th></tr></thead>
+  <tbody>
+    <tr><td>۱. پول هوشمند</td><td>تفکیک حقیقی/حقوقی از TSETMC</td><td>جمع‌آوری vs توزیع سهم</td></tr>
+    <tr><td>۲. تکنیکال</td><td>کندل‌های روزانه (OHLCV)</td><td>RSI, MFI, MACD, نوسان سال</td></tr>
+    <tr><td>۳. بنیادی</td><td>EPS, Sector PE, NAV</td><td>ارزش‌گذاری relative به گروه</td></tr>
+    <tr><td>۴. تنوع پورتفو</td><td>پورتفوی کاربر + هم‌بستگی تاریخی</td><td>پیشنهاد متنوع‌سازی، تمرکز صنعتی</td></tr>
+    <tr><td><strong>الگوریتم ترکیبی</strong></td><td>خروجی هر ۴ لایه</td><td><strong>Composite Score 0-100 + توصیه</strong></td></tr>
+  </tbody>
+</table>
+
+<h2 class="sub">۱.۴ Target Market</h2>
+<ul>
+  <li><strong>کاربران اصلی:</strong> سرمایه‌گذاران خرد با پورتفوی ۲۰ تا ۵۰۰ میلیون تومان در بورس ایران</li>
+  <li><strong>کاربران ثانویه:</strong> مشاوران سرمایه‌گذاری مستقل، مدیران صندوق‌های خرد</li>
+  <li><strong>Geo:</strong> ایران (با امکان توسعه به فارسی‌زبانان خارج از کشور در فاز ۳)</li>
+  <li><strong>پلتفرم‌ها:</strong> اندروید (پلتفرم اصلی)، وب (در فاز ۲)، iOS (در فاز ۳)</li>
+</ul>
+
+<h2 class="sub">۱.۵ Non-Goals (Out of Scope)</h2>
+<div class="callout callout-warn">
+  <div class="callout-title">برای MVP ۳ ماهه، این موارد حذف می‌شوند:</div>
+  <ul style="margin-bottom:0;">
+    <li>معاملات آنلاین (اتصال به کارگزاری) — در فاز ۲</li>
+    <li>بازار ارز دیجیتال و فارکس — در فاز ۲</li>
+    <li>ربات تلگرام — در فاز ۲</li>
+    <li>شبکه اجتماعی و نظرات کاربران — در فاز ۳</li>
+    <li>سرخط‌زنی عرضه‌های اولیه — در فاز ۳ (بازار مجزا)</li>
+    <li>اپ iOS — در فاز ۳</li>
+    <li>API عمومی (B2B) — در فاز ۳</li>
+  </ul>
+</div>
+
+<!-- 2. MARKET ANALYSIS -->
+<h1 class="section"><span class="sec-num">۲.</span> تحلیل بازار و رقبا</h1>
+
+<h2 class="sub">۲.۱ اندازه‌ی بازار</h2>
+<p>
+طبق آخرین داده‌های TSETMC و سازمان بورس، بازار سرمایه‌ی خرد ایران شامل حدود ۱۲ میلیون
+کد بورسی ثبت‌شده است که از این تعداد حدود ۲ میلیون کاربر در ماه فعال هستند. تعداد
+کاربران فعال روزانه در پلتفرم‌های تحلیلی حدود ۳۰۰ هزار نفر برآورد می‌شود.
+</p>
+
+<h2 class="sub">۲.۲ رقبای مستقیم</h2>
+<table>
+  <thead><tr><th>اپ</th><th>توسعه‌دهنده</th><th>نصب</th><th>امتیاز</th><th>تمرکز</th></tr></thead>
+  <tbody>
+    <tr><td>فیلتر هوشمند بورس (bifilter)</td><td>ضحی سافت</td><td>۹۷K</td><td>۴.۱</td><td>فیلتر + Robo-Advisor</td></tr>
+    <tr><td>TsePlus</td><td>—</td><td>—</td><td>—</td><td>فیلترنویسی فارسی (حرفه‌ای)</td></tr>
+    <tr><td>فست بورس</td><td>ویستا سامانه آسا</td><td>۲۶۰K</td><td>۴.۰</td><td>دیده‌بان + شبکه اجتماعی</td></tr>
+    <tr><td>Arthika</td><td>—</td><td>—</td><td>—</td><td>فیلتر AI (Google Play)</td></tr>
+    <tr><td>سهمینو</td><td>—</td><td>—</td><td>—</td><td>سیگنال بورس + کریپتو</td></tr>
+    <tr><td>اکو پلاس</td><td>—</td><td>—</td><td>—</td><td>حذف شده از فروشگاه</td></tr>
+  </tbody>
+</table>
+
+<h2 class="sub">۲.۳ ماتریس مقایسه‌ای</h2>
+<table class="compact">
+  <thead><tr><th>قابلیت</th><th>bifilter</th><th>TsePlus</th><th>فست بورس</th><th>Arthika</th><th>سهام‌یار (مVT)</th></tr></thead>
+  <tbody>
+    <tr><td>فیلترهای آماده</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+    <tr><td>فیلترنویسی پیشرفته</td><td>✗</td><td>✓</td><td>✗</td><td>✗</td><td>فاز ۲</td></tr>
+    <tr><td><strong>پیشنهاد براساس پورتفو</strong></td><td>✗</td><td>✗</td><td>✗</td><td>✗</td><td><strong>✓</strong></td></tr>
+    <tr><td>Backtest شفاف</td><td>✗</td><td>✗</td><td>✗</td><td>✗</td><td><strong>✓</strong></td></tr>
+    <tr><td>تحلیل تنوع صنعتی</td><td>✗</td><td>✗</td><td>✗</td><td>✗</td><td><strong>✓</strong></td></tr>
+    <tr><td>VaR (ریسک پورتفو)</td><td>✗</td><td>✗</td><td>✗</td><td>✗</td><td><strong>✓</strong></td></tr>
+    <tr><td>تفکیک حقیقی/حقوقی</td><td>✓</td><td>✗</td><td>✓</td><td>?</td><td>✓</td></tr>
+    <tr><td>ربات تلگرام</td><td>✓</td><td>✗</td><td>✗</td><td>✗</td><td>فاز ۲</td></tr>
+    <tr><td>هشدار Push</td><td>✓</td><td>✗</td><td>?</td><td>?</td><td>✓</td></tr>
+    <tr><td><strong>قیمت ماهانه</strong></td><td>~۱.۵M</td><td>—</td><td>رایگان</td><td>—</td><td><strong>۹۹K</strong></td></tr>
+  </tbody>
+</table>
+
+<h2 class="sub">۲.۴ شکاف بازار (Market Gap)</h2>
+<div class="callout callout-success">
+  <div class="callout-title">فرصت طلایی</div>
+  <p style="margin:0;">
+  تحلیل رقبا نشان می‌دهد <strong>هیچ رقیبی «پیشنهاد براساس پورتفو» ارائه نمی‌دهد</strong>.
+  این شکاف به سهام‌یار اجازه می‌دهد به جای رقابت مستقیم در فیلترهای آماده (که اشباع شده)،
+  یک طبقه‌ی محصول کاملاً جدید بسازد. این «Blue Ocean Strategy» است: ساختن فضای جدید به جای
+  رقابت در فضای موجود.
+  </p>
+</div>
+
+<!-- 3. USER PERSONAS -->
+<h1 class="section"><span class="sec-num">۳.</span> User Personas</h1>
+
+<div class="persona-card">
+  <div class="persona-head">
+    <span class="persona-name">علی — معامله‌گر فعال</span>
+    <span class="persona-tag">PRIMARY</span>
+  </div>
+  <div class="persona-meta">۳۲ ساله · مهندس نرم‌افزار · تهران · پورتفوی ۸۰ میلیون تومان</div>
+  <ul>
+    <li><strong>هدف:</strong> کسب سود کوتاه‌مدت (هفته‌ای تا ماهانه) از نوسانات بازار</li>
+    <li><strong>درد:</strong> نمی‌داند کی باید سهم بفروشد؛ اغلب در سقف می‌خرد و در کف می‌فروشد</li>
+    <li><strong>رفتار:</strong> روزانه ۲ ساعت در TSETMC و بیلبورد می‌گردد، bifilter دارد ولی از کندی‌اش کلافه است</li>
+    <li><strong>نیاز از سهام‌یار:</strong> سیگنال ورود/خروج سریع + هشدار توزیع حقوقی</li>
+  </ul>
+</div>
+
+<div class="persona-card">
+  <div class="persona-head">
+    <span class="persona-name">مریم — سرمایه‌گذار بلندمدت</span>
+    <span class="persona-tag">PRIMARY</span>
+  </div>
+  <div class="persona-meta">۴۵ ساله · پزشک · اصفهان · پورتفوی ۲۵۰ میلیون تومان</div>
+  <ul>
+    <li><strong>هدف:</strong> حفظ ارزش پول + رشد سالانه ۳۰٪+ با ریسک پایین</li>
+    <li><strong>درد:</strong> پورتفوی او تمرکز بالایی در گروه پتروشیمی دارد و نمی‌داند</li>
+    <li><strong>رفتار:</strong> ماهی یک‌بار چک می‌کند، اخبار را دنبال نمی‌کند</li>
+    <li><strong>نیاز از سهام‌یار:</strong> گزارش ماهانه Rebalancing + تحلیل تنوع گروه صنعتی</li>
+  </ul>
+</div>
+
+<div class="persona-card">
+  <div class="persona-head">
+    <span class="persona-name">رضا — تازه‌کار</span>
+    <span class="persona-tag">SECONDARY</span>
+  </div>
+  <div class="persona-meta">۲۸ ساله · کارمند · شیراز · پورتفوی ۱۵ میلیون تومان</div>
+  <ul>
+    <li><strong>هدف:</strong> یادگیری بازار و شروع سرمایه‌گذاری با ریسک کنترل‌شده</li>
+    <li><strong>درد:</strong> اصطلاحات تخصصی را نمی‌فهمد، فیلترنویسی بلد نیست</li>
+    <li><strong>رفتار:</strong> در گروه‌های تلگرامی سیگنال دنبال می‌کند (و ضرر می‌کند)</li>
+    <li><strong>نیاز از سهام‌یار:</strong> توصیه‌های ساده + آموزش contextual + ربات تلگرام</li>
+  </ul>
+</div>
+
+<div class="persona-card">
+  <div class="persona-head">
+    <span class="persona-name">سارا — مشاور سرمایه‌گذاری</span>
+    <span class="persona-tag">SECONDARY</span>
+  </div>
+  <div class="persona-meta">۳۸ ساله · مشاور مستقل · تهران · ۲۰ مشتری</div>
+  <ul>
+    <li><strong>هدف:</strong> مدیریت حرفه‌ای پورتفوی چند مشتری + گزارش‌دهی</li>
+    <li><strong>درد:</strong> برای هر مشتری باید جداگانه تحلیل کند، وقت‌گیر است</li>
+    <li><strong>رفتار:</strong> اکسل و TSETMC استفاده می‌کند، گزارش PDF می‌سازد</li>
+    <li><strong>نیاز از سهام‌یار:</strong> حساب‌های چندگانه + گزارش PDF برای هر مشتری (فاز ۲)</li>
+  </ul>
+</div>
+
+<!-- 4. USER STORIES -->
+<h1 class="section"><span class="sec-num">۴.</span> سناریوهای کاربری (User Stories)</h1>
+
+<p>بر اساس Personas بالا، ۱۲ User Story کلیدی برای MVP شناسایی شده است. هر story با فرمت استاندارد <em>«As a [persona], I want [action] so that [benefit]»</em> نوشته شده.</p>
+
+<table class="compact">
+  <thead><tr><th>ID</th><th>Persona</th><th>User Story</th><th>اولویت</th></tr></thead>
+  <tbody>
+    <tr><td>US-01</td><td>علی</td><td>به‌عنوان معامله‌گر فعال، می‌خواهم ۵ پیشنهاد خرید امروز را ببینم تا فرصت سریع پیدا کنم</td><td><span class="pill green">P0</span></td></tr>
+    <tr><td>US-02</td><td>علی</td><td>به‌عنوان معامله‌گر فعال، می‌خواهم Composite Score هر سهم را ببینم تا بدانم چرا توصیه شده</td><td><span class="pill green">P0</span></td></tr>
+    <tr><td>US-03</td><td>مریم</td><td>به‌عنوان سرمایه‌گذار بلندمدت، می‌خواهم پورتفوی خود را وارد کنم تا تنوع آن تحلیل شود</td><td><span class="pill green">P0</span></td></tr>
+    <tr><td>US-04</td><td>مریم</td><td>به‌عنوان سرمایه‌گذار، می‌خواهم گزارش Rebalancing ماهانه ببینم تا وزن دارایی‌ها را تنظیم کنم</td><td><span class="pill green">P0</span></td></tr>
+    <tr><td>US-05</td><td>علی</td><td>به‌عنوان معامله‌گر، می‌خواهم هشدار توزیع حقوقی سهم‌هایم را دریافت کنم تا زود بفروشم</td><td><span class="pill green">P0</span></td></tr>
+    <tr><td>US-06</td><td>همه</td><td>به‌عنوان کاربر، می‌خواهم Backtest پیشنهادهای ۳۰ روز گذشته را ببینم تا به سیستم اعتماد کنم</td><td><span class="pill green">P0</span></td></tr>
+    <tr><td>US-07</td><td>رضا</td><td>به‌عنوان تازه‌کار، می‌خواهم برای هر توصیه توضیح ساده فارسی ببینم تا یاد بگیرم</td><td><span class="pill orange">P1</span></td></tr>
+    <tr><td>US-08</td><td>همه</td><td>به‌عنوان کاربر، می‌خواهم سهمی را نشان‌گذاری کنم تا اعلان تغییرات آن را دریافت کنم</td><td><span class="pill orange">P1</span></td></tr>
+    <tr><td>US-09</td><td>علی</td><td>به‌عنوان معامله‌گر، می‌خواهم نمودار تکنیکال سهم را با اندیکاتورها ببینم تا تصمیم بگیرم</td><td><span class="pill orange">P1</span></td></tr>
+    <tr><td>US-10</td><td>همه</td><td>به‌عنوان کاربر، می‌خواهم فیلترهای آماده (۵ فیلتر اصلی) را اجرا کنم تا سریع سهام پیدا کنم</td><td><span class="pill orange">P1</span></td></tr>
+    <tr><td>US-11</td><td>همه</td><td>به‌عنوان کاربر، می‌خواهم اشتراک Pro را بخرم تا دسترسی کامل داشته باشم</td><td><span class="pill green">P0</span></td></tr>
+    <tr><td>US-12</td><td>همه</td><td>به‌عنوان کاربر، می‌خواهم ۷ روز Free Trial داشته باشم تا قبل از پرداخت ارزیابی کنم</td><td><span class="pill green">P0</span></td></tr>
+  </tbody>
+</table>
+
+<!-- 5. FUNCTIONAL REQUIREMENTS -->
+<h1 class="section"><span class="sec-num">۵.</span> الزامات عملکردی (MVP)</h1>
+
+<h2 class="sub">۵.۱ ماژول‌های MVP (۳ ماه)</h2>
+<table>
+  <thead><tr><th>ماژول</th><th>فیچرها</th><th>اولویت</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Auth & Onboarding</strong></td><td>ثبت‌نام با موبایل + OTP، ورود پورتفوی اولیه، انتخاب ریسک‌پذیری</td><td>P0</td></tr>
+    <tr><td><strong>پورتفوی کاربر</strong></td><td>افزودن/حذف سهم، تعداد، قیمت خرید، تاریخ؛ محاسبه‌ی P&amp;L روزانه</td><td>P0</td></tr>
+    <tr><td><strong>Composite Score Engine</strong></td><td>محاسبه‌ی روزانه برای ~۵۰۰۰ نماد فعال؛ ۴ لایه (smart money، تکنیکال، بنیادی، تنوع)</td><td>P0</td></tr>
+    <tr><td><strong>توصیه‌های روزانه</strong></td><td>۵ پیشنهاد خرید + ۳ پیشنهاد فروش به‌صورت روزانه برای کاربر</td><td>P0</td></tr>
+    <tr><td><strong>Backtest Dashboard</strong></td><td>نمایش نتیجه‌ی ۳۰ روزه‌ی توصیه‌های قبلی با شفافیت کامل</td><td>P0</td></tr>
+    <tr><td><strong>هشدار Push</strong></td><td>هشدار توزیع حقوقی در سهم‌های پورتفو، هشدار واگرایی تنوع</td><td>P0</td></tr>
+    <tr><td><strong>صفحه‌ی نماد</strong></td><td>قیمت لحظه‌ای، چارت تکنیکال، اطلاعات بنیادی، تفکیک حقیقی/حقوقی</td><td>P1</td></tr>
+    <tr><td><strong>فیلترهای آماده</strong></td><td>۵ فیلتر اصلی (صف خرید، حجم بالا، P/E پایین، ورود پول، نزدیک کف سال)</td><td>P1</td></tr>
+    <tr><td><strong>پرداخت اشتراک</strong></td><td>درگاه بانکی زرین‌پال، ۷ روز Trial، پلن ماهانه/سالانه</td><td>P0</td></tr>
+    <tr><td><strong>گزارش هفتگی</strong></td><td>خلاصه‌ی عملکرد پورتفو + ۳ فرصت هفته آینده، ارسال به ایمیل</td><td>P1</td></tr>
+  </tbody>
+</table>
+
+<h2 class="sub">۵.۲ فاز ۲ (ماه ۴-۶) — پس از MVP</h2>
+<ul>
+  <li>ربات تلگرام با هشدارهای real-time</li>
+  <li>وب‌اپ React (نسخه‌ی وب)</li>
+  <li>فیلترنویسی پیشرفته (با syntax ساده فارسی)</li>
+  <li>پشتیبانی از بازار ارز دیجیتال</li>
+  <li>گزارش PDF برای مشاوران (حساب‌های چندگانه)</li>
+  <li>Quantum tier برای صندوق‌ها و API access</li>
+</ul>
+
+<h2 class="sub">۵.۳ فاز ۳ (ماه ۷-۱۲)</h2>
+<ul>
+  <li>اپ iOS</li>
+  <li>اتصال به کارگزاری برای معاملات آنلاین</li>
+  <li>شبکه اجتماعی و نظرات کاربران</li>
+  <li>سرخط‌زنی عرضه‌های اولیه</li>
+  <li>API عمومی (B2B) برای سایر اپ‌ها</li>
+</ul>
+
+<!-- 6. NON-FUNCTIONAL -->
+<h1 class="section"><span class="sec-num">۶.</span> الزامات غیرعملکردی</h1>
+
+<table>
+  <thead><tr><th>دسته</th><th>نیاز</th><th>هدف</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Performance</strong></td><td>زمان پاسخ API</td><td>P95 &lt; ۲۰۰ms برای endpoint های کاربر</td></tr>
+    <tr><td></td><td>زمان محاسبه Composite Score روزانه</td><td>کمتر از ۳۰ دقیقه برای ۵۰۰۰ نماد</td></tr>
+    <tr><td></td><td>زمان بارگذاری صفحه‌ی اصلی اپ</td><td>&lt; ۱.۵ ثانیه در 4G</td></tr>
+    <tr><td><strong>Scalability</strong></td><td>تعداد کاربر همزمان</td><td>۱۰٬۰۰۰ کاربر فعال روزانه در سال ۱</td></tr>
+    <tr><td></td><td>تعداد درخواست API روزانه</td><td>۱ میلیون درخواست</td></tr>
+    <tr><td><strong>Availability</strong></td><td>Uptime</td><td>۹۹.۵٪ در ساعات بازار (۸:۴۵-۱۲:۳۰)</td></tr>
+    <tr><td></td><td>Recovery</td><td>RTO &lt; ۱ ساعت، RPO &lt; ۱۵ دقیقه</td></tr>
+    <tr><td><strong>Security</strong></td><td>احراز هویت</td><td>OTP پیامکی + JWT با عمر ۱ ساعت + Refresh Token</td></tr>
+    <tr><td></td><td>ذخیره‌ی داده‌ی پورتفو</td><td>Encrypt at rest (AES-256)، Encrypt in transit (TLS 1.3)</td></tr>
+    <tr><td></td><td>پرداخت</td><td> only از طریق درگاه معتبر بانکی، عدم ذخیره‌ی اطلاعات کارت</td></tr>
+    <tr><td><strong>Compliance</strong></td><td>قانون کسب‌وکار</td><td>اخذ نماد اعتماد الکترونیکی (eNamad) و نشان ساماندهی</td></tr>
+    <tr><td></td><td>قانون حفاظت از داده</td><td>طبق «قانون جرایم رایانه‌ای» و «لایحه حفاظت از داده‌های شخصی»</td></tr>
+    <tr><td><strong>Usability</strong></td><td>یادگیری</td><td>کاربر تازه‌کار در کمتر از ۵ دقیقه پورتفوی خود را وارد کند</td></tr>
+    <tr><td></td><td>دسترسی‌پذیری</td><td>پشتیبانی از TalkBack اندروید، کنتراست کافی</td></tr>
+  </tbody>
+</table>
+
+<!-- 7. WIREFRAMES -->
+<h1 class="section"><span class="sec-num">۷.</span> Wireframes صفحات کلیدی</h1>
+
+<p>چهار صفحه‌ی کلیدی اپلیکیشن اندروید سهام‌یار با wireframe ساده زیر نشان داده شده است. طراحی بر اساس اصول Material Design با رنگ‌بندی آبی-سبز برای حس اعتماد و رشد است.</p>
+
+<h2 class="sub">۷.۱ صفحه‌ی اصلی (Home / Today)</h2>
+<div class="wireframe">
+  <div class="wireframe-title">🏠 صفحه‌ی اصلی — خلاصه‌ی امروز</div>
+  <div class="wf-phone">
+    <div class="wf-status-bar"><span>۹:۴۱</span><span>📶 🔋</span></div>
+    <div class="wf-header"><span>سهام‌یار</span><span>🔔</span></div>
+    <div class="wf-section">
+      <strong>پورتفوی شما</strong><br>
+      ارزش کل: ۱۲۵٬۰۰۰٬۰۰۰ ت<br>
+      <span style="color:#4caf50">+۲.۳٪ امروز</span> · ریسک: متوسط<br>
+      <div class="wf-progress"><div class="wf-progress-fill" style="width:68%"></div></div>
+      تنوع: ۶۸٪ (خوب)
+    </div>
+    <div class="wf-section">
+      <strong>🏆 پیشنهاد خرید امروز</strong>
+      <div class="wf-card">
+        <span class="wf-ticker">شاروم</span>
+        <span class="wf-action wf-buy">خرید قوی</span><br>
+        Score: ۸۲ · P/E: ۶.۷ · ورود پول حقوقی
+      </div>
+      <div class="wf-card">
+        <span class="wf-ticker">فولاد</span>
+        <span class="wf-action wf-buy">خرید</span><br>
+        Score: ۶۸ · کف سال
+      </div>
+      <div class="wf-card">
+        <span class="wf-ticker">وبملت</span>
+        <span class="wf-action wf-hold">نگه‌داری</span><br>
+        Score: ۵۲
+      </div>
+    </div>
+    <div class="wf-tabbar">
+      <div class="wf-tab"><span class="wf-tab-icon">🏠</span>خانه</div>
+      <div class="wf-tab"><span class="wf-tab-icon">📊</span>پورتفو</div>
+      <div class="wf-tab"><span class="wf-tab-icon">💡</span>پیشنهاد</div>
+      <div class="wf-tab"><span class="wf-tab-icon">🔍</span>جستجو</div>
+    </div>
+  </div>
+</div>
+
+<h2 class="sub">۷.۲ صفحه‌ی پورتفو (Portfolio)</h2>
+<div class="wireframe">
+  <div class="wireframe-title">📊 صفحه‌ی پورتفو — مدیریت دارایی‌ها</div>
+  <div class="wf-phone">
+    <div class="wf-status-bar"><span>۹:۴۱</span><span>📶 🔋</span></div>
+    <div class="wf-header"><span>← پورتفوی من</span><span>＋</span></div>
+    <div class="wf-section">
+      <strong>خلاصه</strong><br>
+      ارزش: ۱۲۵M · سود: +۱۸M (+۱۶.۸٪)<br>
+      تمرکز گروه فلزات: <span style="color:#f44336">۳۸٪</span>
+    </div>
+    <div class="wf-section">
+      <strong>دارایی‌ها</strong>
+      <div class="wf-row"><span>فولاد</span><span>۵۰M · +۲.۸٪</span></div>
+      <div class="wf-row"><span>فملی</span><span>۲۵M · +۳٪</span></div>
+      <div class="wf-row"><span>وبملت</span><span>۲۰M · -۰.۵٪</span></div>
+      <div class="wf-row"><span>اخزا</span><span>۱۵M · +۰.۷٪</span></div>
+      <div class="wf-row"><span>سپرده</span><span>۱۵M</span></div>
+    </div>
+    <div class="wf-section">
+      <strong>⚠️ هشدار تنوع</strong><br>
+      <span style="color:#f44336">۳۸٪ در گروه فلزات</span>
+      توصیه: کاهش وزن فولاد یا فملی
+    </div>
+    <div class="wf-tabbar">
+      <div class="wf-tab"><span class="wf-tab-icon">🏠</span>خانه</div>
+      <div class="wf-tab"><span class="wf-tab-icon">📊</span>پورتفو</div>
+      <div class="wf-tab"><span class="wf-tab-icon">💡</span>پیشنهاد</div>
+      <div class="wf-tab"><span class="wf-tab-icon">🔍</span>جستجو</div>
+    </div>
+  </div>
+</div>
+
+<h2 class="sub">۷.۳ صفحه‌ی پیشنهاد (Recommendations)</h2>
+<div class="wireframe">
+  <div class="wireframe-title">💡 صفحه‌ی پیشنهاد — Composite Score</div>
+  <div class="wf-phone">
+    <div class="wf-status-bar"><span>۹:۴۱</span><span>📶 🔋</span></div>
+    <div class="wf-header"><span>← پیشنهاد امروز</span><span>⚙️</span></div>
+    <div class="wf-section">
+      <strong>شاروم — Score: ۸۲</strong><br>
+      <span class="wf-action wf-buy">خرید قوی</span>
+    </div>
+    <div class="wf-section">
+      <strong>تجزیه‌ی Score</strong><br>
+      پول هوشمند: ۳۰/۳۵ ✅<br>
+      تکنیکال: ۲۲/۳۰ ✅<br>
+      بنیادی: ۱۸/۲۰ ✅<br>
+      تنوع پورتفو: ۱۲/۱۵ ✅
+    </div>
+    <div class="wf-section">
+      <strong>چرا خرید؟</strong><br>
+      ✓ ورود پول حقوقی ۳ روز<br>
+      ✓ P/E = ۶.۷ (گروه: ۷.۸۹)<br>
+      ✓ RSI = ۳۲ (اشباع فروش)<br>
+      ✓ هم‌بستگی با پورتفو: ۰.۲
+    </div>
+    <div class="wf-section">
+      <strong>Backtest ۳۰ روزه</strong><br>
+      توصیه‌های مشابه: ۲۴ مورد<br>
+      موفق (سود ۵٪+): ۱۸ (۷۵٪)<br>
+      متوسط بازده: +۸.۲٪
+    </div>
+    <div class="wf-tabbar">
+      <div class="wf-tab"><span class="wf-tab-icon">🏠</span>خانه</div>
+      <div class="wf-tab"><span class="wf-tab-icon">📊</span>پورتفو</div>
+      <div class="wf-tab"><span class="wf-tab-icon">💡</span>پیشنهاد</div>
+      <div class="wf-tab"><span class="wf-tab-icon">🔍</span>جستجو</div>
+    </div>
+  </div>
+</div>
+
+<h2 class="sub">۷.۴ صفحه‌ی جستجوی نماد</h2>
+<div class="wireframe">
+  <div class="wireframe-title">🔍 صفحه‌ی جستجو و فیلتر</div>
+  <div class="wf-phone">
+    <div class="wf-status-bar"><span>۹:۴۱</span><span>📶 🔋</span></div>
+    <div class="wf-header"><span>← جستجو</span><span>☰</span></div>
+    <div class="wf-section">
+      <input placeholder="نماد، نام، ISIN..." style="width:100%; padding:4px; font-size:8pt; border:1px solid #ccc; border-radius:3px;">
+    </div>
+    <div class="wf-section">
+      <strong>فیلترهای آماده</strong>
+      <div class="wf-row"><span>📈 صف خرید</span><span>۲۴ سهم</span></div>
+      <div class="wf-row"><span>💎 حجم بالا</span><span>۱۸ سهم</span></div>
+      <div class="wf-row"><span>✨ P/E پایین</span><span>۳۲ سهم</span></div>
+      <div class="wf-row"><span>💰 ورود پول</span><span>۴۵ سهم</span></div>
+      <div class="wf-row"><span>📉 کف سال</span><span>۱۲ سهم</span></div>
+    </div>
+    <div class="wf-section">
+      <strong>نتایج «فولاد»</strong>
+      <div class="wf-card">فولاد · ۴٬۴۱۰ · +۲.۸٪ · Score: ۷۲</div>
+    </div>
+    <div class="wf-tabbar">
+      <div class="wf-tab"><span class="wf-tab-icon">🏠</span>خانه</div>
+      <div class="wf-tab"><span class="wf-tab-icon">📊</span>پورتفو</div>
+      <div class="wf-tab"><span class="wf-tab-icon">💡</span>پیشنهاد</div>
+      <div class="wf-tab"><span class="wf-tab-icon">🔍</span>جستجو</div>
+    </div>
+  </div>
+</div>
+
+<!-- 8. DATA MODEL -->
+<h1 class="section"><span class="sec-num">۸.</span> Data Model و SQL Schema</h1>
+
+<h2 class="sub">۸.۱ Entity Relationship Diagram (متنی)</h2>
+<div class="arch-diagram">
+  <div class="arch-layer">Symbols (نمادها) <span style="font-weight:normal; font-size:8pt;">— master data</span>
+    <div class="arch-sub">
+      <div class="arch-box">1:N → DailyCandles</div>
+      <div class="arch-box">1:N → ClientTypes</div>
+      <div class="arch-box">1:N → Fundamentals</div>
+    </div>
+  </div>
+  <div class="arch-arrow">↓</div>
+  <div class="arch-layer">IndicatorSnapshots (اندیکاتورهای محاسبه‌شده)
+    <div class="arch-sub">
+      <div class="arch-box">RSI, MFI, MACD, EMA20/50/200</div>
+      <div class="arch-box">روزانه به‌روز می‌شود</div>
+    </div>
+  </div>
+  <div class="arch-arrow">↓</div>
+  <div class="arch-layer">Users <span style="font-weight:normal; font-size:8pt;">— کاربران</span>
+    <div class="arch-sub">
+      <div class="arch-box">1:N → UserHoldings</div>
+      <div class="arch-box">1:N → Subscriptions</div>
+      <div class="arch-box">1:N → Notifications</div>
+    </div>
+  </div>
+  <div class="arch-arrow">↓</div>
+  <div class="arch-layer">DailyScores (Composite Score روزانه هر نماد)
+    <div class="arch-sub">
+      <div class="arch-box">FK → Symbols</div>
+      <div class="arch-box">smart_money / technical / fundamental / diversification</div>
+    </div>
+  </div>
+  <div class="arch-arrow">↓</div>
+  <div class="arch-layer">Recommendations (پیشنهاد روزانه برای هر کاربر)
+    <div class="arch-sub">
+      <div class="arch-box">FK → Users</div>
+      <div class="arch-box">FK → Symbols</div>
+      <div class="arch-box">action: BUY/SELL/HOLD</div>
+    </div>
+  </div>
+  <div class="arch-arrow">↓</div>
+  <div class="arch-layer">BacktestResults (نتیجه‌ی توصیه‌های گذشته)
+    <div class="arch-sub">
+      <div class="arch-box">FK → Recommendations</div>
+      <div class="arch-box">actual_return after 30 days</div>
+    </div>
+  </div>
+</div>
+
+<h2 class="sub">۸.۲ SQL Schema کامل</h2>
+<pre><code>-- ============================================================
+-- سهام‌یار — Database Schema (PostgreSQL)
+-- ============================================================
+
+-- ۱. جدول نمادها (master data از TSETMC)
+CREATE TABLE symbols (
+    ins_code       VARCHAR(18) PRIMARY KEY,    -- 46348559193224090
+    ticker         VARCHAR(20) NOT NULL,        -- فولاد
+    fullname       VARCHAR(100),                -- فولاد مبارکه اصفهان
+    sector_code    INT NOT NULL,                -- 27
+    sector_name    VARCHAR(50),                 -- فلزات اساسی
+    flow           INT,                         -- 1=bourse, 2=fara, 4=base
+    status         VARCHAR(2),                  -- A=فعال, S=متوقف
+    listed_at      DATE,
+    updated_at     TIMESTAMP DEFAULT NOW()
+);
+CREATE INDEX idx_symbols_sector ON symbols(sector_code);
+CREATE INDEX idx_symbols_ticker ON symbols(ticker);
+
+-- ۲. کندل‌های روزانه (هسته‌ی داده‌ی بازار)
+CREATE TABLE daily_candles (
+    ins_code       VARCHAR(18) REFERENCES symbols(ins_code),
+    date_jalali    INT NOT NULL,                -- 14050816
+    open           DECIMAL(18,2),
+    high           DECIMAL(18,2),
+    low            DECIMAL(18,2),
+    close          DECIMAL(18,2),               -- قیمت پایانی
+    last_price     DECIMAL(18,2),               -- آخرین
+    yesterday      DECIMAL(18,2),
+    volume         BIGINT,
+    trade_count    INT,
+    value          BIGINT,                      -- ارزش (ریال)
+    max_allowed    DECIMAL(18,2),               -- +۵٪
+    min_allowed    DECIMAL(18,2),               -- -۵٪
+    PRIMARY KEY (ins_code, date_jalali)
+);
+CREATE INDEX idx_candles_date ON daily_candles(date_jalali);
+
+-- ۳. تفکیک خریدار حقیقی/حقوقی (طلایی!)
+CREATE TABLE client_types (
+    ins_code          VARCHAR(18) REFERENCES symbols(ins_code),
+    date_jalali       INT NOT NULL,
+    buy_real_count    INT,  sell_real_count   INT,
+    buy_legal_count   INT,  sell_legal_count  INT,
+    buy_real_volume   BIGINT, sell_real_volume   BIGINT,
+    buy_legal_volume  BIGINT, sell_legal_volume  BIGINT,
+    buy_real_value    BIGINT, sell_real_value    BIGINT,
+    buy_legal_value   BIGINT, sell_legal_value   BIGINT,
+    PRIMARY KEY (ins_code, date_jalali)
+);
+
+-- ۴. بنیادی (فصلی از کدال)
+CREATE TABLE fundamentals (
+    ins_code       VARCHAR(18) REFERENCES symbols(ins_code),
+    fiscal_period  VARCHAR(10),                 -- 1405/Q1
+    eps            DECIMAL(18,2),
+    estimated_eps  DECIMAL(18,2),
+    sector_pe      DECIMAL(8,2),
+    nav            DECIMAL(18,2),               -- برای صندوق‌ها
+    psv            DECIMAL(18,2),               -- ارزش بازار
+    report_date    DATE,
+    PRIMARY KEY (ins_code, fiscal_period)
+);
+
+-- ۵. اندیکاتورهای از‌پیش‌محاسبه‌شده ( crucial برای Performance)
+CREATE TABLE indicator_snapshots (
+    ins_code       VARCHAR(18) REFERENCES symbols(ins_code),
+    date_jalali    INT NOT NULL,
+    rsi_14         DECIMAL(5,2),
+    mfi_14         DECIMAL(5,2),
+    macd           DECIMAL(18,2),
+    macd_signal    DECIMAL(18,2),
+    ema_20         DECIMAL(18,2),
+    ema_50         DECIMAL(18,2),
+    ema_200        DECIMAL(18,2),
+    volatility_30d DECIMAL(8,4),                -- std of daily returns
+    PRIMARY KEY (ins_code, date_jalali)
+);
+
+-- ۶. Composite Score روزانه هر نماد
+CREATE TABLE daily_scores (
+    ins_code       VARCHAR(18) REFERENCES symbols(ins_code),
+    date_jalali    INT NOT NULL,
+    smart_money    DECIMAL(5,2),                -- -20..+20
+    technical      DECIMAL(5,2),                -- 0..30
+    fundamental    DECIMAL(5,2),                -- 0..20
+    -- diversification به ازای هر کاربر محاسبه می‌شود
+    total_base     DECIMAL(5,2),                -- 0..70 (بدون تنوع)
+    action         VARCHAR(10),                 -- BUY/SELL/HOLD
+    computed_at    TIMESTAMP DEFAULT NOW(),
+    PRIMARY KEY (ins_code, date_jalali)
+);
+CREATE INDEX idx_scores_date_action ON daily_scores(date_jalali, action);
+
+-- ۷. کاربران
+CREATE TABLE users (
+    id             SERIAL PRIMARY KEY,
+    mobile         VARCHAR(11) UNIQUE NOT NULL, -- 09154165210
+    email          VARCHAR(100),
+    risk_profile   VARCHAR(10),                 -- conservative/balanced/aggressive
+    created_at     TIMESTAMP DEFAULT NOW(),
+    last_login     TIMESTAMP
+);
+
+-- ۸. پورتفوی کاربر (دارایی‌ها)
+CREATE TABLE user_holdings (
+    user_id        INT REFERENCES users(id),
+    ins_code       VARCHAR(18) REFERENCES symbols(ins_code),
+    quantity       BIGINT NOT NULL,
+    buy_price      DECIMAL(18,2) NOT NULL,
+    buy_date       DATE,
+    notes          TEXT,
+    PRIMARY KEY (user_id, ins_code)
+);
+
+-- ۹. اشتراک (Subscription)
+CREATE TABLE subscriptions (
+    id             SERIAL PRIMARY KEY,
+    user_id        INT REFERENCES users(id),
+    plan           VARCHAR(10),                 -- trial/pro_monthly/pro_yearly
+    starts_at      TIMESTAMP NOT NULL,
+    ends_at        TIMESTAMP NOT NULL,
+    price_paid     BIGINT,                      -- تومان
+    payment_ref    VARCHAR(50),                 -- مرجع زرین‌پال
+    status         VARCHAR(10)                  -- active/expired/cancelled
+);
+
+-- ۱۰. پیشنهاد روزانه برای هر کاربر
+CREATE TABLE recommendations (
+    id             SERIAL PRIMARY KEY,
+    user_id        INT REFERENCES users(id),
+    ins_code       VARCHAR(18) REFERENCES symbols(ins_code),
+    date_jalali    INT NOT NULL,
+    score          DECIMAL(5,2),
+    action         VARCHAR(15),                 -- strong_buy/buy/hold/reduce/sell
+    reason_smart   TEXT,                        -- توضیح فارسی
+    reason_tech    TEXT,
+    reason_fund    TEXT,
+    reason_div     TEXT,
+    UNIQUE(user_id, ins_code, date_jalali)
+);
+
+-- ۱۱. Backtest نتایج
+CREATE TABLE backtest_results (
+    recommendation_id  INT REFERENCES recommendations(id),
+    evaluated_at    DATE,                       -- ۳۰ روز پس از توصیه
+    actual_return   DECIMAL(8,4),               -- درصد بازده واقعی
+    benchmark_return DECIMAL(8,4),              -- بازده شاخص کل
+    is_success      BOOLEAN,                    -- actual > threshold
+    PRIMARY KEY (recommendation_id)
+);
+
+-- ۱۲. هشدارها و اعلان‌ها
+CREATE TABLE notifications (
+    id             SERIAL PRIMARY KEY,
+    user_id        INT REFERENCES users(id),
+    type           VARCHAR(20),                 -- distribution/rebalance/price
+    ins_code       VARCHAR(18),
+    title          VARCHAR(100),
+    body           TEXT,
+    created_at     TIMESTAMP DEFAULT NOW(),
+    read_at        TIMESTAMP
+);
+</code></pre>
+
+<!-- 9. API SPEC -->
+<h1 class="section"><span class="sec-num">۹.</span> API Specification</h1>
+
+<p>API با استاندارد REST و فرمت JSON طراحی شده. تمام endpoint ها (به‌جز Auth) نیاز به Bearer Token دارند.</p>
+
+<h2 class="sub">۹.۱ فهرست Endpoint های MVP</h2>
+<table class="compact ltr">
+  <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th><th>Auth</th></tr></thead>
+  <tbody>
+    <tr><td>POST</td><td>/api/auth/register</td><td>ثبت‌نام با موبایل + OTP</td><td>—</td></tr>
+    <tr><td>POST</td><td>/api/auth/login</td><td>ورود با OTP</td><td>—</td></tr>
+    <tr><td>POST</td><td>/api/auth/refresh</td><td>Refresh access token</td><td>Refresh</td></tr>
+    <tr><td>GET</td><td>/api/me</td><td>پروفایل کاربر + اشتراک</td><td>Bearer</td></tr>
+    <tr><td>GET</td><td>/api/portfolio</td><td>پورتفوی کاربر + ارزش فعلی</td><td>Bearer</td></tr>
+    <tr><td>POST</td><td>/api/portfolio/holdings</td><td>افزودن سهم به پورتفو</td><td>Bearer</td></tr>
+    <tr><td>DELETE</td><td>/api/portfolio/holdings/{ins_code}</td><td>حذف سهم از پورتفو</td><td>Bearer</td></tr>
+    <tr><td>GET</td><td>/api/portfolio/analysis</td><td>تحلیل تنوع، تمرکز، VaR</td><td>Bearer</td></tr>
+    <tr><td>GET</td><td>/api/recommendations/today</td><td>۵ خرید + ۳ فروش امروز</td><td>Bearer</td></tr>
+    <tr><td>GET</td><td>/api/recommendations/history</td><td>تاریخچه‌ی توصیه‌ها</td><td>Bearer</td></tr>
+    <tr><td>GET</td><td>/api/symbols/{ins_code}</td><td>اطلاعات کامل نماد</td><td>Bearer</td></tr>
+    <tr><td>GET</td><td>/api/symbols/{ins_code}/score</td><td>Composite Score با جزئیات</td><td>Bearer</td></tr>
+    <tr><td>GET</td><td>/api/search?q={query}</td><td>جستجوی نماد</td><td>Bearer</td></tr>
+    <tr><td>GET</td><td>/api/filters/{filter_id}</td><td>اجرای فیلتر آماده</td><td>Bearer</td></tr>
+    <tr><td>GET</td><td>/api/market/state</td><td>وضعیت بازار + شاخص کل</td><td>Bearer</td></tr>
+    <tr><td>GET</td><td>/api/backtest/summary</td><td>آمار Backtest ۳۰/۹۰ روزه</td><td>Bearer</td></tr>
+    <tr><td>GET</td><td>/api/backtest/details</td><td>لیست توصیه‌های گذشته با نتیجه</td><td>Bearer</td></tr>
+    <tr><td>GET</td><td>/api/notifications</td><td>اعلان‌های کاربر</td><td>Bearer</td></tr>
+    <tr><td>POST</td><td>/api/notifications/read/{id}</td><td>علامت‌گذاری به‌عنوان خوانده‌شده</td><td>Bearer</td></tr>
+    <tr><td>POST</td><td>/api/subscriptions/start-trial</td><td>شروع ۷ روز رایگان</td><td>Bearer</td></tr>
+    <tr><td>POST</td><td>/api/subscriptions/checkout</td><td>ایجاد پرداخت زرین‌پال</td><td>Bearer</td></tr>
+    <tr><td>POST</td><td>/api/subscriptions/verify</td><td>تأیید پرداخت و فعال‌سازی</td><td>Bearer</td></tr>
+    <tr><td>GET</td><td>/api/watchlist</td><td>نمادهای نشان‌شده کاربر</td><td>Bearer</td></tr>
+    <tr><td>POST</td><td>/api/watchlist/{ins_code}</td><td>افزودن به نشان‌شده‌ها</td><td>Bearer</td></tr>
+  </tbody>
+</table>
+
+<h2 class="sub">۹.۲ نمونه‌ی درخواست و پاسخ</h2>
+<pre><code># دریافت پیشنهادهای امروز
+curl -X GET https://api.sahamyar.ir/api/recommendations/today \
+  -H "Authorization: Bearer &lt;JWT_ACCESS_TOKEN&gt;"
+
+# پاسخ:
+{
+  "date_jalali": 14050816,
+  "generated_at": "2026-11-07T10:30:00+03:30",
+  "buy_recommendations": [
+    {
+      "ins_code": "3407806799514469",
+      "ticker": "شاروم",
+      "score": 82.4,
+      "action": "strong_buy",
+      "breakdown": {
+        "smart_money": 30.2,
+        "technical": 22.5,
+        "fundamental": 18.0,
+        "diversification": 11.7
+      },
+      "reasons": [
+        "ورود پول حقوقی ۳ روز متوالی (میانگین ۲.۳ میلیارد تومان)",
+        "P/E = 6.7 (زیر P/E گروه ۷.۸۹)",
+        "RSI = 32 (اشباع فروش)",
+        "هم‌بستگی با پورتفو شما: 0.21 (پایین، کمک به تنوع)"
+      ],
+      "suggested_allocation": "۵-۱۰٪ از ارزش پورتفو"
+    }
+    // ... 4 more
+  ],
+  "sell_recommendations": [
+    // 3 sell recommendations
+  ]
+}</code></pre>
+
+<!-- 10. ARCHITECTURE -->
+<h1 class="section"><span class="sec-num">۱۰.</span> معماری فنی</h1>
+
+<h2 class="sub">۱۰.۱ معماری کلی سیستم</h2>
+<div class="arch-diagram">
+  <div class="arch-layer">۱. Data Ingestion Layer (Python)
+    <div class="arch-sub">
+      <div class="arch-box">TSETMC Crawler (هر ۲ دقیقه)</div>
+      <div class="arch-box">Codal Crawler (روزانه)</div>
+      <div class="arch-box">CryptoCompare API (۳۰ دقیقه)</div>
+    </div>
+  </div>
+  <div class="arch-arrow">↓ Apache Kafka</div>
+  <div class="arch-layer">۲. Storage Layer
+    <div class="arch-sub">
+      <div class="arch-box">PostgreSQL (داده‌ی اصلی)</div>
+      <div class="arch-box">Redis (کش + session)</div>
+      <div class="arch-box">TimescaleDB (کندل‌ها)</div>
+    </div>
+  </div>
+  <div class="arch-arrow">↓</div>
+  <div class="arch-layer">۳. Compute Layer (Python Workers)
+    <div class="arch-sub">
+      <div class="arch-box">Indicator Engine (روزانه)</div>
+      <div class="arch-box">Composite Score Engine (روزانه)</div>
+      <div class="arch-box">Recommendation Generator (هر کاربر روزانه)</div>
+      <div class="arch-box">Backtest Worker (هفتگی)</div>
+    </div>
+  </div>
+  <div class="arch-arrow">↓ Celery Queue</div>
+  <div class="arch-layer">۴. API Layer (Node.js + Fastify یا Python + FastAPI)
+    <div class="arch-sub">
+      <div class="arch-box">REST API (24 endpoints)</div>
+      <div class="arch-box">JWT Auth + Rate Limiting</div>
+      <div class="arch-box">WebSocket برای real-time</div>
+    </div>
+  </div>
+  <div class="arch-arrow">↓ HTTPS / WSS</div>
+  <div class="arch-layer">۵. Client Layer
+    <div class="arch-sub">
+      <div class="arch-box">Android App (Kotlin + Jetpack Compose)</div>
+      <div class="arch-box">Web App (React) — فاز ۲</div>
+      <div class="arch-box">iOS (Swift) — فاز ۳</div>
+    </div>
+  </div>
+</div>
+
+<h2 class="sub">۱۰.۲ Stack فنی توصیه‌شده</h2>
+<table class="compact">
+  <thead><tr><th>لایه</th><th>تکنولوژی</th><th>دلیل انتخاب</th></tr></thead>
+  <tbody>
+    <tr><td>Android</td><td>Kotlin + Jetpack Compose + MVVM</td><td>modern، نگهداری آسان، Google-supported</td></tr>
+    <tr><td>Backend API</td><td>Python + FastAPI</td><td>سریع توسعه، auto-doc OpenAPI، هم‌زبان با ML</td></tr>
+    <tr><td>Crawler</td><td>Python + Scrapy + BeautifulSoup</td><td>best practice برای scraping</td></tr>
+    <tr><td>Compute</td><td>Python + Celery + Redis</td><td>async task queue برای محاسبات سنگین</td></tr>
+    <tr><td>Database</td><td>PostgreSQL 15 + TimescaleDB</td><td>relation + time-series در یک DB</td></tr>
+    <tr><td>Cache</td><td>Redis 7</td><td>کش + session + rate limit + pub/sub</td></tr>
+    <tr><td>Auth</td><td>JWT + Refresh Token + OTP via SMS</td><td>ساده، بدون نیاز به IdentityServer سنگین</td></tr>
+    <tr><td>Charting</td><td>TradingView Light Chart (رایگان)</td><td>بهترین نمودار مالی، کم حجم</td></tr>
+    <tr><td>Payment</td><td>زرین‌پال + زرین‌کارت</td><td>محبوب‌ترین درگاه ایران</td></tr>
+    <tr><td>Push Notification</td><td>Firebase Cloud Messaging</td><td>رایگان، قابل اعتماد</td></tr>
+    <tr><td>Deploy</td><td>Docker Compose روی VPS Hetzner یا ArvanCloud</td><td>ارزان، قابل توسعه</td></tr>
+    <tr><td>TLS</td><td>Let's Encrypt + Cert-Manager</td><td>رایگان، خودکار</td></tr>
+  </tbody>
+</table>
+
+<!-- 11. ROADMAP -->
+<h1 class="section"><span class="sec-num">۱۱.</span> نقشه‌ی راه توسعه (Roadmap)</h1>
+
+<h2 class="sub">۱۱.۱ فاز ۱ — MVP (هفته ۱ تا ۱۲)</h2>
+<table class="compact">
+  <thead><tr><th>هفته</th><th>تحویل</th><th>تیم</th></tr></thead>
+  <tbody>
+    <tr><td>۱-۲</td><td>راه‌اندازی infrastructure (PostgreSQL, Redis, VPS, CI/CD)</td><td>DevOps ۱</td></tr>
+    <tr><td>۲-۴</td><td>TSETMC Crawler (symbols, daily_candles, client_types)</td><td>Backend ۱</td></tr>
+    <tr><td>۳-۵</td><td>Indicator Engine (RSI, MFI, MACD, EMA, volatility)</td><td>Backend ۱</td></tr>
+    <tr><td>۴-۶</td><td>Composite Score Engine (۴ لایه + ترکیب)</td><td>ML/Data ۱</td></tr>
+    <tr><td>۵-۷</td><td>API Layer (Auth, Portfolio, Recommendations)</td><td>Backend ۲</td></tr>
+    <tr><td>۶-۸</td><td>Android App: Onboarding, Portfolio, Home</td><td>Android ۱</td></tr>
+    <tr><td>۷-۹</td><td>Android App: Recommendations, Symbol page, Search</td><td>Android ۱</td></tr>
+    <tr><td>۸-۱۰</td><td>Payment (زرین‌پال) + Free Trial flow</td><td>Backend ۲</td></tr>
+    <tr><td>۹-۱۱</td><td>Backtest dashboard + Push notifications</td><td>Android ۱ + Backend ۲</td></tr>
+    <tr><td>۱۱</td><td>Beta testing داخلی (۱۰ کاربر) + bug fix</td><td>همه</td></tr>
+    <tr><td>۱۲</td><td>Publication در کافه‌بازار + myket + کمپین لانچ</td><td>همه</td></tr>
+  </tbody>
+</table>
+
+<h2 class="sub">۱۱.۲ فاز ۲ — Growth (ماه ۴ تا ۶)</h2>
+<ul>
+  <li>ربات تلگرام با Push real-time</li>
+  <li>وب‌اپ React</li>
+  <li>فیلترنویسی پیشرفته</li>
+  <li>ارز دیجیتال + فارکس</li>
+  <li>گزارش PDF برای مشاوران</li>
+  <li>Quantum tier</li>
+</ul>
+
+<h2 class="sub">۱۱.۳ فاز ۳ — Scale (ماه ۷ تا ۱۲)</h2>
+<ul>
+  <li>اپ iOS</li>
+  <li>اتصال به کارگزاری (معاملات آنلاین)</li>
+  <li>شبکه اجتماعی</li>
+  <li>سرخط‌زنی عرضه اولیه</li>
+  <li>API عمومی B2B</li>
+</ul>
+
+<!-- 12. REVENUE MODEL -->
+<h1 class="section"><span class="sec-num">۱۲.</span> مدل درآمدی و قیمت‌گذاری</h1>
+
+<h2 class="sub">۱۲.۱ مدل پیشنهادی: Free Trial + Single Pro</h2>
+
+<div class="callout callout-info">
+  <div class="callout-title">پیشنهاد نهایی</div>
+  <p style="margin:0;">
+  پس از تحلیل bifilter (۱.۵M/ماه) و فست بورس (رایگان) و سهمینو (اشتراکی)،
+  <strong>Free Trial ۷ روز + یک پلن Pro واحد به قیمت ۹۹ هزار تومان/ماه</strong> پیشنهاد می‌شود.
+  این قیمت <strong>۱۵ برابر ارزان‌تر از bifilter</strong> است ولی همچنان برای تیم کوچک پردرآمد خواهد بود.
+  </p>
+</div>
+
+<table>
+  <thead><tr><th>پلن</th><th>قیمت</th><th>مدت</th><th>امکانات</th></tr></thead>
+  <tbody>
+    <tr><td>Free Trial</td><td>رایگان</td><td>۷ روز</td><td>دسترسی کامل (برای ارزیابی)</td></tr>
+    <tr><td>Pro Monthly</td><td>۹۹٬۰۰۰ ت</td><td>ماهانه</td><td>تمام امکانات + Push + گزارش هفتگی</td></tr>
+    <tr><td>Pro Yearly</td><td>۹۹۰٬۰۰۰ ت</td><td>سالانه</td><td>۱۷٪ تخفیف (۲ ماه رایگان)</td></tr>
+  </tbody>
+</table>
+
+<h2 class="sub">۱۲.۲ استدلال قیمت‌گذاری</h2>
+<ul>
+  <li><strong>قیمت پایین:</strong> bifilter با ۱.۵M/ماه فقط به کاربران حرفه‌ای با پورتفوی ۱۰۰M+ دسترسی دارد. سهام‌یار با ۹۹K به کاربران با پورتفوی ۲۰M تا ۵۰M (که اکثریت بازار هستند) دسترسی پیدا می‌کند.</li>
+  <li><strong>Trial ۷ روز:</strong> کاهش اصطکاک — کاربر قبل از پرداخت، محصول را ارزیابی می‌کند. این اعتماد می‌سازد که با «نرخ موفقیت ۷۱٪» bifilter فاقد آن است.</li>
+  <li><strong>سالانه با تخفیف:</strong> افزایش cashflow و کاهش churn. کاربر سالانه LTV بیشتری دارد (۹۹۰K vs ۹۹K×۱۲=۱۱۸۸K، یعنی کم‌تر از سالانه).</li>
+  <li><strong>تک‌پلن برای MVP:</strong> ساده‌سازی عملیات (یک نوع اشتراک، یک flow پرداخت، یک نوع refund). در فاز ۲ Quantum tier اضافه می‌شود.</li>
+</ul>
+
+<h2 class="sub">۱۲.۳ CAC و LTV (تخمین)</h2>
+<table>
+  <thead><tr><th>معیار</th><th>تخمین</th><th>توضیح</th></tr></thead>
+  <tbody>
+    <tr><td>CAC (Customer Acquisition Cost)</td><td>۱۵۰K ت</td><td>تبلیغات اینستاگرام + گروه‌های تلگرامی</td></tr>
+    <tr><td>Conversion Rate (Trial → Pro)</td><td>۱۵٪</td><td>استاندارد SaaS</td></tr>
+    <tr><td>Effective CAC per paying user</td><td>۱۰۰۰K ت</td><td>۱۵۰K / ۱۵٪</td></tr>
+    <tr><td>Churn Rate (ماهانه)</td><td>۵٪</td><td>10% monthly churn = 6.5 ماه متوسط</td></tr>
+    <tr><td>Average LTV (Monthly subscriber)</td><td>~۹۹۰K ت</td><td>۹۹K × ۱۰ ماه average</td></tr>
+    <tr><td>LTV/CAC Ratio</td><td>~۱</td><td><strong>قابل قبول نیست!</strong> نیاز به کاهش CAC یا افزایش retention</td></tr>
+  </tbody>
+</table>
+
+<div class="callout callout-warn">
+  <div class="callout-title">ریسک: LTV/CAC نزدیک به ۱</div>
+  <p style="margin:0;">
+  نسبت LTV/CAC باید حداقل ۳ باشد. در MVP فعلی این نسبت نزدیک به ۱ است. برای بهبود:
+  (۱) ارتقای onboarding برای افزایش conversion به ۲۵٪+؛
+  (۲) افزودن Quantum tier با قیمت ۲۹۹K برای کاربران power؛
+  (۳) فعال‌سازی referral program (هر دعوت موفق = ۱ ماه رایگان).
+  </p>
+</div>
+
+<!-- 13. KPIs -->
+<h1 class="section"><span class="sec-num">۱۳.</span> KPIs و Success Metrics</h1>
+
+<h2 class="sub">۱۳.۱ KPI های اصلی (North Star + Support)</h2>
+<table>
+  <thead><tr><th>KPI</th><th>تعریف</th><th>هدف ماه ۳</th><th>هدف ماه ۶</th><th>هدف ماه ۱۲</th></tr></thead>
+  <tbody>
+    <tr><td><strong>North Star: Paying Users</strong></td><td>تعداد کاربران پرداختی فعال</td><td>۲۰۰</td><td>۱٬۰۰۰</td><td>۵٬۰۰۰</td></tr>
+    <tr><td>App Installs</td><td>تعداد نصب کافه‌بازار + myket</td><td>۵٬۰۰۰</td><td>۲۰٬۰۰۰</td><td>۸۰٬۰۰۰</td></tr>
+    <tr><td>Trial → Pro Conversion</td><td>درصد کاربرانی که بعد از Trial اشتراک می‌خرند</td><td>۱۰٪</td><td>۱۵٪</td><td>۲۰٪</td></tr>
+    <tr><td>Daily Active Users (DAU)</td><td>کاربران فعال روزانه</td><td>۳۰۰</td><td>۱٬۵۰۰</td><td>۸٬۰۰۰</td></tr>
+    <tr><td>DAU/MAU Ratio (Stickiness)</td><td>نسبت کاربر روزانه به ماهانه</td><td>۲۰٪</td><td>۳۰٪</td><td>۴۰٪</td></tr>
+    <tr><td>Monthly Churn</td><td>درصد کاربرانی که اشتراک را لغو می‌کنند</td><td>۱۰٪</td><td>۷٪</td><td>۵٪</td></tr>
+    <tr><td>Avg Session Duration</td><td>میانگین زمان هر session</td><td>۳ دقیقه</td><td>۵ دقیقه</td><td>۷ دقیقه</td></tr>
+    <tr><td>Backtest Success Rate</td><td>درصد توصیه‌های موفق (سود ۵٪+ در ۳۰ روز)</td><td>۶۰٪</td><td>۶۵٪</td><td>۷۰٪</td></tr>
+    <tr><td>API P95 Response Time</td><td>۹۵٪ درخواست‌ها زیر این زمان</td><td>۳۰۰ms</td><td>۲۰۰ms</td><td>۱۵۰ms</td></tr>
+    <tr><td>App Crash Rate</td><td>درصد session های کرش‌شده</td><td>&lt;۲٪</td><td>&lt;۱٪</td><td>&lt;۰.۵٪</td></tr>
+    <tr><td>App Store Rating</td><td>میانگین امتیاز کافه‌بازار</td><td>۴.۰+</td><td>۴.۲+</td><td>۴.۵+</td></tr>
+    <tr><td>MRR (Monthly Recurring Revenue)</td><td>درآمد ماهانه تکرارشونده</td><td>۲۰M</td><td>۱۰۰M</td><td>۵۰۰M</td></tr>
+  </tbody>
+</table>
+
+<h2 class="sub">۱۳.۲ Tracking Plan</h2>
+<p>برای اندازه‌گیری KPI ها، رویدادهای زیر باید Track شوند:</p>
+<ul>
+  <li><code>app_installed</code>, <code>app_opened</code>, <code>user_signed_up</code></li>
+  <li><code>portfolio_added_holding</code>, <code>portfolio_viewed</code></li>
+  <li><code>recommendation_viewed</code>, <code>recommendation_details_opened</code></li>
+  <li><code>trial_started</code>, <code>checkout_initiated</code>, <code>checkout_completed</code></li>
+  <li><code>subscription_cancelled</code>, <code>subscription_renewed</code></li>
+  <li><code>notification_received</code>, <code>notification_clicked</code></li>
+  <li><code>backtest_viewed</code> (مهم برای اعتمادسازی)</li>
+</ul>
+
+<p>ابزار پیشنهادی: Mixpanel (رایگان تا ۱۰۰K MTU) یا PostHog (open-source).</p>
+
+<!-- 14. GTM -->
+<h1 class="section"><span class="sec-num">۱۴.</span> Go-to-Market Strategy</h1>
+
+<h2 class="sub">۱۴.۱ کانال‌های Acquisition (اولویت‌بندی)</h2>
+<table class="compact">
+  <thead><tr><th>کانال</th><th>هزینه تخمینی</th><th>تخمین کاربر</th><th>CAC</th><th>اولویت</th></tr></thead>
+  <tbody>
+    <tr><td>گروه‌های تلگرامی بورسی (۸ گروه پرطرفدار)</td><td>۱۰M/ماه</td><td>۱۰۰۰ نصب</td><td>۱۰K</td><td>P0</td></tr>
+    <tr><td>اینستاگرام (پست تبلیغاتی در پیج‌های بورسی)</td><td>۳۰M/ماه</td><td>۱۵۰۰ نصب</td><td>۲۰K</td><td>P0</td></tr>
+    <tr><td>یوتیوبرهای بورسی (۳-۵ نفری ۱۰K+ subscriber)</td><td>۲۰M/ماه</td><td>۸۰۰ نصب</td><td>۲۵K</td><td>P0</td></tr>
+    <tr><td>ASO کافه‌بازار (بهینه‌سازی عنوان و توضیحات)</td><td>رایگان</td><td>۵۰۰ نصب</td><td>~۰</td><td>P0</td></tr>
+    <tr><td>SEO وبلاگ (مقالات «بهترین فیلتر بورس»)</td><td>۵M/ماه</td><td>۳۰۰ نصب</td><td>۱۷K</td><td>P1</td></tr>
+    <tr><td>Referral Program (۱ ماه رایگان به ازای دعوت)</td><td>~۱۰K/کاربر</td><td>۲۰۰ نصب</td><td>۱۰K</td><td>P1</td></tr>
+    <tr><td>LinkedIn (مشاوران سرمایه‌گذاری)</td><td>۲M/ماه</td><td>۵۰ نصب</td><td>۴۰K</td><td>P2</td></tr>
+  </tbody>
+</table>
+
+<h2 class="sub">۱۴.۲ برنامه‌ی لانچ (هفته ۱ تا ۴ پس از انتشار)</h2>
+<table>
+  <thead><tr><th>هفته</th><th>فعالیت</th><th>هدف</th></tr></thead>
+  <tbody>
+    <tr><td>۱</td><td>Soft launch به ۵۰ کاربر از شبکه‌ی شخصی + جمع‌بندی feedback</td><td>۵۰ نصب، ۱۰ paying</td></tr>
+    <tr><td>۲</td><td>پست در ۸ گروه تلگرامی + انتشار ویدیو در ۲ یوتیوبر</td><td>۵۰۰ نصب، ۵۰ paying</td></tr>
+    <tr><td>۳</td><td>شروع کمپین اینستاگرام + ASO بهینه‌سازی</td><td>۱۵۰۰ نصب، ۱۵۰ paying</td></tr>
+    <tr><td>۴</td><td>فعال‌سازی referral + مقاله وبلاگ «مقایسه با bifilter»</td><td>۳۰۰۰ نصب، ۲۰۰ paying</td></tr>
+  </tbody>
+</table>
+
+<h2 class="sub">۱۴.۳ موقعیت‌یابی (Positioning)</h2>
+<div class="callout callout-success">
+  <div class="callout-title">Promise به کاربر</div>
+  <p style="margin:0;">
+  «سهام‌یار، تنها اپ بورس ایران که <strong>براساس پورتفوی شما</strong> پیشنهاد خرید و فروش می‌دهد — نه فیلترهای آماده‌ای که به همه یکسان داده می‌شود.
+  با الگوریتم شفاف و Backtest قابل بررسی، توصیه‌هایی که اعتماد می‌سازد، نه ادعاهای بی‌اساس.»
+  </p>
+</div>
+
+<!-- 15. RISK -->
+<h1 class="section"><span class="sec-num">۱۵.</span> Risk Register و Mitigation</h1>
+
+<table class="compact">
+  <thead><tr><th>ID</th><th>ریسک</th><th>احتمال</th><th>اثر</th><th>Mitigation</th></tr></thead>
+  <tbody>
+    <tr class="risk-high"><td>R-01</td><td>TSETMC دسترسی crawler را مسدود کند یا ساختار HTML را تغییر دهد</td><td>متوسط</td><td><strong>بحرانی</strong></td><td>کش چند IP، Respect robots.txt، monitoring ساختار HTML، آماده‌سازی backup source (TSEMC API غیررسمی)</td></tr>
+    <tr class="risk-high"><td>R-02</td><td>Backtest نشان دهد الگوریتم موفقیت پایینی دارد (زیر ۵۰٪)</td><td>متوسط</td><td><strong>بحرانی</strong></td><td>توسعه‌ی iteratively با Backtest در طول development، آماده‌سازی روی نسخه‌های مختلف الگوریتم، صادقانه با کاربران</td></tr>
+    <tr class="risk-med"><td>R-03</td><td>رقبا (bifilter) قیمت خود را کاهش دهند یا فیچر مشابه اضافه کنند</td><td>متوسط</td><td>بالا</td><td>حرکت سریع، تمرکز رویBacktest شفاف (که bifilter فرهنگ ندارد)، وفاداری کاربر از طریق کیفیت داده</td></tr>
+    <tr class="risk-med"><td>R-04</td><td>هزینه‌ی سرور با رشد کاربران غیرقابل تحمل شود</td><td>متوسط</td><td>بالا</td><td>استفاده از کش قوی (Redis)، pre-computation Composite Score، انتخاب VPS ارزان (Hetzner)</td></tr>
+    <tr class="risk-med"><td>R-05</td><td>خریداران حقیقی/حقوقی TSETMC با تأخیر بیش از یک روز منتشر شود</td><td>پایین</td><td>متوسط</td><td>design الگوریتم برای تحمل ۲۴ ساعت تأخیر، نمایش «تأخیر داده» به کاربر</td></tr>
+    <tr class="risk-med"><td>R-06</td><td>نماد اعتماد الکترونیکی (eNamad) در زمان لانچ آماده نباشد</td><td>متوسط</td><td>متوسط</td><td>شروع فرآیند در هفته ۱، استفاده از راه‌حل موقت (فروش مستقیم بدون درگاه تا زمان دریافت)</td></tr>
+    <tr class="risk-low"><td>R-07</td><td>تیم کلیدی (Backend یا ML) پروژه را ترک کند</td><td>پایین</td><td>بالا</td><td>Documentation قوی، code review، تسهیم دانش بین اعضا</td></tr>
+    <tr class="risk-low"><td>R-08</td><td>اپ از کافه‌بازار رد شود</td><td>پایین</td><td>متوسط</td><td>پیروی دقیق از قوانین کافه‌بازار، انتشار موازی در myket</td></tr>
+    <tr class="risk-low"><td>R-09</td><td>کاربران از کیفیت پیشنهادها ناراضی باشند</td><td>متوسط</td><td>بالا</td><td>Survey هفتگی، feedback درون‌اپی، آماده‌سازی نسخه‌ی v2 الگوریتم</td></tr>
+    <tr class="risk-low"><td>R-10</td><td>هزینه‌ی تبلیغات افزایش یابد (CAC بالاتر از ۱۵۰K)</td><td>متوسط</td><td>متوسط</td><td>تنوع کانال‌ها، تمرکز روی organic (SEO + referral) برای کاهش وابستگی به paid</td></tr>
+  </tbody>
+</table>
+
+<!-- 16. FINANCIALS -->
+<h1 class="section"><span class="sec-num">۱۶.</span> Financial Projections (۳ ساله)</h1>
+
+<h2 class="sub">۱۶.۱ فرضیات کلیدی</h2>
+<table>
+  <thead><tr><th>فرض</th><th>مقدار</th></tr></thead>
+  <tbody>
+    <tr><td>قیمت اشتراک ماهانه</td><td>۹۹٬۰۰۰ تومان</td></tr>
+    <tr><td>قیمت اشتراک سالانه</td><td>۹۹۰٬۰۰۰ تومان</td></tr>
+    <tr><td>درصد سالانه (از付费 users)</td><td>۳۰٪</td></tr>
+    <tr><td>Avg LTV per paying user</td><td>~۹۹۰K تومان</td></tr>
+    <tr><td>Blend ARPU (ماهانه)</td><td>~۹۰K تومان</td></tr>
+    <tr><td>CAC (ماهانه blended)</td><td>۱۵۰K تومان</td></tr>
+    <tr><td>نرخ churn ماهانه (هدف سال ۲)</td><td>۵٪</td></tr>
+  </tbody>
+</table>
+
+<h2 class="sub">۱۶.۲ تخمین کاربر و درآمد</h2>
+<table class="compact">
+  <thead><tr><th>معیار</th><th>سال ۱</th><th>سال ۲</th><th>سال ۳</th></tr></thead>
+  <tbody>
+    <tr><td>App Installs (انباشته)</td><td>۱۵٬۰۰۰</td><td>۶۰٬۰۰۰</td><td>۱۸۰٬۰۰۰</td></tr>
+    <tr><td>Trial Signups (انباشته)</td><td>۶٬۰۰۰</td><td>۲۴٬۰۰۰</td><td>۷۲٬۰۰۰</td></tr>
+    <tr><td>Conversion Rate</td><td>۱۲٪</td><td>۱۶٪</td><td>۲۰٪</td></tr>
+    <tr><td>Paying Users (انباشته)</td><td>۷۲۰</td><td>۳٬۸۴۰</td><td>۱۴٬۴۰۰</td></tr>
+    <tr><td>Avg Paying (همزمان در سال)</td><td>~۸۰۰</td><td>~۴٬۰۰۰</td><td>~۱۲٬۰۰۰</td></tr>
+    <tr><td><strong>درآمد سالانه</strong></td><td><strong>~۸۰۰M ت</strong></td><td><strong>~۴B ت</strong></td><td><strong>~۱۱.۹B ت</strong></td></tr>
+  </tbody>
+</table>
+
+<h2 class="sub">۱۶.۳ تخمین هزینه‌ها</h2>
+<table class="compact">
+  <thead><tr><th>هزینه</th><th>سال ۱</th><th>سال ۲</th><th>سال ۳</th></tr></thead>
+  <tbody>
+    <tr><td>تیم توسعه (۳ نفر فول‌تایم)</td><td>۳۶۰M</td><td>—</td><td>—</td></tr>
+    <tr><td>تیم توسعه (۵-۷ نفر)</td><td>—</td><td>۱٬۲۰۰M</td><td>۲٬۴۰۰M</td></tr>
+    <tr><td>Marketing &amp; Ads</td><td>۱۲۰M</td><td>۶۰۰M</td><td>۱٬۵۰۰M</td></tr>
+    <tr><td>سرور + Infra</td><td>۴۰M</td><td>۱۵۰M</td><td>۴۰۰M</td></tr>
+    <tr><td>Payments Fee (۲.۵٪)</td><td>۲۰M</td><td>۱۰۰M</td><td>۳۰۰M</td></tr>
+    <tr><td>SMS OTP</td><td>۱۵M</td><td>۶۰M</td><td>۲۰۰M</td></tr>
+    <tr><td>Misc (حقوقی، دفتر، تجهیزات)</td><td>۴۵M</td><td>۱۹۰M</td><td>۴۰۰M</td></tr>
+    <tr><td><strong>مجموع هزینه</strong></td><td><strong>۶۰۰M</strong></td><td><strong>۲٬۳۰۰M</strong></td><td><strong>۵٬۲۰۰M</strong></td></tr>
+  </tbody>
+</table>
+
+<h2 class="sub">۱۶.۴ P&amp;L خلاصه</h2>
+<table>
+  <thead><tr><th>سال</th><th>درآمد</th><th>هزینه</th><th>سود/زیان</th><th>Marge</th></tr></thead>
+  <tbody>
+    <tr><td>سال ۱</td><td>۸۰۰M</td><td>۶۰۰M</td><td>+۲۰۰M</td><td>۲۵٪</td></tr>
+    <tr><td>سال ۲</td><td>۴٬۰۰۰M</td><td>۲٬۳۰۰M</td><td>+۱٬۷۰۰M</td><td>۴۲٪</td></tr>
+    <tr><td>سال ۳</td><td>۱۱٬۹۰۰M</td><td>۵٬۲۰۰M</td><td>+۶٬۷۰۰M</td><td>۵۶٪</td></tr>
+  </tbody>
+</table>
+
+<div class="callout callout-success">
+  <div class="callout-title">Break-even Analysis</div>
+  <p style="margin:0;">
+  با فرض سرمایه‌گذاری اولیه ۶۰۰M تومان در سال ۱، محصول در <strong>ماه ۹-۱۱</strong> به نقطه‌ی سربه‌سر ماهانه می‌رسد (وقتی MRR از هزینه‌های ماهانه جلو می‌افتد). نقطه‌ی سربه‌سر سرمایه‌گذاری (Recoup) در پایان سال ۱ یا اوایل سال ۲ محقق خواهد شد.
+  </p>
+</div>
+
+<!-- 17. RELEASE CRITERIA + OPEN QUESTIONS -->
+<h1 class="section"><span class="sec-num">۱۷.</span> Release Criteria و Open Questions</h1>
+
+<h2 class="sub">۱۷.۱ Release Criteria برای MVP</h2>
+<p>برای انتشار نسخه‌ی ۱.۰ در کافه‌بازار، همه‌ی معیارهای زیر باید تأیید شوند:</p>
+<table>
+  <thead><tr><th>#</th><th>معیار</th><th>هدف</th><th>وضعیت</th></tr></thead>
+  <tbody>
+    <tr><td>۱</td><td>همه ۲۴ endpoint API پیاده‌سازی شده و تست شده</td><td>۱۰۰٪</td><td>☐</td></tr>
+    <tr><td>۲</td><td>Composite Score برای ۵۰۰۰+ نماد محاسبه می‌شود</td><td>روزانه</td><td>☐</td></tr>
+    <tr><td>۳</td><td>اپ اندروید در ۳ گوشی تست شده (Samsung, Xiaomi, Pixel)</td><td>crash rate &lt; ۲٪</td><td>☐</td></tr>
+    <tr><td>۴</td><td>زمان بارگذاری صفحه‌ی اصلی</td><td>&lt; ۱.۵ ثانیه</td><td>☐</td></tr>
+    <tr><td>۵</td><td>پرداخت زرین‌پال end-to-end تست شده</td><td>هزار تست</td><td>☐</td></tr>
+    <tr><td>۶</td><td>Backtest نتایج برای ۹۰ روز گذشته آماده</td><td>۳۰+ توصیه</td><td>☐</td></tr>
+    <tr><td>۷</td><td>نماد اعتماد (eNamad) دریافت شده</td><td>—</td><td>☐</td></tr>
+    <tr><td>۸</td><td>Privacy Policy و Terms of Service منتشر شده</td><td>—</td><td>☐</td></tr>
+    <tr><td>۹</td><td>Beta testing با ۱۰ کاربر واقعی انجام شده</td><td>NPS &gt; ۸</td><td>☐</td></tr>
+    <tr><td>۱۰</td><td>Documentation API و Developer Guide آماده</td><td>۱۰۰٪</td><td>☐</td></tr>
+  </tbody>
+</table>
+
+<h2 class="sub">۱۷.۲ Open Questions (نیازمند تصمیم‌گیری)</h2>
+<table class="compact">
+  <thead><tr><th>#</th><th>سوال</th><th>مسئول</th><th>Deadline</th></tr></thead>
+  <tbody>
+    <tr><td>Q1</td><td>آیا API bifilter به‌عنوان منبع تکمیلی داده استفاده شود یا فقط TSETMC؟</td><td>Product + Legal</td><td>هفته ۲</td></tr>
+    <tr><td>Q2</td><td>ربات تلگرام از روز اول لانچ شود یا فاز ۲؟</td><td>Product</td><td>هفته ۴</td></tr>
+    <tr><td>Q3</td><td>مدل قیمت‌گذاری سالانه با تخفیف بیشتر (۲۰٪ یا ۲۵٪)؟</td><td>Product + Finance</td><td>هفته ۸</td></tr>
+    <tr><td>Q4</td><td>Backtest success threshold برای نمایش «موفق» (۵٪ یا ۳٪ سود)؟</td><td>ML/Data</td><td>هفته ۶</td></tr>
+    <tr><td>Q5</td><td>آیا داده‌ی تاریخی قبل از ۱۴۰۰ مورد نیاز است (برای backtest عمیق‌تر)؟</td><td>Data</td><td>هفته ۳</td></tr>
+    <tr><td>Q6</td><td>VPS ایرانی (ArvanCloud) یا خارجی (Hetzner)؟ تأثیر روی latency و compliance</td><td>DevOps + Legal</td><td>هفته ۲</td></tr>
+    <tr><td>Q7</td><td>آیا OTP از طریق کاوه‌نگار یا فراز SMS ارسال شود؟</td><td>DevOps</td><td>هفته ۱</td></tr>
+    <tr><td>Q8</td><td>تیم اولیه: چند نفر؟ فول‌تایم یا فریلنسر؟</td><td>CEO</td><td>قبل از شروع</td></tr>
+  </tbody>
+</table>
+
+<h2 class="sub">۱۷.۳ گام‌های بعدی (Immediate Next Steps)</h2>
+<ol>
+  <li><strong>هفته ۱:</strong> تصویب این PRD توسط تیم و مشخص شدن تیم اولیه (Backend ۲، Android ۱، DevOps ۱، ML/Data ۱ = ۵ نفر)</li>
+  <li><strong>هفته ۱:</strong> انتخاب VPS، خرید دامنه <code>sahamyar.ir</code>، راه‌اندازی GitHub repository و CI/CD</li>
+  <li><strong>هفته ۲:</strong> شروع توسعه‌ی TSETMC crawler و database schema</li>
+  <li><strong>هفته ۲:</strong> شروع طراحی دقیق UI در Figma (نه فقط wireframe)</li>
+  <li><strong>هفته ۳:</strong> اولین نسخه‌ی Composite Score الگوریتم با backtest روی داده‌ی تاریخی</li>
+  <li><strong>هفته ۴:</strong> تصمیم‌گیری نهایی درباره Q1-Q4</li>
+</ol>
+
+<p style="margin-top: 20px; padding-top: 12px; border-top: 1px solid #d9e4f0; font-size: 9pt; color: #9b9993; text-align: center;">
+این PRD نسخه‌ی ۱.۰ است و بر اساس داده‌های موجود در تاریخ ۱۴۰۵/۰۸/۱۶ تهیه شده است.
+پس از تأیید تیم، در طول توسعه به‌روزرسانی خواهد شد. نسخه‌ی نهایی پس از release اولین MVP
+به عنوان v1.0-final علامت‌گذاری می‌شود.
+</p>
+
+</body>
+</html>
