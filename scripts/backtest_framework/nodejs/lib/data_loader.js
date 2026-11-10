@@ -273,19 +273,27 @@ class DataLoader {
       }
 
       // Calculate average return compared to previous day
+      // Use median instead of mean to be robust against outliers (stock splits, etc.)
       const prevPrices = byDate[dates[i - 1]];
-      let totalReturn = 0;
-      let count = 0;
+      const dailyReturns = [];
 
       for (const insCode in dayPrices) {
         if (prevPrices[insCode] && prevPrices[insCode] > 0) {
-          totalReturn += (dayPrices[insCode] - prevPrices[insCode]) / prevPrices[insCode];
-          count++;
+          const ret = (dayPrices[insCode] - prevPrices[insCode]) / prevPrices[insCode];
+          // Filter extreme returns (data errors from stock splits, etc.)
+          if (ret > -0.5 && ret < 5.0) {  // -50% to +500% per day max
+            dailyReturns.push(ret);
+          }
         }
       }
 
-      if (count > 0) {
-        const avgReturn = totalReturn / count;
+      if (dailyReturns.length > 0) {
+        // Sort and take median (more robust than mean against outliers)
+        dailyReturns.sort((a, b) => a - b);
+        const mid = Math.floor(dailyReturns.length / 2);
+        const avgReturn = dailyReturns.length % 2 === 0
+          ? (dailyReturns[mid - 1] + dailyReturns[mid]) / 2
+          : dailyReturns[mid];
         cumulativeIndex *= (1 + avgReturn);
         indexData.push({
           date_jalali: dates[i],

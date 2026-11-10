@@ -185,12 +185,29 @@ class BacktestEngine {
 
         const exitCandle = futureCandles[horizon];
         const exitPrice = exitCandle.close;
+        
+        // Skip if prices are invalid (zero, negative, or NaN)
+        if (!entryPrice || entryPrice <= 0 || !exitPrice || exitPrice <= 0) continue;
+        
         const returnPct = (exitPrice - entryPrice) / entryPrice * 100;
 
-        // Check stop loss
+        // FILTER: Skip extreme returns — these are data errors (stock splits, 
+        // capital increases, or price corrections that TSETMC didn't adjust)
+        // Real daily returns in Iranian market are capped at ±7% per day
+        // Over 30 days, max realistic return is ~200% (rare IPOs)
+        // Anything beyond ±300% is almost certainly a data error
+        const MAX_REALISTIC_RETURN = 300;  // +300%
+        const MIN_REALISTIC_RETURN = -90;  // -90%
+        if (returnPct > MAX_REALISTIC_RETURN || returnPct < MIN_REALISTIC_RETURN) {
+          continue;  // Skip this evaluation — data error
+        }
+
+        // Check stop loss — use loop instead of Math.min(...spread) for safety
         const futureWindow = futureCandles.slice(1, horizon + 1);
-        const minLow = futureWindow.length > 0
-          ? Math.min(...futureWindow.map(c => c.low)) : entryPrice;
+        let minLow = entryPrice;
+        for (const c of futureWindow) {
+          if (c.low < minLow) minLow = c.low;
+        }
         const stopLossHit = minLow <= entryPrice * (1 - rec.stop_loss_pct);
 
         // Benchmark return
