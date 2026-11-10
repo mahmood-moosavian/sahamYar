@@ -152,7 +152,7 @@ if (candles.length < 5000) {
   console.log('   3. Check crawler output for errors');
 }
 
-if (candleDates.length > 0 && Math.min(...candleDates) > 20000000) {
+if (minDate !== Infinity && minDate > 20000000) {
   console.log('\n📌 Date format issue:');
   console.log('   Dates are Gregorian, need to be Jalali.');
   console.log('   The crawler_v2.js has a dEvenToJalali() function.');
