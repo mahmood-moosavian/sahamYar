@@ -425,8 +425,13 @@ function pricePositionSignal(insCode, onDate, dataLoader) {
     return { score: 0, max: 7, reasons: ['داده‌ی کافی برای کف/سقف سال نیست'], confidence: 0.2 };
   }
 
-  const yearHigh = Math.max(...candles.map(c => c.high));
-  const yearLow = Math.min(...candles.map(c => c.low));
+  // Use loop instead of Math.max/min(...spread) for safety
+  let yearHigh = -Infinity;
+  let yearLow = Infinity;
+  for (const c of candles) {
+    if (c.high > yearHigh) yearHigh = c.high;
+    if (c.low < yearLow) yearLow = c.low;
+  }
   const currentClose = candles[candles.length - 1].close;
 
   if (yearHigh === yearLow) {

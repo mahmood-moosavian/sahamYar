@@ -55,7 +55,12 @@ class BacktestEngine {
       .sort((a, b) => a - b);
 
     // Need at least 200 days of history before first decision date
-    const minDate = Math.min(...candles.map(c => c.date_jalali).filter(d => d > 0));
+    // Use reduce instead of Math.min(...spread) to avoid stack overflow on large arrays
+    let minDate = Infinity;
+    for (const c of candles) {
+      if (c.date_jalali > 0 && c.date_jalali < minDate) minDate = c.date_jalali;
+    }
+    if (minDate === Infinity) minDate = 0;
     tradingDates = tradingDates.filter(d => d - minDate >= 200);
 
     console.log(`Backtest period: ${tradingDates[0] || 'N/A'} to ${tradingDates[tradingDates.length - 1] || 'N/A'}`);
