@@ -206,12 +206,32 @@ async function crawlSymbols() {
   }).filter(s => s.ins_code && s.ins_code !== '0');
 
   if (symbols.length > 0) {
+    // Show breakdown by flow type
+    const flowCounts = {};
+    symbols.forEach(s => {
+      flowCounts[s.flow] = (flowCounts[s.flow] || 0) + 1;
+    });
+    console.log(`  Flow breakdown:`);
+    Object.entries(flowCounts).forEach(([flow, count]) => {
+      const flowName = { '1': 'بورس', '2': 'فرابورس', '3': 'بازار پایه/اختیار', '4': 'صندوق' }[flow] || `flow=${flow}`;
+      console.log(`    ${flowName}: ${count}`);
+    });
+
+    // Sort: flow=1 (بورس) first, then flow=2 (فرابورس), then by ticker
+    symbols.sort((a, b) => {
+      const flowOrder = { '1': 0, '2': 1, '4': 2, '3': 3 };
+      const fa = flowOrder[a.flow] ?? 9;
+      const fb = flowOrder[b.flow] ?? 9;
+      if (fa !== fb) return fa - fb;
+      return a.ticker.localeCompare(b.ticker);
+    });
+
     saveCsv('symbols.csv', symbols);
-    console.log(`  ✓ Found ${symbols.length} symbols`);
+    console.log(`  ✓ Found ${symbols.length} symbols (sorted: بورس → فرابورس → others)`);
     console.log(`  ✓ Saved to data/csv/symbols.csv`);
 
-    // Show sample
-    console.log(`\n  Sample symbols:`);
+    // Show sample (now showing بورس stocks first)
+    console.log(`\n  Sample symbols (بورس first):`);
     symbols.slice(0, 5).forEach(s => {
       console.log(`    ${s.ticker} → ${s.ins_code} (flow=${s.flow}, status=${s.status})`);
     });
@@ -363,12 +383,17 @@ async function crawlAll(maxSymbols = null) {
     return;
   }
 
-  // Filter active symbols
+  // Filter: only active AND only بورس (flow=1) or فرابورس (flow=2)
+  // Skip options (flow=3) and other special instruments
   let activeSymbols = symbols.filter(s =>
-    s.status === 'A' && s.ins_code && /^\d+$/.test(s.ins_code)
+    s.status === 'A' &&
+    s.ins_code &&
+    /^\d+$/.test(s.ins_code) &&
+    (s.flow === '1' || s.flow === '2')  // Only بورس and فرابورس
   );
 
-  console.log(`\n  Active symbols: ${activeSymbols.length}`);
+  console.log(`\n  Active بورس+فرابورس symbols: ${activeSymbols.length}`);
+  console.log(`  (Filtered out options, funds, and other special instruments)`);
 
   if (maxSymbols) {
     activeSymbols = activeSymbols.slice(0, maxSymbols);
@@ -380,6 +405,15 @@ async function crawlAll(maxSymbols = null) {
   console.log('STEP 2: Crawling candles and client types...');
   console.log('============================================================\n');
 
+  // SANITY CHECK: Test فولاد first to verify API works
+  console.log('  Sanity check: Testing فولاد (46348559193224090)...');
+  const testCandles = await crawlCandles('46348559193224090');
+  if (testCandles.length > 0) {
+    console.log(`  ✓ فولاد: ${testCandles.length} candles. API is working!\n`);
+  } else {
+    console.log(`  ✗ فولاد returned 0 candles. API may have issues.\n`);
+  }
+
   // Clear old files
   const candlesFile = path.join(DATA_DIR, 'daily_candles.csv');
   const clientTypesFile = path.join(DATA_DIR, 'client_types.csv');
@@ -390,6 +424,7 @@ async function crawlAll(maxSymbols = null) {
   let totalCandles = 0;
   let totalClientTypes = 0;
   let failed = 0;
+  let successCount = 0;
 
   for (let idx = 0; idx < activeSymbols.length; idx++) {
     const sym = activeSymbols[idx];
@@ -400,22 +435,23 @@ async function crawlAll(maxSymbols = null) {
 
     const pct = ((idx + 1) / activeSymbols.length * 100).toFixed(1);
     const elapsed = ((Date.now() - startTime) / 1000).toFixed(0);
-    const eta = idx > 0
-      ? Math.round((Date.now() - startTime) / (idx + 1) * (activeSymbols.length - idx - 1) / 1000)
-      : '?';
-
-    process.stdout.write(`[${idx + 1}/${activeSymbols.length}] ${pct}% | ${ticker.padEnd(12)} | ${elapsed}s elapsed | ETA: ${eta}s\r`);
 
     // Crawl candles
+    let candleCount = 0;
     try {
       const candles = await crawlCandles(insCode);
-      if (candles.length > 0) {
+      candleCount = candles.length;
+      if (candleCount > 0) {
         appendCsv('daily_candles.csv', candles);
-        totalCandles += candles.length;
+        totalCandles += candleCount;
+        successCount++;
       }
     } catch (e) {
       failed++;
     }
+
+    // Show progress with candle count
+    process.stdout.write(`[${idx + 1}/${activeSymbols.length}] ${pct}% | ${ticker.padEnd(15)} | ${candleCount} candles | ${elapsed}s\r`);
 
     // Crawl client types (today only)
     try {
