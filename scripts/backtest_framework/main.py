@@ -65,12 +65,30 @@ def run_backtest(config_path: str = None, walk_forward: bool = True,
                  output_dir: str = None):
     """Run the complete backtest"""
     
-    # Load config
+    # Load config — try JSON first (no dependency), fall back to YAML
     if config_path is None:
-        config_path = SCRIPT_DIR / "config.yaml"
+        # Prefer JSON if available (no PyYAML dependency needed)
+        json_path = SCRIPT_DIR / "config.json"
+        yaml_path = SCRIPT_DIR / "config.yaml"
+        if json_path.exists():
+            config_path = json_path
+        else:
+            config_path = yaml_path
     
+    import json
     with open(config_path, 'r', encoding='utf-8') as f:
-        config = yaml.safe_load(f)
+        if str(config_path).endswith('.json'):
+            config = json.load(f)
+        else:
+            try:
+                import yaml
+                config = yaml.safe_load(f)
+            except ImportError:
+                print("✗ Error: PyYAML not installed and config.yaml is YAML format.")
+                print("  Solution 1: pip install pyyaml")
+                print(f"  Solution 2: Use config.json instead (already exists)")
+                print(f"  Solution 3: pip install pyyaml --only-binary :all:")
+                sys.exit(1)
     
     if output_dir:
         config.setdefault('OUTPUT', {})['output_dir'] = output_dir

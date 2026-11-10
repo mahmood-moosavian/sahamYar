@@ -1,0 +1,90 @@
+{
+  "DATA_SOURCE": "csv",
+  "CSV": {
+    "data_dir": "data/csv"
+  },
+  "POSTGRES": {
+    "host": "localhost",
+    "port": 5432,
+    "database": "sahamyar",
+    "user": "postgres",
+    "password": ""
+  },
+  "BACKTEST": {
+    "start_date": 14030101,
+    "end_date": 14040331,
+    "train_window_days": 252,
+    "test_window_days": 126,
+    "step_days": 63,
+    "evaluation_horizons": [7, 14, 30, 60, 90],
+    "success_threshold_pct": 5.0,
+    "benchmark": "tedpix",
+    "daily_buy_recommendations": 2,
+    "daily_sell_recommendations": 1,
+    "sample_symbols_per_day": 30
+  },
+  "COMPOSITE_SCORE": {
+    "smart_money": {
+      "weight": 35,
+      "sub_signals": {
+        "net_legal_value_5d": 15,
+        "accumulation_pattern": 12,
+        "smart_money_consistency": 8
+      }
+    },
+    "technical": {
+      "weight": 30,
+      "sub_signals": {
+        "rsi_14": 8,
+        "mfi_14": 7,
+        "macd_crossover": 8,
+        "trend_alignment": 7
+      }
+    },
+    "fundamental": {
+      "weight": 20,
+      "sub_signals": {
+        "pe_below_sector": 12,
+        "eps_growth": 8
+      }
+    },
+    "diversification": {
+      "weight": 15,
+      "sub_signals": {
+        "low_correlation": 10,
+        "new_sector": 5
+      }
+    },
+    "base_volume": {"weight": 8},
+    "buyer_capita": {"weight": 8},
+    "price_position": {"weight": 7}
+  },
+  "RISK": {
+    "default_stop_loss_pct": 12.0,
+    "default_target_pct": 17.0,
+    "confidence_levels": [0.05, 0.50, 0.95],
+    "max_position_size_pct": 10.0,
+    "sector_concentration_warning_pct": 30.0
+  },
+  "BIAS_CHECKS": {
+    "check_eps_availability": true,
+    "check_client_type_delay": true,
+    "client_type_delay_days": 1,
+    "include_delisted_symbols": true,
+    "min_train_samples": 1000,
+    "min_test_samples": 200
+  },
+  "OUTPUT": {
+    "output_dir": "output",
+    "html_report": true,
+    "report_filename": "backtest_report.html",
+    "save_raw_results": true,
+    "raw_results_filename": "backtest_results.json",
+    "save_recommendations_csv": true,
+    "recommendations_filename": "all_recommendations.csv"
+  },
+  "LOGGING": {
+    "level": "INFO",
+    "file": "output/backtest.log"
+  }
+}

@@ -1,12 +1,10 @@
-"""
-Data Loader for Backtest Framework
+"""Data Loader for Backtest Framework
 Loads data from CSV files or PostgreSQL into pandas DataFrames.
 """
 import os
 from pathlib import Path
 from typing import Dict, Optional
 import pandas as pd
-import yaml
 
 
 class DataLoader:
@@ -14,10 +12,29 @@ class DataLoader:
     
     def __init__(self, config_path: str = None):
         if config_path is None:
-            config_path = Path(__file__).parent.parent / "config.yaml"
+            # Prefer JSON config (no PyYAML dependency)
+            json_path = Path(__file__).parent.parent / "config.json"
+            yaml_path = Path(__file__).parent.parent / "config.yaml"
+            if json_path.exists():
+                config_path = json_path
+            else:
+                config_path = yaml_path
         
+        import json
         with open(config_path, 'r', encoding='utf-8') as f:
-            self.config = yaml.safe_load(f)
+            if str(config_path).endswith('.json'):
+                self.config = json.load(f)
+            else:
+                try:
+                    import yaml
+                    self.config = yaml.safe_load(f)
+                except ImportError:
+                    raise ImportError(
+                        "PyYAML not installed. Either:\n"
+                        "  1. pip install pyyaml\n"
+                        "  2. Use config.json (recommended)\n"
+                        "  3. pip install pyyaml --only-binary :all:"
+                    )
         
         self.data_source = self.config['DATA_SOURCE']
         self._symbols = None

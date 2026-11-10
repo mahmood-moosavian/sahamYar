@@ -6,8 +6,8 @@ pandas>=2.0.0
 numpy>=1.24.0
 
 # Database (optional - only if using PostgreSQL)
-psycopg2-binary>=2.9.0
 SQLAlchemy>=2.0.0
+psycopg2-binary>=2.9.0
 
 # Scientific
 scipy>=1.11.0
@@ -18,8 +18,9 @@ jinja2>=3.1.0
 # Visualization (for HTML report)
 matplotlib>=3.7.0
 
-# Configuration
-PyYAML>=6.0
+# Configuration (OPTIONAL - JSON config is used by default)
+# PyYAML is only needed if you use config.yaml instead of config.json
+# PyYAML>=6.0
 
 # Utilities
 python-dateutil>=2.8.0
