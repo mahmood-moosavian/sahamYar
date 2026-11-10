@@ -108,10 +108,16 @@ if (candles.length === 0) {
   issues.push(`Very few candles (${candles.length}) — crawler may not have fetched full history`);
 }
 
-const candleDates = candles.map(c => c.date_jalali).filter(d => d > 0);
-if (candleDates.length > 0) {
-  const minDate = Math.min(...candleDates);
-  const maxDate = Math.max(...candleDates);
+// Use loop instead of Math.min/max(...spread) to avoid stack overflow
+let minDate = Infinity;
+let maxDate = -Infinity;
+for (const c of candles) {
+  if (c.date_jalali > 0) {
+    if (c.date_jalali < minDate) minDate = c.date_jalali;
+    if (c.date_jalali > maxDate) maxDate = c.date_jalali;
+  }
+}
+if (minDate !== Infinity) {
   const dateSpan = maxDate - minDate;
 
   // Check if dates look like Jalali (should start with 13xx or 14xx)

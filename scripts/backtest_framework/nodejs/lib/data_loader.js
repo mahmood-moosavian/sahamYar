@@ -217,13 +217,86 @@ class DataLoader {
   }
 
   getBenchmarkReturn(onDate, horizonDays) {
+    // Try market_index.csv first
     const idx = this.loadMarketIndex();
-    const future = idx.filter(i => i.date_jalali >= onDate);
-    if (future.length <= horizonDays) return 0;
-    const start = future[0].index_value;
-    const end = future[horizonDays].index_value;
-    if (start === 0) return 0;
-    return (end - start) / start * 100;
+    if (idx.length > horizonDays) {
+      const future = idx.filter(i => i.date_jalali >= onDate);
+      if (future.length > horizonDays) {
+        const start = future[0].index_value;
+        const end = future[horizonDays].index_value;
+        if (start > 0) return (end - start) / start * 100;
+      }
+    }
+
+    // Fallback: build synthetic market index from candles (equal-weighted)
+    const synthIdx = this._getSyntheticMarketIndex();
+    const future = synthIdx.filter(i => i.date_jalali >= onDate);
+    if (future.length > horizonDays) {
+      const start = future[0].index_value;
+      const end = future[horizonDays].index_value;
+      if (start > 0) return (end - start) / start * 100;
+    }
+
+    return 0;
+  }
+
+  // Build a synthetic equal-weighted market index from candle data
+  // Used when market_index.csv is empty (TSETMC doesn't provide historical index)
+  _getSyntheticMarketIndex() {
+    if (this._syntheticIndex) return this._syntheticIndex;
+
+    const candles = this.loadCandles();
+
+    // Group by date
+    const byDate = {};
+    for (const c of candles) {
+      if (c.date_jalali > 0 && c.close > 0) {
+        if (!byDate[c.date_jalali]) byDate[c.date_jalali] = {};
+        byDate[c.date_jalali][c.ins_code] = c.close;
+      }
+    }
+
+    const dates = Object.keys(byDate).map(Number).sort((a, b) => a - b);
+    const indexData = [];
+    let cumulativeIndex = 1000; // base value
+
+    for (let i = 0; i < dates.length; i++) {
+      const dayPrices = byDate[dates[i]];
+
+      if (i === 0) {
+        indexData.push({
+          date_jalali: dates[i],
+          index_value: cumulativeIndex,
+          index_change_pct: 0,
+        });
+        continue;
+      }
+
+      // Calculate average return compared to previous day
+      const prevPrices = byDate[dates[i - 1]];
+      let totalReturn = 0;
+      let count = 0;
+
+      for (const insCode in dayPrices) {
+        if (prevPrices[insCode] && prevPrices[insCode] > 0) {
+          totalReturn += (dayPrices[insCode] - prevPrices[insCode]) / prevPrices[insCode];
+          count++;
+        }
+      }
+
+      if (count > 0) {
+        const avgReturn = totalReturn / count;
+        cumulativeIndex *= (1 + avgReturn);
+        indexData.push({
+          date_jalali: dates[i],
+          index_value: cumulativeIndex,
+          index_change_pct: avgReturn * 100,
+        });
+      }
+    }
+
+    this._syntheticIndex = indexData;
+    return indexData;
   }
 
   summary() {
