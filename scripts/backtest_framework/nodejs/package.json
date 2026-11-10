@@ -1,0 +1,12 @@
+{
+  "name": "sahamyar-backtest",
+  "version": "1.0.0",
+  "description": "SahamYar Backtest Framework (Node.js) — Portfolio-based stock recommendation validation",
+  "main": "backtest.js",
+  "scripts": {
+    "start": "node backtest.js",
+    "backtest": "node backtest.js",
+    "test": "node backtest.js --mode quick"
+  },
+  "dependencies": {}
+}
