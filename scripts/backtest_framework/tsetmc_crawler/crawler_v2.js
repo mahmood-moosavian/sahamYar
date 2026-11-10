@@ -185,8 +185,7 @@ async function crawlSymbols() {
   }
 
   const symbols = data.marketwatch.map(item => {
-    // Determine status from yMarNSC field
-    let status = 'A';  // Active
+    let status = 'A';
     if (item.yMarNSC === 'AS' || item.yMarNSC === 'NO') {
       status = item.yMarNSC === 'AS' ? 'S' : 'A';
     }
@@ -199,11 +198,29 @@ async function crawlSymbols() {
       sector_name: '',
       flow: String(item.flow || '1'),
       status: status,
+      eps: parseFloat(item.eps || 0),
+      pe: parseFloat(item.pe || 0),
       listed_at: '',
       delisted_at: '',
       updated_at: new Date().toISOString().replace('T', ' ').substring(0, 19),
     };
   }).filter(s => s.ins_code && s.ins_code !== '0');
+
+  // NEW: Save fundamentals from MarketWatch (EPS and PE are available here!)
+  if (symbols.length > 0) {
+    const fundamentals = symbols.map(s => ({
+      ins_code: s.ins_code,
+      fiscal_period: 'current',
+      eps: s.eps || 0,
+      estimated_eps: s.eps || 0,  // Use EPS as estimate (TSETMC doesn't provide separate estimate)
+      sector_pe: s.pe || 0,       // PE from TSETMC
+      nav: 0,
+      report_date: new Date().toISOString().substring(0, 10),
+    })).filter(f => f.eps > 0 || f.sector_pe > 0);
+
+    saveCsv('fundamentals.csv', fundamentals);
+    console.log(`  ✓ Saved ${fundamentals.length} fundamental records (EPS, PE) to fundamentals.csv`);
+  }
 
   if (symbols.length > 0) {
     // Show breakdown by flow type
@@ -341,6 +358,65 @@ function loadState() {
 }
 
 // ============================================================
+// Market Index (TEDPIX) — Historical daily values
+// ============================================================
+
+async function crawlMarketIndex() {
+  console.log('\n  Fetching market index (TEDPIX) history...');
+
+  // TEDPIX InsCode — شاخص کل
+  const TEDPIX_INSCODE = '32097828799138957';
+  const url = `${CDN_API}/ClosingPrice/GetClosingPriceDailyList/${TEDPIX_INSCODE}/999999`;
+  const data = await makeRequest(url);
+
+  if (!data || !data.closingPriceDaily) {
+    console.log('  ⚠ No market index data from TEDPIX InsCode, trying alternative...');
+
+    // Try alternative: use MarketOverview for today + calculate historical from all symbols
+    const overviewUrl = `${CDN_API}/MarketData/GetMarketOverview/0`;
+    const overview = await makeRequest(overviewUrl);
+
+    if (overview && overview.marketOverview) {
+      const mo = overview.marketOverview;
+      const today = new Date();
+      const dateJalali = gregorianToJalaliInt(today.getFullYear(), today.getMonth() + 1, today.getDate());
+
+      const indexData = [{
+        date_jalali: dateJalali,
+        index_value: mo.indexLastValue || 0,
+        index_change_pct: mo.indexChange && mo.indexLastValue
+          ? (mo.indexChange / (mo.indexLastValue - mo.indexChange) * 100) : 0,
+      }];
+
+      saveCsv('market_index.csv', indexData);
+      console.log(`  ✓ Saved ${indexData.length} market index records (today only from MarketOverview)`);
+      return indexData;
+    }
+    return [];
+  }
+
+  const indexData = data.closingPriceDaily.map(item => {
+    const dateJalali = dEvenToJalali(item.dEven);
+    const close = parseFloat(item.pClosing || 0);
+    const yesterday = parseFloat(item.priceYesterday || close);
+    const changePct = yesterday > 0 ? ((close - yesterday) / yesterday * 100) : 0;
+
+    return {
+      date_jalali: dateJalali,
+      index_value: close,
+      index_change_pct: changePct,
+    };
+  }).filter(d => d.date_jalali > 0 && d.index_value > 0);
+
+  if (indexData.length > 0) {
+    saveCsv('market_index.csv', indexData);
+    console.log(`  ✓ Saved ${indexData.length} market index records (historical TEDPIX)`);
+  }
+
+  return indexData;
+}
+
+// ============================================================
 // Main Crawl
 // ============================================================
 
@@ -474,6 +550,9 @@ async function crawlAll(maxSymbols = null) {
 
   // Save final state
   saveState(crawled);
+
+  // Step 3: Crawl market index (TEDPIX)
+  await crawlMarketIndex();
 
   // Summary
   const duration = ((Date.now() - startTime) / 1000).toFixed(0);

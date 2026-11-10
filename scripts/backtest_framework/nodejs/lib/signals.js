@@ -272,27 +272,38 @@ function fundamentalSignal(insCode, onDate, dataLoader) {
 
   const currentPrice = candles[candles.length - 1].close;
   const eps = parseFloat(latest.eps || latest.estimated_eps || 0);
-  const sectorPe = parseFloat(latest.sector_pe || 0);
+  // PE from TSETMC MarketWatch (this is the symbol's own PE, not sector average)
+  const tsetmcPe = parseFloat(latest.sector_pe || 0);
 
-  // Sub-signal 1: P/E relative to sector (12 pts)
+  // Calculate PE from price and EPS if TSETMC PE is not available
+  let pe = tsetmcPe;
+  if ((!pe || pe <= 0) && eps > 0) {
+    pe = currentPrice / eps;
+  }
+
+  // Sub-signal 1: P/E valuation (12 pts) — using absolute thresholds for Iranian market
   let peScore = 0, peReason = '';
-  if (eps > 0 && sectorPe > 0) {
-    const pe = currentPrice / eps;
-    if (pe < sectorPe * 0.85) {
+  if (pe > 0 && eps > 0) {
+    if (pe < 5) {
       peScore = 12;
-      peReason = `P/E = ${pe.toFixed(1)} (زیر P/E گروه ${sectorPe.toFixed(1)})`;
-    } else if (pe < sectorPe) {
-      peScore = 8.4;
-      peReason = `P/E = ${pe.toFixed(1)} (کمی زیر گروه)`;
-    } else if (pe < sectorPe * 1.15) {
-      peScore = 3.6;
-      peReason = `P/E = ${pe.toFixed(1)} (نزدیک گروه)`;
+      peReason = `P/E = ${pe.toFixed(1)} (بسیار زیر ارزش — فرصت خرید)`;
+    } else if (pe < 8) {
+      peScore = 9;
+      peReason = `P/E = ${pe.toFixed(1)} (زیر ارزش)`;
+    } else if (pe < 12) {
+      peScore = 6;
+      peReason = `P/E = ${pe.toFixed(1)} (منصفانه)`;
+    } else if (pe < 18) {
+      peScore = 3;
+      peReason = `P/E = ${pe.toFixed(1)} (کمی گران)`;
     } else {
       peScore = 0;
       peReason = `P/E = ${pe.toFixed(1)} (گران)`;
     }
+  } else if (eps <= 0) {
+    peReason = 'EPS منفی یا صفر — ارزیابی P/E ناممکن';
   } else {
-    peReason = 'EPS منفی یا صفر';
+    peReason = 'P/E قابل محاسبه نیست';
   }
 
   // Sub-signal 2: EPS growth (8 pts)

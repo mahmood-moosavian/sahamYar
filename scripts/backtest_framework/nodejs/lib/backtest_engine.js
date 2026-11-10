@@ -93,10 +93,21 @@ class BacktestEngine {
     const activeSymbols = this.dataLoader.getActiveSymbols();
     console.log(`Active symbols: ${activeSymbols.length}`);
 
+    // NEW: Filter to only symbols that HAVE candle data
+    // Build a set of ins_codes that have candles
+    const symbolsWithCandles = new Set(candles.map(c => c.ins_code));
+    const symbolsWithData = activeSymbols.filter(s => symbolsWithCandles.has(s.ins_code));
+    console.log(`Symbols with candle data: ${symbolsWithData.length}`);
+
+    if (symbolsWithData.length === 0) {
+      console.log(`\n⚠ No symbols have candle data! Run the crawler first.`);
+      return { recommendations: [], evaluated: [] };
+    }
+
     // Sample symbols (deterministic for reproducibility)
-    const sampledSymbols = activeSymbols
+    const sampledSymbols = symbolsWithData
       .sort((a, b) => a.ins_code.localeCompare(b.ins_code))
-      .slice(0, Math.min(sampleSize, activeSymbols.length));
+      .slice(0, Math.min(sampleSize, symbolsWithData.length));
 
     console.log(`Sampling ${sampledSymbols.length} symbols per day\n`);
 

@@ -1,0 +1,141 @@
+{
+  "summary": {
+    "total_recommendations": 1465,
+    "overall": {
+      "n": 293,
+      "success_rate": 15.7,
+      "beats_benchmark_rate": 15.7,
+      "avg_return_pct": -1.83,
+      "avg_excess_return_pct": -1.83,
+      "sharpe": -0.282,
+      "sharpe_annualized": -0.817,
+      "sortino": -0.511,
+      "max_drawdown_pct": -99.77,
+      "avg_win_pct": 5.34,
+      "avg_loss_pct": -5.9,
+      "profit_factor": 0.51,
+      "stop_loss_hit_rate": 3.07,
+      "decision": "FAIL"
+    },
+    "by_horizon": {
+      "7": {
+        "n": 293,
+        "success_rate": 1.71,
+        "beats_benchmark_rate": 1.71,
+        "avg_return_pct": -0.38,
+        "avg_excess_return_pct": -0.38,
+        "sharpe": -0.133,
+        "sharpe_annualized": -0.797,
+        "sortino": -0.204,
+        "max_drawdown_pct": -78.39,
+        "avg_win_pct": 2.31,
+        "avg_loss_pct": -1.96,
+        "profit_factor": 0.69,
+        "stop_loss_hit_rate": 0.68,
+        "decision": "FAIL"
+      },
+      "14": {
+        "n": 293,
+        "success_rate": 11.26,
+        "beats_benchmark_rate": 11.26,
+        "avg_return_pct": -0.83,
+        "avg_excess_return_pct": -0.83,
+        "sharpe": -0.201,
+        "sharpe_annualized": -0.852,
+        "sortino": -0.343,
+        "max_drawdown_pct": -93.4,
+        "avg_win_pct": 3.91,
+        "avg_loss_pct": -3.13,
+        "profit_factor": 0.6,
+        "stop_loss_hit_rate": 1.02,
+        "decision": "FAIL"
+      },
+      "30": {
+        "n": 293,
+        "success_rate": 15.7,
+        "beats_benchmark_rate": 15.7,
+        "avg_return_pct": -1.83,
+        "avg_excess_return_pct": -1.83,
+        "sharpe": -0.282,
+        "sharpe_annualized": -0.817,
+        "sortino": -0.511,
+        "max_drawdown_pct": -99.77,
+        "avg_win_pct": 5.34,
+        "avg_loss_pct": -5.9,
+        "profit_factor": 0.51,
+        "stop_loss_hit_rate": 3.07,
+        "decision": "FAIL"
+      },
+      "60": {
+        "n": 293,
+        "success_rate": 16.38,
+        "beats_benchmark_rate": 16.38,
+        "avg_return_pct": -3.64,
+        "avg_excess_return_pct": -3.64,
+        "sharpe": -0.422,
+        "sharpe_annualized": -0.866,
+        "sortino": -0.722,
+        "max_drawdown_pct": -100,
+        "avg_win_pct": 7.12,
+        "avg_loss_pct": -8.15,
+        "profit_factor": 0.36,
+        "stop_loss_hit_rate": 25.26,
+        "decision": "FAIL"
+      },
+      "90": {
+        "n": 293,
+        "success_rate": 15.02,
+        "beats_benchmark_rate": 15.02,
+        "avg_return_pct": -4.7,
+        "avg_excess_return_pct": -4.7,
+        "sharpe": -0.572,
+        "sharpe_annualized": -0.957,
+        "sortino": -1.145,
+        "max_drawdown_pct": -100,
+        "avg_win_pct": 8.72,
+        "avg_loss_pct": -8.23,
+        "profit_factor": 0.28,
+        "stop_loss_hit_rate": 38.91,
+        "decision": "FAIL"
+      }
+    },
+    "by_action": {
+      "sell": {
+        "n": 1465,
+        "success_rate": 12.01,
+        "beats_benchmark_rate": 12.01,
+        "avg_return_pct": -2.28,
+        "avg_excess_return_pct": -2.28,
+        "sharpe": -0.341,
+        "sharpe_annualized": -2.048,
+        "sortino": -0.512,
+        "max_drawdown_pct": -100,
+        "avg_win_pct": 5.12,
+        "avg_loss_pct": -5.63,
+        "profit_factor": 0.41,
+        "stop_loss_hit_rate": 13.79,
+        "decision": "FAIL"
+      }
+    },
+    "by_score_range": {
+      "sell": {
+        "n": 293,
+        "success_rate": 15.7,
+        "beats_benchmark_rate": 15.7,
+        "avg_return_pct": -1.83,
+        "avg_excess_return_pct": -1.83,
+        "sharpe": -0.282,
+        "sharpe_annualized": -0.817,
+        "sortino": -0.511,
+        "max_drawdown_pct": -99.77,
+        "avg_win_pct": 5.34,
+        "avg_loss_pct": -5.9,
+        "profit_factor": 0.51,
+        "stop_loss_hit_rate": 3.07,
+        "decision": "FAIL"
+      }
+    }
+  },
+  "total_recommendations": 879,
+  "total_evaluated": 1465
+}
