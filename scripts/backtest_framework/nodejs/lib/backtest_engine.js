@@ -14,23 +14,75 @@ class BacktestEngine {
 
   async run(progressCallback) {
     const btConfig = this.config.BACKTEST || {};
-    const startDate = btConfig.start_date || 14030101;
-    const endDate = btConfig.end_date || 14040331;
+    let startDate = btConfig.start_date || 14030101;
+    let endDate = btConfig.end_date || 14040331;
     const dailyBuy = btConfig.daily_buy_recommendations || 2;
     const dailySell = btConfig.daily_sell_recommendations || 1;
     const sampleSize = btConfig.sample_symbols_per_day || 30;
     const horizons = btConfig.evaluation_horizons || [7, 14, 30, 60, 90];
     const successThreshold = btConfig.success_threshold_pct || 5.0;
 
-    // Get all trading dates in range
+    // Get all candles
     const candles = this.dataLoader.loadCandles();
+
+    // AUTO-DETECT date range from actual data
+    if (candles.length > 0) {
+      const allDates = candles.map(c => c.date_jalali).filter(d => d > 0).sort((a, b) => a - b);
+      if (allDates.length > 0) {
+        const dataMinDate = allDates[0];
+        const dataMaxDate = allDates[allDates.length - 1];
+        console.log(`Data date range: ${dataMinDate} to ${dataMaxDate}`);
+
+        // If config range doesn't overlap with data, auto-adjust
+        if (startDate > dataMaxDate || endDate < dataMinDate) {
+          console.log(`⚠ Config range (${startDate}-${endDate}) doesn't match data!`);
+          console.log(`  Auto-adjusting to data range...`);
+          // Use the data's date range, but leave 90 days at the end for evaluation
+          startDate = dataMinDate;
+          endDate = dataMaxDate - 90;  // Need 90 days for evaluation horizon
+          if (endDate < startDate) {
+            endDate = dataMaxDate;  // fallback
+          }
+          console.log(`  New range: ${startDate} to ${endDate}`);
+        }
+      }
+    }
+
+    // Get all trading dates in range
     let tradingDates = [...new Set(candles
       .filter(c => c.date_jalali >= startDate && c.date_jalali <= endDate)
       .map(c => c.date_jalali))]
       .sort((a, b) => a - b);
 
-    console.log(`Backtest period: ${tradingDates[0]} to ${tradingDates[tradingDates.length - 1]}`);
+    // Need at least 200 days of history before first decision date
+    const minDate = Math.min(...candles.map(c => c.date_jalali).filter(d => d > 0));
+    tradingDates = tradingDates.filter(d => d - minDate >= 200);
+
+    console.log(`Backtest period: ${tradingDates[0] || 'N/A'} to ${tradingDates[tradingDates.length - 1] || 'N/A'}`);
     console.log(`Trading days: ${tradingDates.length}`);
+
+    if (tradingDates.length === 0) {
+      console.log(`\n⚠ No trading days found in the date range.`);
+      console.log(`  Possible issues:`);
+      console.log(`  1. Not enough historical data (need 200+ days before backtest start)`);
+      console.log(`  2. Date format mismatch (expected Jalali integer like 14050816)`);
+      console.log(`  3. Crawler didn't fetch enough data`);
+      console.log(`\n  Data summary:`);
+      const allDates = candles.map(c => c.date_jalali).filter(d => d > 0).sort((a, b) => a - b);
+      if (allDates.length > 0) {
+        console.log(`    Candles date range: ${allDates[0]} to ${allDates[allDates.length - 1]}`);
+        console.log(`    Unique dates: ${new Set(allDates).size}`);
+        console.log(`    Total candles: ${candles.length}`);
+        // Count candles per symbol
+        const bySymbol = {};
+        for (const c of candles) {
+          bySymbol[c.ins_code] = (bySymbol[c.ins_code] || 0) + 1;
+        }
+        const counts = Object.values(bySymbol).sort((a, b) => b - a);
+        console.log(`    Candles per symbol: max=${counts[0]}, median=${counts[Math.floor(counts.length / 2)]}, min=${counts[counts.length - 1]}`);
+      }
+      return { recommendations: [], evaluated: [] };
+    }
 
     // Get active symbols and sample
     const activeSymbols = this.dataLoader.getActiveSymbols();
@@ -42,10 +94,6 @@ class BacktestEngine {
       .slice(0, Math.min(sampleSize, activeSymbols.length));
 
     console.log(`Sampling ${sampledSymbols.length} symbols per day\n`);
-
-    // Need at least 200 days of history before first decision
-    const minDate = Math.min(...candles.map(c => c.date_jalali));
-    tradingDates = tradingDates.filter(d => d - minDate >= 200);
 
     let processedDays = 0;
     const totalDays = tradingDates.length;

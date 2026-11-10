@@ -221,8 +221,8 @@ async function crawlSymbols() {
 }
 
 async function crawlCandles(insCode) {
-  // Top=0 means all available history
-  const url = `${CDN_API}/ClosingPrice/GetClosingPriceDailyList/${insCode}/0`;
+  // Use Top=999999 to get all available history (Top=0 may return 0 rows)
+  const url = `${CDN_API}/ClosingPrice/GetClosingPriceDailyList/${insCode}/999999`;
   const data = await makeRequest(url);
 
   if (!data || !data.closingPriceDaily) {
