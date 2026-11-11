@@ -32,8 +32,10 @@ function calculateCompositeScore(insCode, onDate, dataLoader) {
   const weightedConf = weights.reduce((sum, w, i) => sum + w * confidences[i], 0) / weights.reduce((a, b) => a + b, 0);
 
   // Determine action based on score
+  // Adjusted: strong_buy threshold raised from 75 to 85
+  // because backtest showed 75-84 performed WORSE than 60-74
   let action, actionLabelFa;
-  if (totalScore >= 75) { action = 'strong_buy'; actionLabelFa = 'خرید قوی'; }
+  if (totalScore >= 85) { action = 'strong_buy'; actionLabelFa = 'خرید قوی'; }
   else if (totalScore >= 60) { action = 'buy'; actionLabelFa = 'خرید'; }
   else if (totalScore >= 45) { action = 'hold'; actionLabelFa = 'نگه‌داری'; }
   else if (totalScore >= 30) { action = 'reduce'; actionLabelFa = 'کاهش وزن'; }
