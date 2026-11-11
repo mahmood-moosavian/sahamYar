@@ -19,17 +19,17 @@
     "evaluation_horizons": [7, 14, 30, 60, 90],
     "success_threshold_pct": 5.0,
     "benchmark": "tedpix",
-    "daily_buy_recommendations": 2,
+    "daily_buy_recommendations": 3,
     "daily_sell_recommendations": 1,
-    "sample_symbols_per_day": 30
+    "sample_symbols_per_day": 100
   },
   "COMPOSITE_SCORE": {
     "smart_money": {
-      "weight": 35,
+      "weight": 20,
       "sub_signals": {
-        "net_legal_value_5d": 15,
-        "accumulation_pattern": 12,
-        "smart_money_consistency": 8
+        "net_legal_value_5d": 9,
+        "accumulation_pattern": 7,
+        "smart_money_consistency": 4
       }
     },
     "technical": {
@@ -42,10 +42,10 @@
       }
     },
     "fundamental": {
-      "weight": 20,
+      "weight": 25,
       "sub_signals": {
-        "pe_below_sector": 12,
-        "eps_growth": 8
+        "pe_below_sector": 15,
+        "eps_growth": 10
       }
     },
     "diversification": {
@@ -57,11 +57,11 @@
     },
     "base_volume": {"weight": 8},
     "buyer_capita": {"weight": 8},
-    "price_position": {"weight": 7}
+    "price_position": {"weight": 12}
   },
   "RISK": {
-    "default_stop_loss_pct": 12.0,
-    "default_target_pct": 17.0,
+    "default_stop_loss_pct": 20.0,
+    "default_target_pct": 20.0,
     "confidence_levels": [0.05, 0.50, 0.95],
     "max_position_size_pct": 10.0,
     "sector_concentration_warning_pct": 30.0
