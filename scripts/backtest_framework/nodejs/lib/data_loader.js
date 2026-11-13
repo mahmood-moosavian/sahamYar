@@ -15,6 +15,8 @@ class DataLoader {
     this._clientTypes = null;
     this._fundamentals = null;
     this._marketIndex = null;
+    this._syntheticIndex = null;
+    this._closeCache = null;
   }
 
   /**
@@ -197,6 +199,33 @@ class DataLoader {
     const candles = this.loadCandles();
     const filtered = candles.filter(c => c.ins_code === insCode && c.date_jalali < onDate);
     return filtered.slice(-days);
+  }
+
+  // FIX CR2: Lookup close price for a specific symbol on a specific date.
+  // Used by smartMoneySignal to compute buy_*/sell_*_value = volume × close
+  // when the crawler stored value as 0 (new TSETMC API doesn't provide value).
+  // Tries exact date first, then nearest earlier date within ~3 trading days.
+  _buildCloseIndex() {
+    if (this._closeCache) return this._closeCache;
+    const candles = this.loadCandles();
+    const idx = {};  // { ins_code: Map<date_jalali, close> }
+    for (const c of candles) {
+      if (!idx[c.ins_code]) idx[c.ins_code] = new Map();
+      idx[c.ins_code].set(c.date_jalali, c.close);
+    }
+    this._closeCache = idx;
+    return idx;
+  }
+  getCloseOn(insCode, dateJalali) {
+    const idx = this._buildCloseIndex();
+    const symMap = idx[insCode];
+    if (!symMap) return 0;
+    if (symMap.has(dateJalali)) return symMap.get(dateJalali);
+    // nearest earlier date within ~3 trading days
+    for (let d = dateJalali - 1; d > dateJalali - 10; d--) {
+      if (symMap.has(d)) return symMap.get(d);
+    }
+    return 0;
   }
 
   getFutureCandles(insCode, fromDate, horizonDays) {

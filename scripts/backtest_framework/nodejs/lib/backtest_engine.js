@@ -3,6 +3,21 @@
  */
 
 const { calculateCompositeScore } = require('./composite_score');
+const { hardFilter, selectTopBuys } = require('./selection');
+
+// FIX EG1: Seeded PRNG (LCG) — deterministic shuffle for reproducible sampling.
+// Replaces the old `sort by ins_code, slice(0, N)` which always picked the SAME
+// lowest-ins_code symbols every day, biasing the entire backtest.
+function seededShuffle(arr, seed) {
+  const a = arr.slice();
+  let s = seed || 42;
+  for (let i = a.length - 1; i > 0; i--) {
+    s = (s * 1103515245 + 12345) & 0x7fffffff;
+    const j = s % (i + 1);
+    const tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
 
 class BacktestEngine {
   constructor(dataLoader, config) {
@@ -104,12 +119,23 @@ class BacktestEngine {
       return { recommendations: [], evaluated: [] };
     }
 
-    // Sample symbols (deterministic for reproducibility)
-    const sampledSymbols = symbolsWithData
-      .sort((a, b) => a.ins_code.localeCompare(b.ins_code))
-      .slice(0, Math.min(sampleSize, symbolsWithData.length));
+    // FIX EG1: Seeded RANDOM sampling (was sort-by-ins_code → biased to same N symbols).
+    // sampleSize = 0 means use ALL active symbols with data (no sampling).
+    const seed = btConfig.sample_seed || 42;
+    const sampledSymbols = (sampleSize > 0)
+      ? seededShuffle(symbolsWithData, seed).slice(0, Math.min(sampleSize, symbolsWithData.length))
+      : symbolsWithData;
 
-    console.log(`Sampling ${sampledSymbols.length} symbols per day\n`);
+    console.log(`Sampling ${sampledSymbols.length} symbols per day (seed=${seed})\n`);
+
+    // FIX EG2: Build ins_code → sector_code map for sector diversification at selection.
+    // The config.COMPOSITE_SCORE.diversification weight is honored HERE at selection time,
+    // not as a per-symbol score (diversification is a portfolio-level property).
+    const sectorMap = {};
+    for (const s of symbolsWithData) {
+      sectorMap[s.ins_code] = s.sector_code || s.sector_name || '';
+    }
+    const diversifyTopPicks = btConfig.diversify_top_picks !== false;  // default true
 
     let processedDays = 0;
     const totalDays = tradingDates.length;
@@ -126,7 +152,8 @@ class BacktestEngine {
 
       for (const sym of sampledSymbols) {
         try {
-          const rec = calculateCompositeScore(sym.ins_code, decisionDate, this.dataLoader);
+          // FIX CP1: pass config.COMPOSITE_SCORE so signal weights are honored
+          const rec = calculateCompositeScore(sym.ins_code, decisionDate, this.dataLoader, this.config.COMPOSITE_SCORE);
           dailyScores.push(rec);
         } catch (e) {
           // Skip errors
@@ -138,9 +165,49 @@ class BacktestEngine {
       // Sort by score
       dailyScores.sort((a, b) => b.total_score - a.total_score);
 
-      // Take top N for buy
-      const topBuys = dailyScores.slice(0, dailyBuy);
-      // Take bottom N for sell
+      // CYCLE 6: Two-stage hard filter + composite selection.
+      // Stage 1 — keep only stocks NOT recently pumped (runup <= max_runup_pct)
+      // AND in the lower half of the year range (pp_score >= min_pp_score).
+      // Stage 2 — among passers, take top-N by composite score, sector-diversified.
+      // Fallback: if fewer than min_passers pass, use unfiltered top-N.
+      const filterOpts = btConfig.enable_hard_filter
+        ? {
+            max_runup_pct: btConfig.max_runup_pct,
+            min_pp_score: btConfig.min_pp_score,
+            min_passers: btConfig.min_passers,
+            diversify_top_picks: btConfig.diversify_top_picks,
+          }
+        : { diversify_top_picks: btConfig.diversify_top_picks };
+
+      let topBuys;
+      if (btConfig.enable_hard_filter) {
+        const { passers } = hardFilter(dailyScores, filterOpts);
+        topBuys = selectTopBuys(passers, dailyScores, dailyBuy, sectorMap, filterOpts);
+      } else {
+        // Original behavior — no gate
+        topBuys = [];
+        if (diversifyTopPicks) {
+          const usedSectors = new Set();
+          const remaining = [];
+          for (const rec of dailyScores) {
+            const sector = sectorMap[rec.ins_code] || '';
+            if (!usedSectors.has(sector)) {
+              topBuys.push(rec);
+              usedSectors.add(sector);
+            } else {
+              remaining.push(rec);
+            }
+            if (topBuys.length >= dailyBuy) break;
+          }
+          for (const rec of remaining) {
+            if (topBuys.length >= dailyBuy) break;
+            topBuys.push(rec);
+          }
+        } else {
+          topBuys = dailyScores.slice(0, dailyBuy);
+        }
+      }
+      // Take bottom N for sell (unchanged)
       const bottomSells = dailyScores.slice(-dailySell);
 
       this.allRecommendations.push(...topBuys, ...bottomSells);

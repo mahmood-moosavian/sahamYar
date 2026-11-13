@@ -21,11 +21,17 @@
     "benchmark": "tedpix",
     "daily_buy_recommendations": 3,
     "daily_sell_recommendations": 1,
-    "sample_symbols_per_day": 100
+    "sample_symbols_per_day": 100,
+    "sample_seed": 42,
+    "diversify_top_picks": true,
+    "enable_hard_filter": true,
+    "max_runup_pct": 3.0,
+    "min_pp_score": 2.8,
+    "min_passers": 10
   },
   "COMPOSITE_SCORE": {
     "smart_money": {
-      "weight": 20,
+      "weight": 22,
       "sub_signals": {
         "net_legal_value_5d": 9,
         "accumulation_pattern": 7,
@@ -33,7 +39,7 @@
       }
     },
     "technical": {
-      "weight": 30,
+      "weight": 24,
       "sub_signals": {
         "rsi_14": 8,
         "mfi_14": 7,
@@ -42,7 +48,7 @@
       }
     },
     "fundamental": {
-      "weight": 25,
+      "weight": 22,
       "sub_signals": {
         "pe_below_sector": 15,
         "eps_growth": 10
@@ -55,9 +61,9 @@
         "new_sector": 5
       }
     },
-    "base_volume": {"weight": 8},
-    "buyer_capita": {"weight": 8},
-    "price_position": {"weight": 12}
+    "base_volume": {"weight": 6},
+    "buyer_capita": {"weight": 10},
+    "price_position": {"weight": 22}
   },
   "RISK": {
     "default_stop_loss_pct": 20.0,

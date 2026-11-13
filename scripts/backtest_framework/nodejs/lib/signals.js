@@ -67,17 +67,37 @@ function smartMoneySignal(insCode, onDate, dataLoader) {
 
   const recent = ctData.slice(-lookback);
 
+  // FIX CR2: If crawler stored *_value as 0 (new API doesn't provide value),
+  // recompute on the fly from *_volume × close-on-that-date. This unblocks the
+  // netLegalValue sub-signal which was always returning neutral 7.5.
+  const recentWithValues = recent.map(ct => {
+    if (ct.buy_legal_value === 0 && ct.sell_legal_value === 0 &&
+        (ct.buy_legal_volume > 0 || ct.sell_legal_volume > 0)) {
+      const close = dataLoader.getCloseOn(insCode, ct.date_jalali);
+      if (close > 0) {
+        return {
+          ...ct,
+          buy_real_value: Math.round(ct.buy_real_volume * close),
+          sell_real_value: Math.round(ct.sell_real_volume * close),
+          buy_legal_value: Math.round(ct.buy_legal_volume * close),
+          sell_legal_value: Math.round(ct.sell_legal_volume * close),
+        };
+      }
+    }
+    return ct;
+  });
+
   // Sub-signal 1: Net legal value over lookback (15 pts)
-  const netLegalValue = recent.reduce((sum, ct) =>
+  const netLegalValue = recentWithValues.reduce((sum, ct) =>
     sum + (ct.buy_legal_value - ct.sell_legal_value), 0);
-  const avgDailyLegal = mean(recent.map(ct =>
+  const avgDailyLegal = mean(recentWithValues.map(ct =>
     ct.buy_legal_value + ct.sell_legal_value));
   let netLegalRatio = avgDailyLegal > 0 ? netLegalValue / avgDailyLegal : 0;
   netLegalRatio = Math.max(-1, Math.min(1, netLegalRatio));
   const netLegalScore = (netLegalRatio + 1) / 2 * 15;
 
   // Sub-signal 2: Accumulation pattern (12 pts)
-  const latest = recent[recent.length - 1];
+  const latest = recentWithValues[recentWithValues.length - 1];
   const legalBuySellRatio = latest.sell_legal_volume > 0
     ? latest.buy_legal_volume / latest.sell_legal_volume : 2;
   const realSellBuyRatio = latest.buy_real_volume > 0
@@ -97,7 +117,7 @@ function smartMoneySignal(insCode, onDate, dataLoader) {
   }
 
   // Sub-signal 3: Consistency (8 pts)
-  const positiveDays = recent.filter(ct =>
+  const positiveDays = recentWithValues.filter(ct =>
     ct.buy_legal_value > ct.sell_legal_value).length;
   let consistencyScore = 0;
   let consistencyReason = '';
@@ -150,15 +170,26 @@ function technicalSignal(insCode, onDate, dataLoader) {
     const avgLoss = mean(losses.slice(-period));
     rsiValue = avgLoss === 0 ? 100 : 100 - (100 / (1 + avgGain / avgLoss));
 
+    // FIX SG2: RSI scoring rescored for TSE regime.
+    // Old: RSI<30 → 8 pts (full). But in TSE, sustained limit-down cascades give RSI<30
+    // and the stock keeps falling (falling knife, not oversold bargain).
+    // New: sweet spot 40-60 (recovering but not overbought) = full 8 pts.
+    // RSI<30 = 2 pts (knife), 30-40 = 5.5, 60-70 = 4, >70 = 0.
     if (rsiValue < 30) {
+      rsiScore = 2;
+      rsiReason = `RSI = ${rsiValue.toFixed(1)} (falling knife)`;
+    } else if (rsiValue < 40) {
+      rsiScore = 5.5;
+      rsiReason = `RSI = ${rsiValue.toFixed(1)} (اشباع فروش نسبی)`;
+    } else if (rsiValue <= 60) {
       rsiScore = 8;
-      rsiReason = `RSI = ${rsiValue.toFixed(1)} (اشباع فروش)`;
-    } else if (rsiValue > 70) {
+      rsiReason = `RSI = ${rsiValue.toFixed(1)} (بازه‌ی سالم)`;
+    } else if (rsiValue <= 70) {
+      rsiScore = 4;
+      rsiReason = `RSI = ${rsiValue.toFixed(1)}`;
+    } else {
       rsiScore = 0;
       rsiReason = `RSI = ${rsiValue.toFixed(1)} (اشباع خرید)`;
-    } else {
-      rsiScore = 8 * Math.max(0, (70 - rsiValue) / 40);
-      rsiReason = `RSI = ${rsiValue.toFixed(1)}`;
     }
   }
 
@@ -182,15 +213,24 @@ function technicalSignal(insCode, onDate, dataLoader) {
     const negFlow = Math.abs(recent.filter(f => f < 0).reduce((a, b) => a + b, 0));
     mfiValue = negFlow === 0 ? 100 : 100 - (100 / (1 + posFlow / negFlow));
 
+    // FIX SG3: MFI scoring rescored (same logic as RSI).
+    // Old: MFI<20 → 7 pts (full). Volume capitulation in TSE continues, doesn't bounce.
+    // New: sweet spot 40-70 = 7 pts. <20 = 2 (knife), 20-40 = 5, 70-80 = 3, >80 = 0.
     if (mfiValue < 20) {
+      mfiScore = 2;
+      mfiReason = `MFI = ${mfiValue.toFixed(1)} (خروج حجمی)`;
+    } else if (mfiValue < 40) {
+      mfiScore = 5;
+      mfiReason = `MFI = ${mfiValue.toFixed(1)}`;
+    } else if (mfiValue <= 70) {
       mfiScore = 7;
-      mfiReason = `MFI = ${mfiValue.toFixed(1)} (اشباع فروش حجمی)`;
-    } else if (mfiValue > 80) {
+      mfiReason = `MFI = ${mfiValue.toFixed(1)} (بازه‌ی سالم)`;
+    } else if (mfiValue <= 80) {
+      mfiScore = 3;
+      mfiReason = `MFI = ${mfiValue.toFixed(1)}`;
+    } else {
       mfiScore = 0;
       mfiReason = `MFI = ${mfiValue.toFixed(1)} (اشباع خرید حجمی)`;
-    } else {
-      mfiScore = 7 * Math.max(0, (80 - mfiValue) / 60);
-      mfiReason = `MFI = ${mfiValue.toFixed(1)}`;
     }
   }
 
@@ -366,7 +406,14 @@ function baseVolumeSignal(insCode, onDate, dataLoader) {
   const ratio = latest.volume / estimatedBaseVol;
   let score = 0, reason = '';
 
-  if (ratio >= 2) {
+  // FIX SG4: Volume blow-off penalty.
+  // Old: ratio >= 2 → 8 pts (full). But ratio > 4× base = blow-off top (late-stage pump,
+  // smart money exiting). These stocks mean-revert hard.
+  // New: ratio 2-4 = 8 pts (healthy demand). ratio > 4 = -4 (blow-off penalty).
+  if (ratio > 4) {
+    score = -4;
+    reason = `حجم امروز ${ratio.toFixed(1)}× حجم مبنا (blow-off top — خروج هشدار)`;
+  } else if (ratio >= 2) {
     score = 8;
     reason = `حجم امروز ${ratio.toFixed(1)}× حجم مبنا (تقاضای قوی)`;
   } else if (ratio >= 1.5) {
@@ -383,6 +430,8 @@ function baseVolumeSignal(insCode, onDate, dataLoader) {
     reason = `حجم امروز فقط ${ratio.toFixed(1)}× حجم مبنا (نامعتبر)`;
   }
 
+  // Clamp to [-4, 8]
+  score = Math.max(-4, Math.min(8, score));
   return { score, max: 8, confidence: Math.min(1, candles.length / 20), reasons: [reason] };
 }
 

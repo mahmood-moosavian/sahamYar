@@ -172,15 +172,37 @@ Data must be in data/csv/ (from TSETMC crawler).
   console.log(`  ✓ Raw results: ${resultsPath}`);
 
   // Save recommendations as CSV
+  // FIX MR3: Previously only 5 columns (ins_code, on_date, total_score, action, confidence).
+  // Now includes the full per-signal breakdown + normalized values so calibrate.js
+  // can regress sub-signal values against outcomes and tune weights with evidence.
   const recsPath = path.join(outputDir, 'all_recommendations.csv');
   if (results.recommendations.length > 0) {
-    const headers = ['ins_code', 'on_date', 'total_score', 'action', 'confidence'];
+    const headers = [
+      'ins_code', 'on_date', 'total_score', 'action', 'confidence',
+      'sm_score', 'tech_score', 'fund_score', 'bv_score', 'bc_score', 'pp_score',
+      'sm_norm', 'tech_norm', 'fund_norm', 'bv_norm', 'bc_norm', 'pp_norm',
+      'base_score', 'runup_10d_pct', 'runup_penalty',
+      'hard_filter_passed', 'hard_filter_used',
+      'expected_success', 'stop_loss_pct',
+    ];
     const lines = [headers.join(',')];
     for (const r of results.recommendations) {
-      lines.push([r.ins_code, r.on_date, r.total_score.toFixed(2), r.action, r.confidence.toFixed(3)].join(','));
+      const b = r.breakdown || {};
+      const n = r.normalized || {};
+      const row = [
+        r.ins_code, r.on_date, r.total_score.toFixed(2), r.action, r.confidence.toFixed(3),
+        (b.smart_money ?? 0).toFixed(2), (b.technical ?? 0).toFixed(2), (b.fundamental ?? 0).toFixed(2),
+        (b.base_volume ?? 0).toFixed(2), (b.buyer_capita ?? 0).toFixed(2), (b.price_position ?? 0).toFixed(2),
+        (n.smart_money ?? 0).toFixed(3), (n.technical ?? 0).toFixed(3), (n.fundamental ?? 0).toFixed(3),
+        (n.base_volume ?? 0).toFixed(3), (n.buyer_capita ?? 0).toFixed(3), (n.price_position ?? 0).toFixed(3),
+        (r.base_score ?? 0).toFixed(2), (r.runup_10d_pct ?? 0).toFixed(1), (r.runup_penalty ?? 0).toFixed(0),
+        r.hard_filter_passed ? 1 : 0, r.hard_filter_used ? 1 : 0,
+        (r.expected_success_rate ?? 0).toFixed(3), (r.stop_loss_pct ?? 0).toFixed(3),
+      ];
+      lines.push(row.join(','));
     }
     fs.writeFileSync(recsPath, lines.join('\n'), 'utf8');
-    console.log(`  ✓ Recommendations: ${recsPath}`);
+    console.log(`  ✓ Recommendations (with breakdown): ${recsPath}`);
   }
 
   console.log('\n' + '='.repeat(60));
